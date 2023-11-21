@@ -28,8 +28,8 @@ class PersonLocationProvider extends ChangeNotifier {
     _checkPermission();
     _location.changeSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-      interval: 10000,
+      // distanceFilter: 5,
+      // interval: 10000,
     );
     currentLocation.addStream(_location.onLocationChanged);
   }
