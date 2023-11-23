@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goshare_driver/features/pick-up-passenger/constants.dart';
+import 'package:goshare_driver/features/trip/constants.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
 

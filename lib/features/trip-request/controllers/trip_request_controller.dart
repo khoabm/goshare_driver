@@ -4,21 +4,23 @@ import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip-request/repository/trip_request_repository.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 
-final tripControllerProvider = StateNotifierProvider<TripController, bool>(
-  (ref) => TripController(
-    tripRepository: ref.watch(tripRepositoryProvider),
+final tripRequestControllerProvider =
+    StateNotifierProvider<TripRequestController, bool>(
+  (ref) => TripRequestController(
+    tripRepository: ref.watch(tripRequestRepositoryProvider),
   ),
 );
 
-class TripController extends StateNotifier<bool> {
+class TripRequestController extends StateNotifier<bool> {
   final TripRequestRepository _tripRepository;
-  TripController({
+  TripRequestController({
     required tripRepository,
   })  : _tripRepository = tripRepository,
         super(false);
 
-  Future<Trip> acceptTripRequest(BuildContext context, String tripId) async {
-    Trip trip = Trip();
+  Future<Trip?> acceptTripRequest(BuildContext context, String tripId) async {
+    print(tripId);
+    Trip? trip;
     final result = await _tripRepository.acceptTripRequest(tripId);
     result.fold((l) {
       state = false;

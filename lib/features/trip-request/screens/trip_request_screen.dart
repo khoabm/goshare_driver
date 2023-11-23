@@ -121,7 +121,8 @@ class _TripRequestState extends ConsumerState<TripRequest> {
         final tripData = (widget.content as List<dynamic>)
             .cast<Map<String, dynamic>>()
             .first;
-        trip = Trip.fromJson(tripData);
+
+        trip = Trip.fromMap(tripData);
         setState(() {
           _isLoading = false;
         });
@@ -150,24 +151,18 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                     child: CircleAvatar(
                       radius: 50.0,
                       backgroundImage: NetworkImage(
-                        trip?.booker?.avatarUrl ??
+                        trip?.booker.avatarUrl ??
                             'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
                       ),
                       backgroundColor: Colors.transparent,
-                      // child: Image.network(
-                      //   // trip?.booker?.avatarUrl ??
-                      //   'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
-                      //   fit: BoxFit
-                      //       .cover, // Use BoxFit.cover to make the image cover the entire CircleAvatar
-                      // ),
                     ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const Text(
-                    'Trần Nguyễn Quang Khải',
-                    style: TextStyle(
+                  Text(
+                    trip?.passenger.name ?? '',
+                    style: const TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -176,9 +171,9 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                   const SizedBox(
                     height: 25,
                   ),
-                  const Text(
-                    '4 Chỗ Economy',
-                    style: TextStyle(
+                  Text(
+                    'Xe ${trip?.cartype.capacity} chỗ',
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
                       color: Colors.white,
@@ -204,7 +199,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 Text(
-                                  trip?.distance?.toString() ?? '1km',
+                                  '${trip?.distance.toString() ?? 1} km',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -219,7 +214,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                   ),
                                 ),
                                 Text(
-                                  trip?.paymentMethod?.toString() ?? 'Ví',
+                                  trip?.paymentMethod == 0 ? 'Ví' : 'Tiền mặt',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 18,
@@ -230,7 +225,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            trip?.startLocation?.address ?? 'Địa điểm đi',
+                            trip?.startLocation.address ?? 'Địa điểm đi',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 18,
@@ -255,7 +250,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               color: Colors.grey,
                             ),
                             child: Text(
-                              trip?.endLocation?.address ?? "Địa điểm đến",
+                              trip?.endLocation.address ?? "Địa điểm đến",
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
@@ -269,8 +264,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               horizontal: 8.0,
                             ),
                             child: Text(
-                              trip?.note ??
-                                  'Bà già rồi lên nhà đỡ bà xuống Bà già rồi lên nhà đỡ bà xuống Lorem ipsum dolor sit amet, consectetur adipiscing n leo eget tincidunt. In vehicula quam tortor',
+                              trip?.note ?? 'Ghi chú',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 16,
@@ -292,13 +286,13 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                     onPress: () async {
                       print(trip?.id);
                       final result = await ref
-                          .watch(tripControllerProvider.notifier)
+                          .watch(tripRequestControllerProvider.notifier)
                           .acceptTripRequest(
                             context,
                             trip?.id ?? '',
                           );
-                      if (result.id != null) {
-                        if (result.id!.isNotEmpty) {
+                      if (result != null) {
+                        if (result.id.isNotEmpty) {
                           if (context.mounted) {
                             context.goNamed(
                               RouteConstants.pickUpPassenger,

@@ -1,11 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart';
-import 'package:goshare_driver/core/constants/constants.dart';
-import 'package:goshare_driver/core/failure.dart';
-import 'package:goshare_driver/core/type_def.dart';
+
 import 'package:location/location.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
 
 final locationProvider = Provider<LocationUtils>((ref) => LocationUtils());
 
