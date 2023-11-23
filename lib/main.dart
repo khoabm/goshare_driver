@@ -1,7 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
+import 'package:goshare_driver/common/loader.dart';
+import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
+
 import 'package:goshare_driver/firebase_options.dart';
 import 'package:goshare_driver/router.dart';
 import 'package:goshare_driver/theme/pallet.dart';
@@ -18,122 +23,116 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      // routerDelegate: AppRouter().router.routerDelegate,
-      //routeInformationParser: AppRouter().router.routeInformationParser,
-      routerConfig: AppRouter().router,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Pallete.primaryColor),
-        useMaterial3: true,
-        primaryColor: Pallete.primaryColor,
-        scaffoldBackgroundColor: Pallete.primaryColor,
-        fontFamily: 'Raleway',
-        textTheme: Theme.of(context).textTheme.apply(
-              displayColor: Pallete.primaryColor,
-              bodyColor: Pallete.primaryColor,
-            ),
-      ),
-      // title: 'Flutter Demo',
-      // theme: ThemeData(
-      //   colorScheme: ColorScheme.fromSeed(seedColor: Pallete.primaryColor),
-      //   useMaterial3: true,
-      // ),
-      // routerConfig: AppRouter().router,
-    );
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
+}
+
+// This widget is the root of your application.
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    requestPermission();
+
+    initInfor();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  //request notification permission
+  void requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("Granted permission.");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("Granted provisional permission.");
+    } else {
+      print("Not Granted permission.");
+    }
+  }
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  initInfor() {
+    var androidInitialize =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iosInitialize = const DarwinInitializationSettings();
+    var initializationSettings =
+        InitializationSettings(android: androidInitialize, iOS: iosInitialize);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+        message.notification!.body.toString(),
+        htmlFormatBigText: true,
+        contentTitle: message.notification!.title.toString(),
+        htmlFormatContentTitle: true,
+      );
+      AndroidNotificationDetails androidPlatformChannelSpecifics =
+          AndroidNotificationDetails(
+        'dbfood',
+        'dbfood',
+        importance: Importance.max,
+        styleInformation: bigTextStyleInformation,
+        priority: Priority.max,
+        playSound: false,
+      );
+      NotificationDetails platformChannelSpecifics = NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: const DarwinNotificationDetails(),
+      );
+      await flutterLocalNotificationsPlugin.show(0, message.notification?.title,
+          message.notification?.body, platformChannelSpecifics,
+          payload: message.data['body']);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+    return FutureBuilder<String>(
+      future: ref
+          .watch(LoginControllerProvider.notifier)
+          .getUserData(context, ref), // Replace with your actual token
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Loader(); // Show a loading spinner while waiting
+        } else {
+          final initialLocation =
+              snapshot.data != null && snapshot.data!.isNotEmpty
+                  ? RouteConstants.dashBoardUrl
+                  : RouteConstants
+                      .loginUrl; // Replace 'login' with your actual login route
+
+          return MaterialApp.router(
+            debugShowCheckedModeBanner: false,
+            routerConfig: AppRouter().createRouter(initialLocation),
+            theme: ThemeData(
+              colorScheme: ThemeData().colorScheme.copyWith(
+                    primary: Pallete.primaryColor,
+                  ),
+              primaryColor: Pallete.primaryColor,
+              scaffoldBackgroundColor: Pallete.primaryColor,
+              fontFamily: 'Raleway',
+              textTheme: Theme.of(context).textTheme.apply(
+                    displayColor: Pallete.primaryColor,
+                    bodyColor: Pallete.primaryColor,
+                  ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+          );
+        }
+      },
     );
   }
 }

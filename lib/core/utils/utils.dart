@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goshare_driver/core/constants/route_constants.dart';
 
 void showSnackBar({
   required BuildContext context,
@@ -11,6 +13,53 @@ void showSnackBar({
         content: Text(message),
       ),
     );
+}
+
+void showLoginTimeOut({
+  required BuildContext context,
+}) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Phiên đăng nhập hết hạn'),
+        content: const Text('Vui lòng đăng nhập lại.'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              context.pop();
+              context.go(RouteConstants.loginUrl);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showErrorDialog({
+  required BuildContext context,
+  required String message,
+}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Có lỗi xảy ra'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              context.pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 String convertPhoneNumber(String phoneNumber) {
