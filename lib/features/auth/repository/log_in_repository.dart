@@ -66,7 +66,7 @@ class LoginRepository {
 
       // Make HTTP request
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final accessToken = prefs.getString('accessToken');
+      final accessToken = prefs.getString('driverAccessToken');
       final client = HttpClientWithAuth(accessToken ?? '');
       final response = await client.put(
         Uri.parse('${Constants.apiBaseUrl}/user/update-fcm'),
@@ -85,6 +85,62 @@ class LoginRepository {
       }
     } catch (e) {
       return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<bool> driverActivate() async {
+    try {
+      // Make HTTP request
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final response = await client.post(
+        Uri.parse('${Constants.apiBaseUrl}/driver/activate'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{}),
+      );
+
+      if (response.statusCode == 200) {
+        return right(true);
+      } else {
+        return left(
+          Failure('Có lỗi khi bật nhận chuyến'),
+        );
+      }
+    } catch (e) {
+      return left(
+        Failure('Có lỗi xảy ra'),
+      );
+    }
+  }
+
+  FutureEither<bool> driverDeactivate() async {
+    try {
+      // Make HTTP request
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final response = await client.post(
+        Uri.parse('${Constants.apiBaseUrl}/driver/deactivate'),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{}),
+      );
+
+      if (response.statusCode == 200) {
+        return right(true);
+      } else {
+        return left(
+          Failure('Có lỗi khi tắt nhận chuyến'),
+        );
+      }
+    } catch (e) {
+      return left(
+        Failure('Có lỗi xảy ra'),
+      );
     }
   }
 

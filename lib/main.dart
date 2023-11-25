@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
+import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 
 import 'package:goshare_driver/firebase_options.dart';
 import 'package:goshare_driver/router.dart';
@@ -31,13 +32,30 @@ class MyApp extends ConsumerStatefulWidget {
 }
 
 // This widget is the root of your application.
-class _MyAppState extends ConsumerState<MyApp> {
+class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
     requestPermission();
 
     initInfor();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      if (ref.watch(userProvider.notifier).state != null) {
+        ref.watch(LoginControllerProvider.notifier).driverDeactivate();
+      }
+    }
   }
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =

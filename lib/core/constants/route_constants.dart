@@ -11,6 +11,11 @@ class RouteConstants {
   static const chat = 'chat';
   static const login = 'login';
   static const endTrip = 'end-trip';
+  static const userInfoRegis = 'user-info-regis';
+  static const driverInfoRegis = 'driver-info-regis';
+  static const otp = 'otp';
+  static const userExistConfirm = 'user-exist-confirm';
+  static const setPassCode = 'passcode';
 
   ///**
   ///Route url constants
@@ -20,8 +25,13 @@ class RouteConstants {
   static const tripRequestUrl = '/trip-request';
   static const pickUpPassengerUrl = '/pick-up';
   static const passengerInformationUrl = '/passenger-information';
-  static const chatUrl = '/chat/:receiver';
+  static const chatUrl = 'chat/:receiver';
   static const deliverPassengerUrl = '/deliver-passenger';
   static const loginUrl = '/login';
   static const endTripUrl = '/end-trip';
+  static const userInfoRegisUrl = '/user-info-regis';
+  static const driverInfoRegisUrl = '/driver-info-regis';
+  static const otpUrl = '/otp/:phone';
+  static const userExistConfirmUrl = '/user-exist-confirm';
+   static const passcodeUrl = '/passcode/:setToken/:phone';
 }

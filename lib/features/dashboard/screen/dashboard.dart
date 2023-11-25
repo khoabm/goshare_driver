@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
+import 'package:goshare_driver/features/dashboard/drawers/user_menu_drawer.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 
 import 'package:goshare_driver/providers/signalr_providers.dart';
@@ -41,6 +42,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   UserLocation? userLocation;
   LocationData? currentLocation;
   bool _isLoading = false;
+  int status = 1;
   void _onMapCreated(VietmapController controller) {
     setState(() {
       _mapController = controller;
@@ -49,8 +51,16 @@ class _DashBoardState extends ConsumerState<DashBoard> {
 
   @override
   void dispose() {
+    revokeHub();
     _mapController?.dispose();
     super.dispose();
+  }
+
+  void revokeHub() async {
+    final hubConnection = await ref.watch(
+      hubConnectionProvider.future,
+    );
+    hubConnection.off('NotifyDriverNewTripRequest');
   }
 
   @override
@@ -58,6 +68,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
+        print('Da vao home');
         final hubConnection = await ref.watch(
           hubConnectionProvider.future,
         );
@@ -104,6 +115,10 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     super.initState();
   }
 
+  void displayDrawer(BuildContext context) {
+    Scaffold.of(context).openDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -128,38 +143,56 @@ class _DashBoardState extends ConsumerState<DashBoard> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Menu icon on the left
-                IconButton(
-                  icon: const Icon(
-                    Icons.menu,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Handle menu button tap
-                  },
-                ),
+                Builder(builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      // Handle menu button tap
+                      displayDrawer(context);
+                    },
+                  );
+                }),
                 // InkWell with Text "Bắt đầu" and turn on icon
                 InkWell(
                   onTap: () {
                     // Handle "Bắt đầu" tap
                   },
-                  child: const Row(
-                    children: [
-                      Text(
-                        'Bắt đầu',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                  child: AnimatedContainer(
+                    duration: const Duration(seconds: 1),
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        if (status == 1)
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3),
+                          ),
+                      ],
+                    ),
+                    child: const Row(
+                      children: [
+                        Text(
+                          'Bắt đầu',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 8),
-                      Icon(
-                        Icons.power_settings_new,
-                        color: Colors.white,
-                      ), // Change to your turn on icon
-                    ],
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.power_settings_new,
+                          color: Colors.white,
+                        ), // Change to your turn on icon
+                      ],
+                    ),
                   ),
                 ),
+
                 // Comment icon on the right
                 IconButton(
                   icon: const Icon(
@@ -298,7 +331,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     height: 20,
                                   ),
                                   const Text(
-                                    'Credit Balance',
+                                    'Số dư của tài khoản',
                                     style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -306,7 +339,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     ),
                                   ),
                                   const Text(
-                                    '100.00',
+                                    '100.00đ',
                                     style: TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -381,6 +414,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
               )
           ],
         ),
+        drawer: const UserMenuDrawer(),
       ),
     );
 

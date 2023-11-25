@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
+import 'package:goshare_driver/providers/is_chat_on_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:signalr_core/signalr_core.dart';
 
@@ -13,9 +14,11 @@ class ChatMessage {
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String receiver;
+  final String? bookerAvatar;
   const ChatScreen({
     super.key,
     required this.receiver,
+    this.bookerAvatar,
   });
 
   @override
@@ -117,8 +120,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             margin: const EdgeInsets.only(right: 16.0),
             child: message.isCurrentUser
-                ? const CircleAvatar(child: Text('Me'))
-                : const CircleAvatar(child: Text('You')),
+                ? const CircleAvatar(child: Text('Tôi'))
+                : Center(
+                    child: CircleAvatar(
+                      radius: 50.0,
+                      backgroundImage: NetworkImage(
+                        widget.bookerAvatar ??
+                            'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
+                      ),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +151,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Chat Screen')),
+      appBar: AppBar(
+        title: const Text('Chat Screen'),
+        leading: IconButton(
+          onPressed: () {
+            ref.watch(isChatOnProvider.notifier).setIsChatOnData(false);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_outlined,
+          ),
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Flexible(

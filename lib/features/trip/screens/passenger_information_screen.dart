@@ -61,9 +61,9 @@ class _PassengerInformationScreenState
             const SizedBox(
               height: 25,
             ),
-            const Text(
-              '4 Chỗ Economy',
-              style: TextStyle(
+            Text(
+              'Xe ${widget.trip?.cartype.capacity} chỗ',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Colors.white,
