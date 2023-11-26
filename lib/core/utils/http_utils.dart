@@ -78,6 +78,7 @@ class HttpClientWithAuth extends http.BaseClient {
           'RefreshToken': refreshToken,
         }),
       );
+      print('trong http utils 2');
       print(response.statusCode);
       if (response.statusCode == 200) {
         print('200 refresh token');

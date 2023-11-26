@@ -208,28 +208,52 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                             controller: _passcodeTextController,
                             hintText: '123456',
                             isObscure: true,
+                            prefixIcons: const Icon(
+                              Icons.password,
+                            ),
                             inputType: TextInputType.phone,
                             formatters: [
-                              LengthLimitingTextInputFormatter(10),
+                              LengthLimitingTextInputFormatter(6),
                             ],
                           ),
                           const SizedBox(
-                            height: 0,
+                            height: 10,
                           ),
-                          Container(
-                            padding: const EdgeInsets.all(
-                              8.0,
-                            ),
-                            width: MediaQuery.of(context).size.width * .9,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        context.pushNamed(
+                                            RouteConstants.userExistConfirm);
+                                      },
+                                      child: const Text('Chưa có tài khoản?'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: const Text('Quên mật khẩu?'),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: AppButton(
-                                buttonText: 'Đăng nhập',
-                                onPressed: () => _onSubmit(ref),
+                              Container(
+                                padding: const EdgeInsets.all(
+                                  8.0,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  child: AppButton(
+                                    buttonText: 'Đăng nhập',
+                                    onPressed: () => _onSubmit(ref),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ],
                       ),

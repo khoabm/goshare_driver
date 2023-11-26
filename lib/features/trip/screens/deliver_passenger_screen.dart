@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/common/loader.dart';
@@ -9,6 +13,7 @@ import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/providers/signalr_providers.dart';
 // import 'package:goshare_driver/providers/current_location_provider.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:location/location.dart';
@@ -61,6 +66,11 @@ class _DeliverPassengerScreenState
   bool _isRunning = false;
   bool _isLoading = false;
   FocusNode focusNode = FocusNode();
+  final Location location = Location();
+
+  StreamSubscription<LocationData>? _locationSubscription;
+  String? _error;
+
   @override
   void initState() {
     initialize();
@@ -86,8 +96,9 @@ class _DeliverPassengerScreenState
     _navigationOption.customLocationCenterIcon =
         await VietMapHelper.getBytesFromAsset('assets/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
-    final location = ref.watch(locationProvider);
+    final location = ref.read(locationProvider);
     locationData = await location.getCurrentLocation();
+    await _listenLocation();
     wayPoints.clear();
     wayPoints.add(
       WayPoint(
@@ -106,6 +117,49 @@ class _DeliverPassengerScreenState
     setState(() {});
   }
 
+  Future<void> _listenLocation() async {
+    final hubConnection = await ref.read(
+      hubConnectionProvider.future,
+    );
+    location.changeSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 5,
+      interval: 5000,
+    );
+    _locationSubscription =
+        location.onLocationChanged.handleError((dynamic err) {
+      if (err is PlatformException) {
+        setState(() {
+          _error = err.code;
+        });
+      }
+      _locationSubscription?.cancel();
+      setState(() {
+        _locationSubscription = null;
+      });
+    }).listen((currentLocation) {
+      setState(() {
+        _error = null;
+        print('${currentLocation.latitude} + ${currentLocation.longitude},');
+        hubConnection.invoke(
+          "SendDriverLocation",
+          args: [
+            jsonEncode({
+              'latitude': currentLocation.latitude,
+              'longitude': currentLocation.longitude
+            }),
+            widget.trip?.id,
+          ],
+        ).then((value) {
+          print(
+              "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
+        }).catchError((error) {
+          print("Error sending location to server: $error");
+        });
+      });
+    });
+  }
+
   void navigateToPassengerInformation() {
     context.pushNamed(
       RouteConstants.passengerInformation,
@@ -118,6 +172,24 @@ class _DeliverPassengerScreenState
       RouteConstants.endTrip,
       extra: widget.trip,
     );
+  }
+
+  @override
+  void dispose() {
+    revokeHub();
+    _locationSubscription?.cancel();
+    setState(() {
+      _locationSubscription = null;
+    });
+    _controller?.onDispose();
+    super.dispose();
+  }
+
+  void revokeHub() async {
+    final hubConnection = await ref.read(
+      hubConnectionProvider.future,
+    );
+    hubConnection.off('SendDriverLocation');
   }
 
   @override
@@ -419,6 +491,7 @@ class _DeliverPassengerScreenState
                                               if (tripResult.id.isNotEmpty) {
                                                 _controller?.clearRoute();
                                                 _controller?.finishNavigation();
+                                                _onStopNavigation();
                                                 navigateToPaymentResult();
                                               }
                                             }
@@ -516,11 +589,5 @@ class _DeliverPassengerScreenState
       routeProgressEvent = null;
       _isRunning = false;
     });
-  }
-
-  @override
-  void dispose() {
-    _controller?.onDispose();
-    super.dispose();
   }
 }

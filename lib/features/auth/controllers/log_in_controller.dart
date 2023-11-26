@@ -37,6 +37,28 @@ class LoginController extends StateNotifier<bool> {
     return state;
   }
 
+  Future<bool> driverActivate() async {
+    final result = await _loginRepository.driverActivate();
+    result.fold(
+      (l) {},
+      (success) {
+        state = success;
+      },
+    );
+    return state;
+  }
+
+  Future<bool> driverDeactivate() async {
+    final result = await _loginRepository.driverDeactivate();
+    result.fold(
+      (l) {},
+      (success) {
+        state = success;
+      },
+    );
+    return state;
+  }
+
   Future<String> getUserData(BuildContext context, WidgetRef ref) async {
     final result = await _loginRepository.getUserData(ref);
     String data = '';
