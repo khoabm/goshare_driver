@@ -18,10 +18,11 @@ class TripRequestController extends StateNotifier<bool> {
   })  : _tripRepository = tripRepository,
         super(false);
 
-  Future<Trip?> acceptTripRequest(BuildContext context, String tripId) async {
+  Future<Trip?> acceptTripRequest(
+      BuildContext context, String tripId, bool isAccepted) async {
     print(tripId);
     Trip? trip;
-    final result = await _tripRepository.acceptTripRequest(tripId);
+    final result = await _tripRepository.acceptTripRequest(tripId, isAccepted);
     result.fold((l) {
       state = false;
       showSnackBar(

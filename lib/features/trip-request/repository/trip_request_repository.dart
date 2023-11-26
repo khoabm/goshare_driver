@@ -23,7 +23,7 @@ class TripRequestRepository {
     required this.baseApiUrl,
   });
 
-  FutureEither<Trip> acceptTripRequest(String tripId) async {
+  FutureEither<Trip> acceptTripRequest(String tripId, bool isAccepted) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final accessToken = prefs.getString('driverAccessToken');
@@ -34,7 +34,9 @@ class TripRequestRepository {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({"accept": true}),
+        body: jsonEncode({
+          "accept": isAccepted,
+        }),
       );
       print(res.body);
       if (res.statusCode == 200) {

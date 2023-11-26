@@ -213,11 +213,11 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
                             ),
                             inputType: TextInputType.phone,
                             formatters: [
-                              LengthLimitingTextInputFormatter(10),
+                              LengthLimitingTextInputFormatter(6),
                             ],
                           ),
                           const SizedBox(
-                            height: 0,
+                            height: 10,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,

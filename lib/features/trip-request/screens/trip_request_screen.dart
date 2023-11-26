@@ -142,168 +142,214 @@ class _TripRequestState extends ConsumerState<TripRequest> {
       body: _isLoading
           ? const Loader()
           : SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                  Center(
-                    child: CircleAvatar(
-                      radius: 50.0,
-                      backgroundImage: NetworkImage(
-                        trip?.booker.avatarUrl ??
-                            'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                    Center(
+                      child: CircleAvatar(
+                        radius: 50.0,
+                        backgroundImage: NetworkImage(
+                          trip?.booker.avatarUrl ??
+                              'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
+                        ),
+                        backgroundColor: Colors.transparent,
                       ),
-                      backgroundColor: Colors.transparent,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Text(
-                    trip?.passenger.name ?? '',
-                    style: const TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                    const SizedBox(
+                      height: 15,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Text(
-                    'Xe ${trip?.cartype.capacity} chỗ',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10),
+                    Text(
+                      trip?.passenger.name ?? '',
+                      style: const TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      //padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  '${trip?.distance.toString() ?? 1} km',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Text(
+                      'Xe ${trip?.cartype.capacity} chỗ',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        //padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    '${trip?.distance.toString() ?? 1} km',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  height: 20,
-                                  width: 1,
-                                  color: Pallete.primaryColor,
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                                  Container(
+                                    height: 20,
+                                    width: 1,
+                                    color: Pallete.primaryColor,
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  trip?.paymentMethod == 0 ? 'Ví' : 'Tiền mặt',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+                                  Text(
+                                    trip?.paymentMethod == 0
+                                        ? 'Ví'
+                                        : 'Tiền mặt',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            trip?.startLocation.address ?? 'Địa điểm đi',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.grey,
-                            size: 30,
-                          ),
-                          const SizedBox(height: 12),
-                          Container(
-                            height: 60, // Adjust the height as needed
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 8.0,
-                            ),
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
-                            ),
-                            child: Text(
-                              trip?.endLocation.address ?? "Địa điểm đến",
+                            const SizedBox(height: 12),
+                            Text(
+                              trip?.startLocation.address ?? 'Địa điểm đi',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8.0,
-                              horizontal: 8.0,
+                            const SizedBox(height: 12),
+                            const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.grey,
+                              size: 30,
                             ),
-                            child: Text(
-                              trip?.note ?? 'Ghi chú',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                            const SizedBox(height: 12),
+                            Container(
+                              height: 60, // Adjust the height as needed
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12.0,
+                                horizontal: 8.0,
+                              ),
+                              width: double.infinity,
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                              ),
+                              child: Text(
+                                trip?.endLocation.address ?? "Địa điểm đến",
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                                horizontal: 8.0,
+                              ),
+                              child: Text(
+                                trip?.note ?? 'Ghi chú',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  CountdownButton(
-                    onCountdownDone: () {
-                      print('Countdown done. Execute your method here.');
-                    },
-                    onPress: () async {
-                      print(trip?.id);
-                      final result = await ref
-                          .watch(tripRequestControllerProvider.notifier)
-                          .acceptTripRequest(
-                            context,
-                            trip?.id ?? '',
-                          );
-                      if (result != null) {
-                        if (result.id.isNotEmpty) {
-                          if (context.mounted) {
-                            context.goNamed(
-                              RouteConstants.pickUpPassenger,
-                              extra: trip,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CountdownButton(
+                      onCountdownDone: () {
+                        context.goNamed(RouteConstants.dashBoard);
+                      },
+                      onPress: () async {
+                        print(trip?.id);
+                        final result = await ref
+                            .watch(tripRequestControllerProvider.notifier)
+                            .acceptTripRequest(
+                              context,
+                              trip?.id ?? '',
+                              true,
                             );
+                        if (result != null) {
+                          if (result.id.isNotEmpty) {
+                            if (context.mounted) {
+                              context.goNamed(
+                                RouteConstants.pickUpPassenger,
+                                extra: trip,
+                              );
+                            }
                           }
                         }
-                      }
-                    },
-                  )
-                ],
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: SizedBox(
+                        height: 65,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red[700],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final result = await ref
+                                .watch(tripRequestControllerProvider.notifier)
+                                .acceptTripRequest(
+                                  context,
+                                  trip?.id ?? '',
+                                  false,
+                                );
+                            if (result != null) {
+                              if (result.id.isNotEmpty) {
+                                if (context.mounted) {
+                                  context.goNamed(
+                                    RouteConstants.dashBoard,
+                                    extra: trip,
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          child: const Text(
+                            'Không nhận chuyến',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
     );
