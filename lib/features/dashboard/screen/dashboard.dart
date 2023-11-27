@@ -77,38 +77,42 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     getWallet();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final hubConnection = await ref.watch(
-          hubConnectionProvider.future,
-        );
-        hubConnection.on(
-          "NotifyDriverNewTripRequest",
-          (arguments) {
-            try {
-              context.goNamed(
-                RouteConstants.tripRequest,
-                extra: arguments,
-              );
-            } catch (e) {
-              print(
-                e.toString(),
-              );
-              rethrow;
-            }
-          },
-        );
-        if (hubConnection.state == HubConnectionState.disconnected) {
-          await hubConnection.start()?.then(
-                (value) => {
-                  print('Start thanh cong'),
-                },
-              );
+        if (mounted) {
+          final hubConnection = await ref.watch(
+            hubConnectionProvider.future,
+          );
+
+          hubConnection.on(
+            "NotifyDriverNewTripRequest",
+            (arguments) {
+              try {
+                context.goNamed(
+                  RouteConstants.tripRequest,
+                  extra: arguments,
+                );
+              } catch (e) {
+                print(
+                  e.toString(),
+                );
+                rethrow;
+              }
+            },
+          );
+          if (hubConnection.state == HubConnectionState.disconnected) {
+            await hubConnection.start()?.then(
+                  (value) => {
+                    print('Start thanh cong'),
+                  },
+                );
+          }
+
+          hubConnection.onclose((exception) {
+            print(
+              exception.toString(),
+            );
+          });
         }
 
-        hubConnection.onclose((exception) {
-          print(
-            exception.toString(),
-          );
-        });
         final isFcmTokenUpdated =
             await ref.watch(LoginControllerProvider.notifier).updateFcmToken();
         if (isFcmTokenUpdated) {

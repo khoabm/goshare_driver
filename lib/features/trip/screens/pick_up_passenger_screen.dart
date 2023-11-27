@@ -83,7 +83,6 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
 
   Future<void> initialize() async {
     if (!mounted) return;
-    print('hehe');
     _navigationOption = _vietmapNavigationPlugin.getDefaultOptions();
     _navigationOption.simulateRoute = false;
     _navigationOption.alternatives = false;
@@ -168,28 +167,30 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
       setState(() {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
-        hubConnection.invoke(
-          "SendDriverLocation",
-          args: [
-            jsonEncode({
-              'latitude': currentLocation.latitude,
-              'longitude': currentLocation.longitude
-            }),
-            widget.trip?.id,
-          ],
-        ).then((value) {
-          print(
-              "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
-        }).catchError((error) {
-          print("Error sending location to server: $error");
-        });
+        if (mounted) {
+          hubConnection.invoke(
+            "SendDriverLocation",
+            args: [
+              jsonEncode({
+                'latitude': currentLocation.latitude,
+                'longitude': currentLocation.longitude
+              }),
+              widget.trip?.id,
+            ],
+          ).then((value) {
+            print(
+                "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
+          }).catchError((error) {
+            print("Error sending location to server: $error");
+          });
+        }
       });
     });
   }
 
   @override
   void dispose() {
-    revokeHub();
+    //revokeHub();
     _locationSubscription?.cancel();
     setState(() {
       _locationSubscription = null;

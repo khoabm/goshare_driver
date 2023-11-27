@@ -141,21 +141,24 @@ class _DeliverPassengerScreenState
       setState(() {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
-        hubConnection.invoke(
-          "SendDriverLocation",
-          args: [
-            jsonEncode({
-              'latitude': currentLocation.latitude,
-              'longitude': currentLocation.longitude
-            }),
-            widget.trip?.id,
-          ],
-        ).then((value) {
-          print(
-              "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
-        }).catchError((error) {
-          print("Error sending location to server: $error");
-        });
+        if(mounted){
+          hubConnection.invoke(
+            "SendDriverLocation",
+            args: [
+              jsonEncode({
+                'latitude': currentLocation.latitude,
+                'longitude': currentLocation.longitude
+              }),
+              widget.trip?.id,
+            ],
+          ).then((value) {
+            print(
+                "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
+          }).catchError((error) {
+            print("Error sending location to server: $error");
+          });
+
+        }
       });
     });
   }
@@ -176,7 +179,7 @@ class _DeliverPassengerScreenState
 
   @override
   void dispose() {
-    revokeHub();
+    //revokeHub();
     _locationSubscription?.cancel();
     setState(() {
       _locationSubscription = null;
