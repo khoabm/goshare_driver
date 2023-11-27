@@ -149,8 +149,6 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     );
     location.changeSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-      interval: 5000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {

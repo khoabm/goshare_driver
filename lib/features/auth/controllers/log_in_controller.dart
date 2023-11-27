@@ -4,18 +4,23 @@ import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 
 import 'package:goshare_driver/features/auth/repository/log_in_repository.dart';
+import 'package:goshare_driver/providers/current_state_provider.dart';
 
 final LoginControllerProvider = StateNotifierProvider<LoginController, bool>(
   (ref) => LoginController(
     loginRepository: ref.watch(loginRepositoryProvider),
+    ref: ref,
   ),
 );
 
 class LoginController extends StateNotifier<bool> {
   final LoginRepository _loginRepository;
+  final Ref _ref;
   LoginController({
     required LoginRepository loginRepository,
+    required final Ref ref,
   })  : _loginRepository = loginRepository,
+        _ref = ref,
         super(false);
   Future<String> login(
     String phone,
@@ -54,6 +59,9 @@ class LoginController extends StateNotifier<bool> {
       (l) {},
       (success) {
         state = success;
+        _ref.read(currentStateProvider.notifier).setCurrentStateData(
+              false,
+            );
       },
     );
     return state;

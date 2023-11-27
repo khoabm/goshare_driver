@@ -74,8 +74,8 @@ class TripRepository {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          "driverLatitude": 10.674857418323477,
-          "driverLongitude": 106.76289299041375,
+          "driverLatitude": currentLat,
+          "driverLongitude": currentLon,
         }),
       );
       print(response.body);

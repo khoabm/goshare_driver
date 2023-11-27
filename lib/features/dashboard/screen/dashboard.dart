@@ -74,8 +74,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   void initState() {
     if (!mounted) return;
-    getWallet();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      getWallet();
+      getDriverInformation();
       try {
         if (mounted) {
           final hubConnection = await ref.watch(
@@ -151,6 +152,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   Widget build(BuildContext context) {
     final oCcy = NumberFormat("#,##0", "vi_VN");
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -254,7 +256,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 scrollGesturesEnabled: false,
                 doubleClickZoomEnabled: false,
                 styleString:
-                    'https://maps.vietmap.vn/api/maps/light/styles.json?apikey=c3d0f188ff669f89042771a20656579073cffec5a8a69747',
+                    'https://api.maptiler.com/maps/basic-v2-light/style.json?key=mH5MUno8IU0BTZBBgsNk',
                 initialCameraPosition: const CameraPosition(
                   zoom: 17.5,
                   target: LatLng(10.736657, 106.672240),
@@ -288,6 +290,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   });
                   final location = ref.read(locationProvider);
                   currentLocation = await location.getCurrentLocation();
+                  getWallet();
+                  getDriverInformation();
                   if (context.mounted) {
                     await ref
                         .watch(tripControllerProvider.notifier)
