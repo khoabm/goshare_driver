@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
+import 'package:goshare_driver/features/dashboard/controllers/dash_board_controller.dart';
 import 'package:goshare_driver/features/dashboard/drawers/user_menu_drawer.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
+import 'package:goshare_driver/models/driver_personal_information_model.dart';
 import 'package:goshare_driver/providers/current_state_provider.dart';
 
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:location/location.dart';
+import 'package:signalr_core/signalr_core.dart';
 import 'package:vietmap_flutter_gl/vietmap_flutter_gl.dart';
 
 class SecondScreen extends ConsumerStatefulWidget {
@@ -44,15 +47,21 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   LocationData? currentLocation;
   bool _isLoading = false;
   int status = 1;
-  void _onMapCreated(VietmapController controller) {
-    setState(() {
-      _mapController = controller;
-    });
-  }
+  double wallet = 0;
+  DriverPersonalInformationModel data = DriverPersonalInformationModel(
+    ratingNum: 0,
+    rating: 0,
+    dailyIncome: 0,
+  );
+  // void _onMapCreated(VietmapController controller) {
+  //   setState(() {
+  //     _mapController = controller;
+  //   });
+  // }
 
   @override
   void dispose() {
-    revokeHub();
+    //revokeHub();
     _mapController?.dispose();
     super.dispose();
   }
@@ -67,9 +76,10 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   void initState() {
     if (!mounted) return;
+    getWallet();
+    getRatingAndDailyIncome();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        print('Da vao home');
         final hubConnection = await ref.watch(
           hubConnectionProvider.future,
         );
@@ -89,11 +99,13 @@ class _DashBoardState extends ConsumerState<DashBoard> {
             }
           },
         );
-        await hubConnection.start()?.then(
-              (value) => {
-                print('Start thanh cong'),
-              },
-            );
+        if (hubConnection.state == HubConnectionState.disconnected) {
+          await hubConnection.start()?.then(
+                (value) => {
+                  print('Start thanh cong'),
+                },
+              );
+        }
 
         hubConnection.onclose((exception) {
           print(
@@ -103,19 +115,34 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         final isFcmTokenUpdated =
             await ref.watch(LoginControllerProvider.notifier).updateFcmToken();
         if (isFcmTokenUpdated) {
-          print('fcmToken updated');
-        } else {
-          print('fcmTokenError');
-        }
+        } else {}
       } catch (e) {
         print(e.toString());
+        rethrow;
       }
     });
+    setState(() {});
     super.initState();
   }
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
+  }
+
+  void getWallet() async {
+    if (mounted) {
+      wallet = await ref
+          .read(dashBoardControllerProvider.notifier)
+          .getWallet(context);
+    }
+  }
+
+  void getRatingAndDailyIncome() async {
+    if (mounted) {
+      data = await ref
+          .read(dashBoardControllerProvider.notifier)
+          .getRatingAndDailyIncome(context);
+    }
   }
 
   @override
@@ -153,12 +180,21 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 Consumer(
                   builder: (context, ref, child) {
                     final currentState = ref.watch(currentStateProvider);
+                    final loginController =
+                        ref.watch(LoginControllerProvider.notifier);
                     return InkWell(
                       onTap: () {
                         // Toggle the current state when the InkWell is tapped
                         ref
                             .read(currentStateProvider.notifier)
                             .setCurrentStateData(!currentState);
+
+                        // Call the appropriate method of the LoginController
+                        if (currentState) {
+                          loginController.driverDeactivate();
+                        } else {
+                          loginController.driverActivate();
+                        }
                       },
                       child: Row(
                         children: [
@@ -330,9 +366,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  const Text(
-                                    '100.00đ',
-                                    style: TextStyle(
+                                  Text(
+                                    '$walletđ',
+                                    style: const TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,

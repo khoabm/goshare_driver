@@ -129,7 +129,9 @@ class LoginRepository {
         },
         body: jsonEncode(<String, String>{}),
       );
-
+      print('ĐÂY LÀ DEACTIVATE');
+      print(response.statusCode);
+      print(response.body);
       if (response.statusCode == 200) {
         return right(true);
       } else {
