@@ -122,6 +122,15 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         print(e.toString());
         rethrow;
       }
+      final location = ref.read(locationProvider);
+      currentLocation = await location.getCurrentLocation();
+      if (context.mounted) {
+        await ref.watch(tripControllerProvider.notifier).updateLocation(
+              context,
+              currentLocation?.latitude ?? 0.0,
+              currentLocation?.longitude ?? 0.0,
+            );
+      }
     });
     super.initState();
   }
@@ -256,14 +265,10 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 scrollGesturesEnabled: false,
                 doubleClickZoomEnabled: false,
                 styleString:
-                    'https://api.maptiler.com/maps/basic-v2-light/style.json?key=mH5MUno8IU0BTZBBgsNk',
+                    'https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm',
                 initialCameraPosition: const CameraPosition(
                   zoom: 17.5,
                   target: LatLng(10.736657, 106.672240),
-                  //     LatLng(
-                  //   currentLocation?.latitude ?? 0,
-                  //   currentLocation?.longitude ?? 0,
-                  // ),
                 ),
                 onMapCreated: (VietmapController controller) {
                   setState(() {
@@ -290,8 +295,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   });
                   final location = ref.read(locationProvider);
                   currentLocation = await location.getCurrentLocation();
-                  getWallet();
-                  getDriverInformation();
+                  // getWallet();
+                  // getDriverInformation();
                   if (context.mounted) {
                     await ref
                         .watch(tripControllerProvider.notifier)
@@ -455,34 +460,5 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         drawer: const UserMenuDrawer(),
       ),
     );
-
-    // Center(
-    //   child: _children[_currentIndex],
-    // ),
-    // bottomNavigationBar: BottomNavigationBar(
-    //   selectedItemColor: Pallete.primaryColor,
-    //   onTap: onTabTapped,
-    //   currentIndex: _currentIndex,
-    //   items: const [
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.home_filled),
-    //       label: 'Home',
-    //     ),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.history_outlined),
-    //       label: 'Activity',
-    //     ),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(
-    //         IconData(
-    //           0xf74d,
-    //           fontFamily: CupertinoIcons.iconFont,
-    //           fontPackage: CupertinoIcons.iconFontPackage,
-    //         ),
-    //       ),
-    //       label: 'Account',
-    //     )
-    //   ],
-    // ),
   }
 }

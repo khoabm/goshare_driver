@@ -174,6 +174,7 @@ class TripRepository {
       print(res.body);
       if (res.statusCode == 200) {
         if (res.body.isNotEmpty) {
+          print('Update thanh cong');
           return right(true);
         } else {
           return right(false);

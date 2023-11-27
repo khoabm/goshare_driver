@@ -92,7 +92,7 @@ class _DeliverPassengerScreenState
     _navigationOption.apiKey =
         'c3d0f188ff669f89042771a20656579073cffec5a8a69747';
     _navigationOption.mapStyle =
-        "https://maps.vietmap.vn/api/maps/light/styles.json?apikey=c3d0f188ff669f89042771a20656579073cffec5a8a69747";
+        "https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm";
     _navigationOption.customLocationCenterIcon =
         await VietMapHelper.getBytesFromAsset('assets/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
@@ -123,8 +123,6 @@ class _DeliverPassengerScreenState
     );
     location.changeSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-      interval: 5000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {
@@ -141,7 +139,7 @@ class _DeliverPassengerScreenState
       setState(() {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
-        if(mounted){
+        if (mounted) {
           hubConnection.invoke(
             "SendDriverLocation",
             args: [
@@ -157,7 +155,6 @@ class _DeliverPassengerScreenState
           }).catchError((error) {
             print("Error sending location to server: $error");
           });
-
         }
       });
     });
@@ -334,8 +331,8 @@ class _DeliverPassengerScreenState
                           setState(() {
                             _containerHeight += details.primaryDelta!;
                             // Clamp the height between 60 and 300
-                            _containerHeight =
-                                _containerHeight.clamp(60.0, 300.0);
+                            _containerHeight = _containerHeight.clamp(
+                                60.0, MediaQuery.of(context).size.height * .3);
                           });
                         },
                         onVerticalDragEnd: (details) {
@@ -348,7 +345,8 @@ class _DeliverPassengerScreenState
                           } else {
                             // Swipe up
                             setState(() {
-                              _containerHeight = 300.0;
+                              _containerHeight =
+                                  MediaQuery.of(context).size.height * .3;
                             });
                           }
                         },
@@ -365,7 +363,7 @@ class _DeliverPassengerScreenState
                           ),
                           height: _containerHeight,
                           //color: Pallete.primaryColor,
-                          child: _containerHeight == 300
+                          child: _containerHeight > 60
                               ? Column(
                                   children: [
                                     Row(
