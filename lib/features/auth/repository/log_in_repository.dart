@@ -33,7 +33,7 @@ class LoginRepository {
   ) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
+        Uri.parse('$baseUrl/auth/driver/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -42,7 +42,7 @@ class LoginRepository {
           'passcode': passcode,
         }),
       );
-
+      print(response.body);
       if (response.statusCode == 200) {
         return response.body;
       } else {

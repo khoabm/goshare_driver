@@ -135,6 +135,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
                       .loginUrl; // Replace 'login' with your actual login route
 
           return MaterialApp.router(
+            title: "Go Share Driver",
             debugShowCheckedModeBanner: false,
             routerConfig: AppRouter().createRouter(initialLocation),
             theme: ThemeData(

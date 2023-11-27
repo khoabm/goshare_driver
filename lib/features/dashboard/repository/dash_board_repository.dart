@@ -57,14 +57,16 @@ class DashBoardRepository {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final accessToken = prefs.getString('driverAccessToken');
-
+      print(accessToken);
       final client = HttpClientWithAuth(accessToken ?? '');
       final response = await client.get(
-        Uri.parse('$baseApiUrl/wallet'),
+        Uri.parse('$baseApiUrl/driver'),
         headers: {
           'Content-Type': 'application/json',
         },
       );
+      print('ĐÂY LÀ CÁI DRIVER INFO');
+      print(response.statusCode);
       print(response.body);
       if (response.statusCode == 200) {
         final data = DriverPersonalInformationModel.fromJson(response.body);

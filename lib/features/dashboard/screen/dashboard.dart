@@ -12,6 +12,7 @@ import 'package:goshare_driver/providers/current_state_provider.dart';
 
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:goshare_driver/theme/pallet.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:signalr_core/signalr_core.dart';
 import 'package:vietmap_flutter_gl/vietmap_flutter_gl.dart';
@@ -48,11 +49,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   bool _isLoading = false;
   int status = 1;
   double wallet = 0;
-  DriverPersonalInformationModel data = DriverPersonalInformationModel(
-    ratingNum: 0,
-    rating: 0,
-    dailyIncome: 0,
-  );
+  DriverPersonalInformationModel informationModel =
+      DriverPersonalInformationModel(ratingNum: 0, rating: 0, dailyIncome: 0);
   // void _onMapCreated(VietmapController controller) {
   //   setState(() {
   //     _mapController = controller;
@@ -77,7 +75,6 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   void initState() {
     if (!mounted) return;
     getWallet();
-    getRatingAndDailyIncome();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         final hubConnection = await ref.watch(
@@ -121,7 +118,6 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         rethrow;
       }
     });
-    setState(() {});
     super.initState();
   }
 
@@ -134,19 +130,23 @@ class _DashBoardState extends ConsumerState<DashBoard> {
       wallet = await ref
           .read(dashBoardControllerProvider.notifier)
           .getWallet(context);
+
+      setState(() {});
     }
   }
 
-  void getRatingAndDailyIncome() async {
+  void getDriverInformation() async {
     if (mounted) {
-      data = await ref
+      informationModel = await ref
           .read(dashBoardControllerProvider.notifier)
           .getRatingAndDailyIncome(context);
+      setState(() {});
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final oCcy = NumberFormat("#,##0", "vi_VN");
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -250,7 +250,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 scrollGesturesEnabled: false,
                 doubleClickZoomEnabled: false,
                 styleString:
-                    'https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm',
+                    'https://maps.vietmap.vn/api/maps/light/styles.json?apikey=c3d0f188ff669f89042771a20656579073cffec5a8a69747',
                 initialCameraPosition: const CameraPosition(
                   zoom: 17.5,
                   target: LatLng(10.736657, 106.672240),
@@ -272,7 +272,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                           a.position.latitude,
                           a.position.longitude,
                         ),
-                        zoom: 17.5,
+                        zoom: 14.5,
                         tilt: 0,
                       ),
                     ),
@@ -299,7 +299,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                       CameraPosition(
                           target: LatLng(currentLocation?.latitude ?? 0,
                               currentLocation?.longitude ?? 0),
-                          zoom: 17.5,
+                          zoom: 14.5,
                           tilt: 0),
                     ),
                   );
@@ -367,7 +367,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     ),
                                   ),
                                   Text(
-                                    '$walletđ',
+                                    '${oCcy.format(wallet)} đ',
                                     style: const TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
@@ -391,23 +391,25 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                           Radius.circular(20),
                                         ),
                                       ),
-                                      child: const Row(
+                                      child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Column(
                                             children: [
-                                              Text('Day credit \$'),
-                                              Text('50.000'),
+                                              const Text(
+                                                  'Doanh thu trong ngày'),
+                                              Text(
+                                                  "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
                                             ],
                                           ),
                                           Column(
                                             children: [
-                                              Text(
-                                                'My Rating',
+                                              const Text(
+                                                'Đánh giá của tôi',
                                               ),
                                               Text(
-                                                '4.7',
+                                                '${informationModel.rating}',
                                               ),
                                             ],
                                           )
