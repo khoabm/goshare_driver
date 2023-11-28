@@ -162,37 +162,68 @@ class SignUpRepository {
     }
   }
 
+  FutureEither<String> verifyAccountExist(
+    String phone,
+    String passcode,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/auth/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'phone': convertPhoneNumber(phone),
+          'passcode': passcode,
+        }),
+      );
+      if (response.statusCode == 200) {
+        return right(response.body);
+      } else {
+        return left(
+          Failure('Có lỗi xác thực'),
+        );
+      }
+    } catch (e) {
+      return left(
+        Failure(
+          'Lỗi hệ thống',
+        ),
+      );
+    }
+  }
+
   FutureEither<bool> sendRequest(
     String licensePlate,
     String make,
     String model,
     double capacity,
-    // File driverLicenseImage,
-    // File carInfoImage,
-    // File dangKiemImage,
-    // File carImage,
     List<Map<String, dynamic>> imageList,
+    String phone,
   ) async {
+    print(phone);
+    print(make);
+    print(model);
+    print(capacity);
+    print(imageList.length);
+
     var uri =
-        Uri.parse('$baseUrl/user/driver-register'); // Replace with your URL
+        Uri.parse('$baseUrl/auth/driver-register'); // Replace with your URL
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('driverAccessToken');
-    print(imageList.toString());
     var request = http.MultipartRequest('POST', uri)
-      ..headers['Authorization'] = 'Bearer $accessToken'
       ..fields['Car[LicensePlate]'] = licensePlate
       ..fields['Car[Make]'] = make
       ..fields['Car[Model]'] = model
-      ..fields['Capacity'] = '2';
+      ..fields['Capacity'] = '2'
+      ..fields['Phone'] = phone;
     for (var i = 0; i < imageList.length; i++) {
-      print('hehe');
       var image = imageList[i];
       var filePath = image['pic'];
 
       // Read the file as bytes
       var fileBytes = await File(filePath).readAsBytes();
-      print(fileBytes.toString());
       var type = image['type'].toString();
 
       request.files.add(
@@ -203,19 +234,16 @@ class SignUpRepository {
         ),
       );
       request.fields['List[$i].type'] = type;
-
-      print(request.files[i].filename); // Print the filename for verification
-      print(request.fields['List[$i].pic']);
     }
 
     var response = await request.send();
     print(response.statusCode);
-    print('Response Body: ${await response.stream.bytesToString()}');
+    String responseData = await response.stream.bytesToString();
+    print(responseData);
     if (response.statusCode == 200) {
-      print('Uploaded!');
+      print('hehe');
       return right(true);
     } else {
-      print('Failed to upload.');
       return right(false);
     }
   }

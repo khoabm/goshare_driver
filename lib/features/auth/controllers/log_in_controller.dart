@@ -25,9 +25,10 @@ class LoginController extends StateNotifier<bool> {
   Future<String> login(
     String phone,
     String passcode,
+    WidgetRef ref,
     BuildContext context,
   ) async {
-    final result = await _loginRepository.login(phone, passcode);
+    final result = await _loginRepository.login(phone, passcode, ref);
     return result;
   }
 
@@ -42,21 +43,34 @@ class LoginController extends StateNotifier<bool> {
     return state;
   }
 
-  Future<bool> driverActivate() async {
+  Future<bool> driverActivate(BuildContext context) async {
     final result = await _loginRepository.driverActivate();
     result.fold(
-      (l) {},
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
       (success) {
         state = success;
+        _ref.read(currentStateProvider.notifier).setCurrentStateData(
+              true,
+            );
       },
     );
     return state;
   }
 
-  Future<bool> driverDeactivate() async {
+  Future<bool> driverDeactivate(BuildContext context) async {
     final result = await _loginRepository.driverDeactivate();
     result.fold(
-      (l) {},
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
       (success) {
         state = success;
         _ref.read(currentStateProvider.notifier).setCurrentStateData(

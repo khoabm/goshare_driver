@@ -4,9 +4,11 @@ import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/page_navigation.dart';
 import 'package:goshare_driver/features/auth/screens/driver_info_regis_screen.dart';
 import 'package:goshare_driver/features/auth/screens/otp_screen.dart';
+import 'package:goshare_driver/features/auth/screens/regis_success_screen.dart';
 import 'package:goshare_driver/features/auth/screens/set_passcode_screen.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 import 'package:goshare_driver/features/auth/screens/user_exist_confirm_screen.dart';
+import 'package:goshare_driver/features/auth/screens/user_exist_verify.dart';
 import 'package:goshare_driver/features/auth/screens/user_info_regis_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
@@ -74,6 +76,21 @@ class AppRouter {
                       longitude: 106.66666667),
                   cartype: CarType(capacity: 4),
                 ),
+              ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'test2',
+          path: '/test2',
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const DriverInfoRegisScreen(
+                phone: '+84333333331',
               ),
               key: state.pageKey,
             );
@@ -154,6 +171,32 @@ class AppRouter {
               child: DriverInfoRegisScreen(
                 phone: phone,
               ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.userExistVerify,
+          path: RouteConstants.userExistVerifyUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const UserExistVerifyScreen(),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.driverRegisSuccess,
+          path: RouteConstants.driverRegisSuccessUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const RegisSuccessScreen(),
               key: state.pageKey,
             );
           },

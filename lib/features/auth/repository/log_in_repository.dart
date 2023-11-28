@@ -12,6 +12,7 @@ import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 
 import 'package:goshare_driver/models/user_data_model.dart';
+import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,7 @@ class LoginRepository {
   Future<String> login(
     String phone,
     String passcode,
+    WidgetRef ref,
   ) async {
     try {
       final response = await http.post(
@@ -44,6 +46,12 @@ class LoginRepository {
       );
       print(response.body);
       if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        final userData = UserDataModel.fromMap(jsonData);
+
+        ref
+            .watch(currentOnTripIdProvider.notifier)
+            .setCurrentOnTripId(userData.currentTrip);
         return response.body;
       } else {
         return 'cannot login';
@@ -129,9 +137,6 @@ class LoginRepository {
         },
         body: jsonEncode(<String, String>{}),
       );
-      print('ĐÂY LÀ DEACTIVATE');
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200) {
         return right(true);
       } else {
@@ -148,7 +153,6 @@ class LoginRepository {
 
   FutureEither<String> getUserData(WidgetRef ref) async {
     try {
-      print('get user data');
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final accessToken = prefs.getString('driverAccessToken');
       final refreshToken = prefs.getString('driverRefreshToken');
@@ -169,8 +173,6 @@ class LoginRepository {
             ),
           );
 
-      print(response.statusCode);
-      print(response.body);
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         final userData = UserDataModel.fromMap(jsonData);
@@ -186,6 +188,9 @@ class LoginRepository {
           );
           ref.read(userProvider.notifier).state = userTmp;
         }
+        ref
+            .watch(currentOnTripIdProvider.notifier)
+            .setCurrentOnTripId(userData.currentTrip);
         return right(jsonData['accessToken']);
       } else {
         return left(UnauthorizedFailure('Fail to renew token'));

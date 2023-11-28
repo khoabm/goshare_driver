@@ -8,6 +8,7 @@ import 'package:goshare_driver/features/dashboard/controllers/dash_board_control
 import 'package:goshare_driver/features/dashboard/drawers/user_menu_drawer.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/current_state_provider.dart';
 
 import 'package:goshare_driver/providers/signalr_providers.dart';
@@ -71,14 +72,49 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     hubConnection.off('NotifyDriverNewTripRequest');
   }
 
+  Future<void> checkCurrentTripStatus() async {
+    if (mounted) {
+      final currentOnTripId = ref.read(currentOnTripIdProvider);
+      if (currentOnTripId != null && currentOnTripId.isNotEmpty) {
+        // Fetch trip information based on the currentOnTripId (you need to implement this)
+        final tripInfo =
+            await ref.read(dashBoardControllerProvider.notifier).getTripInfo(
+                  currentOnTripId,
+                  context,
+                );
+        // Navigate to the screen based on the trip status
+        if (tripInfo?.status == 1) {
+          // Navigate to the completed trip screen
+          if (context.mounted) {
+            context.goNamed(
+              RouteConstants.pickUpPassenger,
+              extra: tripInfo,
+            );
+          }
+        }
+
+        if (tripInfo?.status == 2) {
+          // Navigate to some other screen based on the trip status
+          if (context.mounted) {
+            context.goNamed(
+              RouteConstants.deliverPassenger,
+              extra: tripInfo,
+            );
+          }
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      getWallet();
-      getDriverInformation();
       try {
         if (mounted) {
+          getWallet();
+          getDriverInformation();
+          await checkCurrentTripStatus();
           final hubConnection = await ref.watch(
             hubConnectionProvider.future,
           );
@@ -87,10 +123,12 @@ class _DashBoardState extends ConsumerState<DashBoard> {
             "NotifyDriverNewTripRequest",
             (arguments) {
               try {
-                context.goNamed(
-                  RouteConstants.tripRequest,
-                  extra: arguments,
-                );
+                if (mounted) {
+                  context.goNamed(
+                    RouteConstants.tripRequest,
+                    extra: arguments,
+                  );
+                }
               } catch (e) {
                 print(
                   e.toString(),
@@ -113,23 +151,25 @@ class _DashBoardState extends ConsumerState<DashBoard> {
             );
           });
         }
-
-        final isFcmTokenUpdated =
-            await ref.watch(LoginControllerProvider.notifier).updateFcmToken();
-        if (isFcmTokenUpdated) {
-        } else {}
+        if (mounted) {
+          final isFcmTokenUpdated = await ref
+              .watch(LoginControllerProvider.notifier)
+              .updateFcmToken();
+          if (isFcmTokenUpdated) {
+          } else {}
+        }
       } catch (e) {
         print(e.toString());
         rethrow;
       }
-      final location = ref.read(locationProvider);
-      currentLocation = await location.getCurrentLocation();
-      if (context.mounted) {
-        await ref.watch(tripControllerProvider.notifier).updateLocation(
-              context,
-              currentLocation?.latitude ?? 0.0,
-              currentLocation?.longitude ?? 0.0,
-            );
+      if (mounted) {
+        if (context.mounted) {
+          await ref.watch(tripControllerProvider.notifier).updateLocation(
+                context,
+                currentLocation?.latitude ?? 0.0,
+                currentLocation?.longitude ?? 0.0,
+              );
+        }
       }
     });
     super.initState();
@@ -144,8 +184,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
       wallet = await ref
           .read(dashBoardControllerProvider.notifier)
           .getWallet(context);
-
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -154,7 +195,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
       informationModel = await ref
           .read(dashBoardControllerProvider.notifier)
           .getRatingAndDailyIncome(context);
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -199,16 +242,11 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                         ref.watch(LoginControllerProvider.notifier);
                     return InkWell(
                       onTap: () {
-                        // Toggle the current state when the InkWell is tapped
-                        ref
-                            .read(currentStateProvider.notifier)
-                            .setCurrentStateData(!currentState);
-
                         // Call the appropriate method of the LoginController
                         if (currentState) {
-                          loginController.driverDeactivate();
+                          loginController.driverDeactivate(context);
                         } else {
-                          loginController.driverActivate();
+                          loginController.driverActivate(context);
                         }
                       },
                       child: Row(
@@ -267,7 +305,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 styleString:
                     'https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm',
                 initialCameraPosition: const CameraPosition(
-                  zoom: 17.5,
+                  zoom: 15.5,
                   target: LatLng(10.736657, 106.672240),
                 ),
                 onMapCreated: (VietmapController controller) {
@@ -283,7 +321,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                           a.position.latitude,
                           a.position.longitude,
                         ),
-                        zoom: 14.5,
+                        zoom: 15.5,
                         tilt: 0,
                       ),
                     ),

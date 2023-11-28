@@ -290,7 +290,9 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                 onNewRouteSelected: (p0) {},
                                 onMapCreated: (p0) {
                                   //print("${location.latitude} + ${location.longitude}");
-                                  _controller = p0;
+                                  setState(() {
+                                    _controller = p0;
+                                  });
                                 },
                                 onMapMove: () => _showRecenterButton(),
                                 onRouteBuilt: (p0) {
@@ -419,7 +421,12 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                   ),
                                                   InkWell(
                                                     onTap: () {
-                                                      navigateToPassengerInformation();
+                                                      ref
+                                                          .watch(
+                                                              isPassengerInformationOnProvider
+                                                                  .notifier)
+                                                          .setIsPassengerInformation(
+                                                              true);
                                                     },
                                                     child: const Padding(
                                                       padding:

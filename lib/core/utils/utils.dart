@@ -63,6 +63,53 @@ void showErrorDialog({
   );
 }
 
+void showErrorAcceptDialog({
+  required BuildContext context,
+  required String message,
+}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Có lỗi xảy ra khi xác nhận chuyến'),
+        content: const SizedBox.shrink(), //Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              context.pop();
+              context.goNamed(RouteConstants.dashBoard);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showErrorRegisDialog({
+  required BuildContext context,
+  required String message,
+}) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Có lỗi xảy ra khi đăng ký thông tin'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Xác nhận'),
+            onPressed: () {
+              context.pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 String convertPhoneNumber(String phoneNumber) {
   // Check if the phone number starts with '0'
   if (phoneNumber.startsWith('0')) {

@@ -54,7 +54,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       if (ref.watch(userProvider.notifier).state != null) {
-        ref.watch(LoginControllerProvider.notifier).driverDeactivate();
+        ref.watch(LoginControllerProvider.notifier).driverDeactivate(context);
       }
     }
   }
@@ -120,39 +120,43 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: ref
-          .watch(LoginControllerProvider.notifier)
-          .getUserData(context, ref), // Replace with your actual token
-      builder: (BuildContext context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Loader(); // Show a loading spinner while waiting
-        } else {
-          final initialLocation =
-              snapshot.data != null && snapshot.data!.isNotEmpty
-                  ? RouteConstants.dashBoardUrl
-                  : RouteConstants
-                      .loginUrl; // Replace 'login' with your actual login route
+    return MaterialApp(
+      title: "Go Share Driver",
+      debugShowCheckedModeBanner: false,
+      home: FutureBuilder<String>(
+        future: ref
+            .watch(LoginControllerProvider.notifier)
+            .getUserData(context, ref), // Replace with your actual token
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SplashScreen(); // Show a loading spinner while waiting
+          } else {
+            final initialLocation = snapshot.data != null &&
+                    snapshot.data!.isNotEmpty
+                ? RouteConstants.dashBoardUrl
+                : RouteConstants
+                    .loginUrl; // Replace 'login' with your actual login route
 
-          return MaterialApp.router(
-            title: "Go Share Driver",
-            debugShowCheckedModeBanner: false,
-            routerConfig: AppRouter().createRouter(initialLocation),
-            theme: ThemeData(
-              colorScheme: ThemeData().colorScheme.copyWith(
-                    primary: Pallete.primaryColor,
-                  ),
-              primaryColor: Pallete.primaryColor,
-              scaffoldBackgroundColor: Pallete.primaryColor,
-              fontFamily: 'Raleway',
-              textTheme: Theme.of(context).textTheme.apply(
-                    displayColor: Pallete.primaryColor,
-                    bodyColor: Pallete.primaryColor,
-                  ),
-            ),
-          );
-        }
-      },
+            return MaterialApp.router(
+              title: "Go Share Driver",
+              debugShowCheckedModeBanner: false,
+              routerConfig: AppRouter().createRouter(initialLocation),
+              theme: ThemeData(
+                colorScheme: ThemeData().colorScheme.copyWith(
+                      primary: Pallete.primaryColor,
+                    ),
+                primaryColor: Pallete.primaryColor,
+                scaffoldBackgroundColor: Pallete.primaryColor,
+                fontFamily: 'Raleway',
+                textTheme: Theme.of(context).textTheme.apply(
+                      displayColor: Pallete.primaryColor,
+                      bodyColor: Pallete.primaryColor,
+                    ),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }

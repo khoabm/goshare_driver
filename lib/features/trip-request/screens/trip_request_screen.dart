@@ -64,6 +64,7 @@ class _CountdownButtonState extends State<CountdownButton> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: SizedBox(
         height: 65,
+        width: MediaQuery.of(context).size.width * .8,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.greenAccent[700],
@@ -234,6 +235,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -259,6 +261,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                 style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -273,6 +276,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -288,7 +292,6 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                         context.goNamed(RouteConstants.dashBoard);
                       },
                       onPress: () async {
-                        print(trip?.id);
                         final result = await ref
                             .watch(tripRequestControllerProvider.notifier)
                             .acceptTripRequest(
@@ -312,6 +315,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: SizedBox(
                         height: 65,
+                        width: MediaQuery.of(context).size.width * .8,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red[700],

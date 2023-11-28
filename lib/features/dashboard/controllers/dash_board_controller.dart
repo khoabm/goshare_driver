@@ -4,6 +4,7 @@ import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/dashboard/repository/dash_board_repository.dart';
 import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/models/trip_model.dart';
 
 final dashBoardControllerProvider =
     StateNotifierProvider<DashBoardController, bool>(
@@ -68,5 +69,29 @@ class DashBoardController extends StateNotifier<bool> {
       data = r;
     });
     return data;
+  }
+
+  Future<Trip?> getTripInfo(
+    String tripId,
+    BuildContext context,
+  ) async {
+    Trip? trip;
+    final result = await _dashBoardRepository.getTripInfo(tripId);
+    result.fold((l) {
+      state = false;
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      trip = r;
+    });
+    return trip;
   }
 }

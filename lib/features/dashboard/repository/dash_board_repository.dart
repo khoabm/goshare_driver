@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:goshare_driver/core/constants/constants.dart';
@@ -5,6 +7,7 @@ import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
 import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/models/trip_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final dashBoardRepositoryProvider = Provider(
@@ -82,6 +85,37 @@ class DashBoardRepository {
       return left(
         Failure('Lỗi hệ thống'),
       );
+    }
+  }
+
+  FutureEither<Trip> getTripInfo(
+    String tripId,
+  ) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final response = await client.get(
+        Uri.parse('$baseApiUrl/trip/$tripId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> tripData = json.decode(response.body);
+        Trip trip = Trip.fromMap(tripData);
+
+        return right(trip);
+      } else if (response.statusCode == 429) {
+        return left(Failure('Too many request'));
+      } else if (response.statusCode == 401) {
+        return left(UnauthorizedFailure('Unauthorized'));
+      } else {
+        return left(Failure('Co loi xay ra'));
+      }
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 }

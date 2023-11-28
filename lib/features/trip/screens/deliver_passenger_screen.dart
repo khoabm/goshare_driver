@@ -13,6 +13,7 @@ import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 // import 'package:goshare_driver/providers/current_location_provider.dart';
 import 'package:goshare_driver/theme/pallet.dart';
@@ -384,7 +385,7 @@ class _DeliverPassengerScreenState
                                               ),
                                               widget.trip?.startLocation
                                                       .address ??
-                                                  '',
+                                                  'Địa chỉ đến',
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
@@ -450,7 +451,7 @@ class _DeliverPassengerScreenState
                                                 fontSize: 20,
                                                 color: Colors.white,
                                               ),
-                                              widget.trip?.note ?? '',
+                                              widget.trip?.note ?? 'Thông tin',
                                               textAlign: TextAlign.start,
                                             ),
                                           ),
@@ -493,6 +494,11 @@ class _DeliverPassengerScreenState
                                                 _controller?.clearRoute();
                                                 _controller?.finishNavigation();
                                                 _onStopNavigation();
+                                                ref
+                                                    .watch(
+                                                        currentOnTripIdProvider
+                                                            .notifier)
+                                                    .setCurrentOnTripId(null);
                                                 navigateToPaymentResult();
                                               }
                                             }

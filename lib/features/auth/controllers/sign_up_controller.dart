@@ -45,6 +45,30 @@ class SignUpController extends StateNotifier<bool> {
     return state;
   }
 
+  Future<String> verifyAccountExist(
+    String phone,
+    String passcode,
+    BuildContext context,
+  ) async {
+    final result = await _signUpRepository.verifyAccountExist(
+      phone,
+      passcode,
+    );
+    String data = '';
+    result.fold(
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
+      (success) {
+        data = success;
+      },
+    );
+    return data;
+  }
+
   Future<String?> sendOtpVerification(
     String phone,
     String otp,
@@ -100,11 +124,18 @@ class SignUpController extends StateNotifier<bool> {
     String make,
     String model,
     double capacity,
+    String phone,
     List<Map<String, dynamic>> imageList,
     BuildContext context,
   ) async {
     final result = await _signUpRepository.sendRequest(
-        licensePlate, make, model, capacity, imageList);
+      licensePlate,
+      make,
+      model,
+      capacity,
+      imageList,
+      phone,
+    );
     result.fold(
       (l) {
         state = false;
