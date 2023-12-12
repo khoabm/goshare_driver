@@ -69,17 +69,24 @@ class _UserExistConfirmScreenState
                         ),
                         ElevatedButton(
                           onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            await Future.delayed(
-                              const Duration(
-                                seconds: 1,
-                              ),
-                            );
-                            setState(() {
-                              _isLoading = false;
-                            });
+                            if (mounted) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await Future.delayed(
+                                const Duration(
+                                  seconds: 1,
+                                ),
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              if (context.mounted) {
+                                context.pushNamed(
+                                  RouteConstants.userExistVerify,
+                                );
+                              }
+                            }
                           },
                           child: const Text(
                             'Đã có tài khoản',
@@ -93,21 +100,23 @@ class _UserExistConfirmScreenState
                             backgroundColor: Colors.grey[600],
                           ),
                           onPressed: () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            await Future.delayed(
-                              const Duration(
-                                seconds: 1,
-                              ),
-                            );
-                            setState(() {
-                              _isLoading = false;
-                            });
-                            if (context.mounted) {
-                              context.pushNamed(
-                                RouteConstants.userInfoRegis,
+                            if (mounted) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              await Future.delayed(
+                                const Duration(
+                                  seconds: 1,
+                                ),
                               );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              if (context.mounted) {
+                                context.pushNamed(
+                                  RouteConstants.userInfoRegis,
+                                );
+                              }
                             }
                           },
                           child: const Text(

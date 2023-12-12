@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/providers/is_chat_on_provider.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 
 class PassengerInformationScreen extends ConsumerStatefulWidget {
@@ -30,6 +31,16 @@ class _PassengerInformationScreenState
         elevation: 0,
         title: const Text('Thông tin khách hàng'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            ref
+                .watch(isPassengerInformationOnProvider.notifier)
+                .setIsPassengerInformation(false);
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new_outlined,
+          ),
+        ),
       ),
       body: SafeArea(
         child: Column(
@@ -89,10 +100,11 @@ class _PassengerInformationScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            widget.trip?.distance.toString() ?? '1km',
+                            '${widget.trip?.distance.toString() ?? 1} km',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
+                              color: Colors.white,
                             ),
                           ),
                           Container(
@@ -108,6 +120,7 @@ class _PassengerInformationScreenState
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -120,6 +133,7 @@ class _PassengerInformationScreenState
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -145,6 +159,7 @@ class _PassengerInformationScreenState
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -159,6 +174,7 @@ class _PassengerInformationScreenState
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     ),

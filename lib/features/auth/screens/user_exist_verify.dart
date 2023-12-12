@@ -6,6 +6,7 @@ import 'package:goshare_driver/common/app_button.dart';
 import 'package:goshare_driver/common/app_text_field.dart';
 import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/features/auth/controllers/sign_up_controller.dart';
 
 class UserExistVerifyScreen extends ConsumerStatefulWidget {
   const UserExistVerifyScreen({super.key});
@@ -34,28 +35,26 @@ class _UserExistVerifyScreenState extends ConsumerState<UserExistVerifyScreen> {
       setState(() {
         _isLoading = true;
       });
-      String name = _passcodeTextController.text;
+      String passcode = _passcodeTextController.text;
       String phone = _phoneNumberTextController.text;
 
-      // final result =
-      //     await ref.read(signUpControllerProvider.notifier).registerUser(
-      //           name,
-      //           phone,
-      //           gender,
-      //           birth,
-      //           context,
-      //         );
+      final result =
+          await ref.read(signUpControllerProvider.notifier).verifyAccountExist(
+                phone,
+                passcode,
+                context,
+              );
       setState(() {
         _isLoading = false;
       });
-      // if (result) {
-      //   navigateToOtpScreen(phone);
-      // } else {}
+      if (result.isNotEmpty) {
+        navigateToDriverInfoRegisScreen(phone);
+      } else {}
     }
   }
 
-  void navigateToOtpScreen(String phone) {
-    context.goNamed(RouteConstants.otp, pathParameters: {
+  void navigateToDriverInfoRegisScreen(String phone) {
+    context.goNamed(RouteConstants.driverInfoRegis, pathParameters: {
       'phone': phone,
     });
   }

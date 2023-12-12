@@ -4,11 +4,14 @@ import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/page_navigation.dart';
 import 'package:goshare_driver/features/auth/screens/driver_info_regis_screen.dart';
 import 'package:goshare_driver/features/auth/screens/otp_screen.dart';
+import 'package:goshare_driver/features/auth/screens/regis_success_screen.dart';
 import 'package:goshare_driver/features/auth/screens/set_passcode_screen.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 import 'package:goshare_driver/features/auth/screens/user_exist_confirm_screen.dart';
+import 'package:goshare_driver/features/auth/screens/user_exist_verify.dart';
 import 'package:goshare_driver/features/auth/screens/user_info_regis_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
+import 'package:goshare_driver/features/dashboard/screen/statistics_screen.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/deliver_passenger_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
@@ -16,12 +19,14 @@ import 'package:goshare_driver/features/trip/screens/payment_result_screen.dart'
 import 'package:goshare_driver/features/trip/screens/pick_up_passenger_screen.dart';
 import 'package:goshare_driver/features/trip-request/screens/trip_request_screen.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/test_step_screen.dart';
 
 class AppRouter {
   /// The route configuration.
   GoRouter createRouter(String initialLocation) {
     return GoRouter(
-      initialLocation: initialLocation, //'/find-trip',
+      initialLocation:
+          initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(
           name: RouteConstants.login,
@@ -75,6 +80,34 @@ class AppRouter {
                   cartype: CarType(capacity: 4),
                 ),
               ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'test2',
+          path: '/test2',
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const DriverInfoRegisScreen(
+                phone: '+84333333331',
+              ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'test3',
+          path: '/test3',
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const MyHomePage(),
               key: state.pageKey,
             );
           },
@@ -154,6 +187,32 @@ class AppRouter {
               child: DriverInfoRegisScreen(
                 phone: phone,
               ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.userExistVerify,
+          path: RouteConstants.userExistVerifyUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const UserExistVerifyScreen(),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.driverRegisSuccess,
+          path: RouteConstants.driverRegisSuccessUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const RegisSuccessScreen(),
               key: state.pageKey,
             );
           },
@@ -257,6 +316,19 @@ class AppRouter {
             //final String receiver = params['receiver'] as String;
             return SlideRightTransition(
               child: PaymentResultScreen(trip: trip),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.statistic,
+          path: RouteConstants.statisticUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const StatisticScreen(),
               key: state.pageKey,
             );
           },

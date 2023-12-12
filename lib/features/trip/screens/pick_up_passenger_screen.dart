@@ -83,7 +83,6 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
 
   Future<void> initialize() async {
     if (!mounted) return;
-    print('hehe');
     _navigationOption = _vietmapNavigationPlugin.getDefaultOptions();
     _navigationOption.simulateRoute = false;
     _navigationOption.alternatives = false;
@@ -150,8 +149,6 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     );
     location.changeSettings(
       accuracy: LocationAccuracy.high,
-      distanceFilter: 5,
-      interval: 5000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {
@@ -168,28 +165,30 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
       setState(() {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
-        hubConnection.invoke(
-          "SendDriverLocation",
-          args: [
-            jsonEncode({
-              'latitude': currentLocation.latitude,
-              'longitude': currentLocation.longitude
-            }),
-            widget.trip?.id,
-          ],
-        ).then((value) {
-          print(
-              "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
-        }).catchError((error) {
-          print("Error sending location to server: $error");
-        });
+        if (mounted) {
+          hubConnection.invoke(
+            "SendDriverLocation",
+            args: [
+              jsonEncode({
+                'latitude': currentLocation.latitude,
+                'longitude': currentLocation.longitude
+              }),
+              widget.trip?.id,
+            ],
+          ).then((value) {
+            print(
+                "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
+          }).catchError((error) {
+            print("Error sending location to server: $error");
+          });
+        }
       });
     });
   }
 
   @override
   void dispose() {
-    revokeHub();
+    //revokeHub();
     _locationSubscription?.cancel();
     setState(() {
       _locationSubscription = null;
@@ -291,7 +290,9 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                 onNewRouteSelected: (p0) {},
                                 onMapCreated: (p0) {
                                   //print("${location.latitude} + ${location.longitude}");
-                                  _controller = p0;
+                                  setState(() {
+                                    _controller = p0;
+                                  });
                                 },
                                 onMapMove: () => _showRecenterButton(),
                                 onRouteBuilt: (p0) {
@@ -420,7 +421,12 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                   ),
                                                   InkWell(
                                                     onTap: () {
-                                                      navigateToPassengerInformation();
+                                                      ref
+                                                          .watch(
+                                                              isPassengerInformationOnProvider
+                                                                  .notifier)
+                                                          .setIsPassengerInformation(
+                                                              true);
                                                     },
                                                     child: const Padding(
                                                       padding:

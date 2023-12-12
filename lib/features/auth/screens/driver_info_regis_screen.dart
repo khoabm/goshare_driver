@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/common/app_button.dart';
 import 'package:goshare_driver/common/app_text_field.dart';
+import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/auth/controllers/sign_up_controller.dart';
 import 'package:goshare_driver/theme/pallet.dart';
@@ -29,7 +31,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _carModelTextController = TextEditingController();
   final TextEditingController _carMakeController = TextEditingController();
-
+  int groupValue = 0;
   void selectDriverLicenseImage() async {
     final res = await pickImage();
     if (res != null) {
@@ -66,6 +68,25 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
     }
   }
 
+  void navigateToSuccessScreen() {
+    context.goNamed(RouteConstants.driverRegisSuccess);
+  }
+
+  Widget buildRadioButton(int value) {
+    return ListTile(
+      leading: Radio(
+        value: value,
+        groupValue: groupValue,
+        onChanged: (int? newValue) {
+          setState(() {
+            groupValue = newValue!;
+          });
+        },
+      ),
+      title: Text('$value'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +105,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
           ),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
@@ -136,6 +157,31 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
                 AppTextField(
                   controller: _carMakeController,
                   hintText: 'Dream, Sirius',
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                const Text(
+                  'Xe bao nhiêu chỗ',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .8,
+                  height: 150,
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2,
+                    children: [
+                      buildRadioButton(2),
+                      buildRadioButton(4),
+                      buildRadioButton(7),
+                      buildRadioButton(9),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -307,7 +353,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonText: 'Xac nhan',
+                    buttonText: 'Xác nhận',
                     onPressed: () async {
                       List<Map<String, dynamic>> imageList = [
                         {"pic": driverLicenseFile?.path, "type": 0},
@@ -315,16 +361,28 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
                         {"pic": dangKiemFile?.path, "type": 2},
                         {"pic": carFile?.path, "type": 3},
                       ];
-                      await ref
+                      final result = await ref
                           .watch(signUpControllerProvider.notifier)
                           .sendRequest(
-                            'ABC12345',
-                            'Toyota',
-                            'Camry',
-                            4,
+                            _nameTextController.text,
+                            _carModelTextController.text,
+                            _carMakeController.text,
+                            groupValue,
+                            widget.phone,
                             imageList,
                             context,
                           );
+                      if (result == true) {
+                        navigateToSuccessScreen();
+                      } else {
+                        if (mounted) {
+                          showErrorRegisDialog(
+                            context: context,
+                            message:
+                                'Vui lòng xem lại thông tin đã điền, nếu đây là lỗi vui lòng liên hệ với hệ thống',
+                          );
+                        }
+                      }
                     },
                   ),
                 ),

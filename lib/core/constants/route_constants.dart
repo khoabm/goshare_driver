@@ -16,6 +16,9 @@ class RouteConstants {
   static const otp = 'otp';
   static const userExistConfirm = 'user-exist-confirm';
   static const setPassCode = 'passcode';
+  static const userExistVerify = 'user-exist-verify';
+  static const driverRegisSuccess = 'driver-regis-success';
+  static const statistic = 'statistic';
 
   ///**
   ///Route url constants
@@ -30,8 +33,11 @@ class RouteConstants {
   static const loginUrl = '/login';
   static const endTripUrl = '/end-trip';
   static const userInfoRegisUrl = '/user-info-regis';
-  static const driverInfoRegisUrl = '/driver-info-regis';
+  static const driverInfoRegisUrl = '/driver-info-regis/:phone';
   static const otpUrl = '/otp/:phone';
   static const userExistConfirmUrl = '/user-exist-confirm';
-   static const passcodeUrl = '/passcode/:setToken/:phone';
+  static const passcodeUrl = '/passcode/:setToken/:phone';
+  static const userExistVerifyUrl = '/user-exist-verify';
+  static const driverRegisSuccessUrl = '/driver-regis-success';
+  static const statisticUrl = '/statistic';
 }

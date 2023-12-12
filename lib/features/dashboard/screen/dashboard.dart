@@ -4,13 +4,18 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
+import 'package:goshare_driver/features/dashboard/controllers/dash_board_controller.dart';
 import 'package:goshare_driver/features/dashboard/drawers/user_menu_drawer.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
+import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/current_state_provider.dart';
 
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:goshare_driver/theme/pallet.dart';
+import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:signalr_core/signalr_core.dart';
 import 'package:vietmap_flutter_gl/vietmap_flutter_gl.dart';
 
 class SecondScreen extends ConsumerStatefulWidget {
@@ -44,15 +49,18 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   LocationData? currentLocation;
   bool _isLoading = false;
   int status = 1;
-  void _onMapCreated(VietmapController controller) {
-    setState(() {
-      _mapController = controller;
-    });
-  }
+  double wallet = 0;
+  DriverPersonalInformationModel informationModel =
+      DriverPersonalInformationModel(ratingNum: 0, rating: 0, dailyIncome: 0);
+  // void _onMapCreated(VietmapController controller) {
+  //   setState(() {
+  //     _mapController = controller;
+  //   });
+  // }
 
   @override
   void dispose() {
-    revokeHub();
+    //revokeHub();
     _mapController?.dispose();
     super.dispose();
   }
@@ -64,62 +72,142 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     hubConnection.off('NotifyDriverNewTripRequest');
   }
 
+  Future<void> checkCurrentTripStatus() async {
+    if (mounted) {
+      final currentOnTripId = ref.read(currentOnTripIdProvider);
+      if (currentOnTripId != null && currentOnTripId.isNotEmpty) {
+        final tripInfo =
+            await ref.read(dashBoardControllerProvider.notifier).getTripInfo(
+                  currentOnTripId,
+                  context,
+                );
+        // Navigate to the screen based on the trip status
+        if (tripInfo?.status == 1) {
+          if (context.mounted) {
+            context.goNamed(
+              RouteConstants.pickUpPassenger,
+              extra: tripInfo,
+            );
+          }
+        }
+
+        if (tripInfo?.status == 2) {
+          // Navigate to some other screen based on the trip status
+          if (context.mounted) {
+            context.goNamed(
+              RouteConstants.deliverPassenger,
+              extra: tripInfo,
+            );
+          }
+        }
+      } else {
+        if (mounted) {
+          if (context.mounted) {
+            await ref.watch(tripControllerProvider.notifier).updateLocation(
+                  context,
+                  currentLocation?.latitude ?? 0.0,
+                  currentLocation?.longitude ?? 0.0,
+                );
+          }
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     if (!mounted) return;
+    initSignalR();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        print('Da vao home');
-        final hubConnection = await ref.watch(
-          hubConnectionProvider.future,
-        );
-        hubConnection.on(
-          "NotifyDriverNewTripRequest",
-          (arguments) {
-            try {
-              context.goNamed(
-                RouteConstants.tripRequest,
-                extra: arguments,
-              );
-            } catch (e) {
-              print(
-                e.toString(),
-              );
-              rethrow;
-            }
-          },
-        );
-        await hubConnection.start()?.then(
-              (value) => {
-                print('Start thanh cong'),
-              },
-            );
-
-        hubConnection.onclose((exception) {
-          print(
-            exception.toString(),
-          );
-        });
-        final isFcmTokenUpdated =
-            await ref.watch(LoginControllerProvider.notifier).updateFcmToken();
-        if (isFcmTokenUpdated) {
-          print('fcmToken updated');
-        } else {
-          print('fcmTokenError');
+        if (mounted) {
+          getWallet();
+          getDriverInformation();
+          await checkCurrentTripStatus();
+        }
+        if (mounted) {
+          final isFcmTokenUpdated = await ref
+              .watch(LoginControllerProvider.notifier)
+              .updateFcmToken();
+          if (isFcmTokenUpdated) {
+          } else {}
         }
       } catch (e) {
         print(e.toString());
+        rethrow;
       }
     });
     super.initState();
+  }
+
+  void initSignalR() async {
+    final hubConnection = await ref.watch(
+      hubConnectionProvider.future,
+    );
+
+    hubConnection.on(
+      "NotifyDriverNewTripRequest",
+      (arguments) {
+        try {
+          if (mounted) {
+            context.goNamed(
+              RouteConstants.tripRequest,
+              extra: arguments,
+            );
+          }
+        } catch (e) {
+          print(
+            e.toString(),
+          );
+          rethrow;
+        }
+      },
+    );
+    if (hubConnection.state == HubConnectionState.disconnected) {
+      await hubConnection.start()?.then(
+            (value) => {
+              print('Start thanh cong'),
+            },
+          );
+    }
+
+    hubConnection.onclose((exception) {
+      print(
+        exception.toString(),
+      );
+    });
   }
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
   }
 
+  void getWallet() async {
+    if (mounted) {
+      wallet = await ref
+          .read(dashBoardControllerProvider.notifier)
+          .getWallet(context);
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
+  void getDriverInformation() async {
+    if (mounted) {
+      informationModel = await ref
+          .read(dashBoardControllerProvider.notifier)
+          .getRatingAndDailyIncome(context);
+      if (mounted) {
+        setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final oCcy = NumberFormat("#,##0", "vi_VN");
+
     return SafeArea(
       top: false,
       child: Scaffold(
@@ -153,12 +241,28 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 Consumer(
                   builder: (context, ref, child) {
                     final currentState = ref.watch(currentStateProvider);
+                    final loginController =
+                        ref.watch(LoginControllerProvider.notifier);
                     return InkWell(
-                      onTap: () {
-                        // Toggle the current state when the InkWell is tapped
-                        ref
-                            .read(currentStateProvider.notifier)
-                            .setCurrentStateData(!currentState);
+                      onTap: () async {
+                        // Call the appropriate method of the LoginController
+                        if (currentState) {
+                          final check =
+                              await loginController.driverDeactivate(context);
+                          if (check) {
+                            if (mounted) {
+                              ref
+                                  .watch(tripControllerProvider.notifier)
+                                  .updateLocation(
+                                    context,
+                                    currentLocation?.latitude ?? 0.0,
+                                    currentLocation?.longitude ?? 0.0,
+                                  );
+                            }
+                          }
+                        } else {
+                          loginController.driverActivate(context);
+                        }
                       },
                       child: Row(
                         children: [
@@ -216,12 +320,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 styleString:
                     'https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm',
                 initialCameraPosition: const CameraPosition(
-                  zoom: 17.5,
+                  zoom: 15.5,
                   target: LatLng(10.736657, 106.672240),
-                  //     LatLng(
-                  //   currentLocation?.latitude ?? 0,
-                  //   currentLocation?.longitude ?? 0,
-                  // ),
                 ),
                 onMapCreated: (VietmapController controller) {
                   setState(() {
@@ -236,7 +336,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                           a.position.latitude,
                           a.position.longitude,
                         ),
-                        zoom: 17.5,
+                        zoom: 15.5,
                         tilt: 0,
                       ),
                     ),
@@ -248,6 +348,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   });
                   final location = ref.read(locationProvider);
                   currentLocation = await location.getCurrentLocation();
+                  // getWallet();
+                  // getDriverInformation();
                   if (context.mounted) {
                     await ref
                         .watch(tripControllerProvider.notifier)
@@ -263,7 +365,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                       CameraPosition(
                           target: LatLng(currentLocation?.latitude ?? 0,
                               currentLocation?.longitude ?? 0),
-                          zoom: 17.5,
+                          zoom: 14.5,
                           tilt: 0),
                     ),
                   );
@@ -330,9 +432,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  const Text(
-                                    '100.00đ',
-                                    style: TextStyle(
+                                  Text(
+                                    '${oCcy.format(wallet)} đ',
+                                    style: const TextStyle(
                                       fontSize: 25,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
@@ -355,23 +457,25 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                           Radius.circular(20),
                                         ),
                                       ),
-                                      child: const Row(
+                                      child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
                                           Column(
                                             children: [
-                                              Text('Day credit \$'),
-                                              Text('50.000'),
+                                              const Text(
+                                                  'Doanh thu trong ngày'),
+                                              Text(
+                                                  "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
                                             ],
                                           ),
                                           Column(
                                             children: [
-                                              Text(
-                                                'My Rating',
+                                              const Text(
+                                                'Đánh giá của tôi',
                                               ),
                                               Text(
-                                                '4.7',
+                                                '${informationModel.rating}',
                                               ),
                                             ],
                                           )
@@ -409,34 +513,5 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         drawer: const UserMenuDrawer(),
       ),
     );
-
-    // Center(
-    //   child: _children[_currentIndex],
-    // ),
-    // bottomNavigationBar: BottomNavigationBar(
-    //   selectedItemColor: Pallete.primaryColor,
-    //   onTap: onTabTapped,
-    //   currentIndex: _currentIndex,
-    //   items: const [
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.home_filled),
-    //       label: 'Home',
-    //     ),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.history_outlined),
-    //       label: 'Activity',
-    //     ),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(
-    //         IconData(
-    //           0xf74d,
-    //           fontFamily: CupertinoIcons.iconFont,
-    //           fontPackage: CupertinoIcons.iconFontPackage,
-    //         ),
-    //       ),
-    //       label: 'Account',
-    //     )
-    //   ],
-    // ),
   }
 }

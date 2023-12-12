@@ -23,7 +23,10 @@ class TripRepository {
   });
 
   FutureEither<Trip> confirmPickUpPassenger(
-      double? currentLat, double? currentLon, String tripId) async {
+    double? currentLat,
+    double? currentLon,
+    String tripId,
+  ) async {
     try {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,7 +64,10 @@ class TripRepository {
   }
 
   FutureEither<Trip> confirmEndTrip(
-      double? currentLat, double? currentLon, String tripId) async {
+    double? currentLat,
+    double? currentLon,
+    String tripId,
+  ) async {
     try {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -74,8 +80,8 @@ class TripRepository {
           'Content-Type': 'application/json',
         },
         body: json.encode({
-          "driverLatitude": 10.674857418323477,
-          "driverLongitude": 106.76289299041375,
+          "driverLatitude": currentLat,
+          "driverLongitude": currentLon,
         }),
       );
       print(response.body);
@@ -174,6 +180,7 @@ class TripRepository {
       print(res.body);
       if (res.statusCode == 200) {
         if (res.body.isNotEmpty) {
+          print('Update thanh cong');
           return right(true);
         } else {
           return right(false);

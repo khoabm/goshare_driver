@@ -120,10 +120,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           Container(
             margin: const EdgeInsets.only(right: 16.0),
             child: message.isCurrentUser
-                ? const CircleAvatar(child: Text('Tôi'))
+                ? const CircleAvatar(
+                    radius: 10.0,
+                    child: Text('Tôi'),
+                  )
                 : Center(
                     child: CircleAvatar(
-                      radius: 50.0,
+                      radius: 10.0,
                       backgroundImage: NetworkImage(
                         widget.bookerAvatar ??
                             'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/7b0ae9e0-013b-4213-9e33-3321fda277b3%2F7b0ae9e0-013b-4213-9e33-3321fda277b3_avatar?alt=media',
@@ -152,7 +155,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Chat Screen'),
+        title: const Text('Nhắn tin'),
         leading: IconButton(
           onPressed: () {
             ref.watch(isChatOnProvider.notifier).setIsChatOnData(false);

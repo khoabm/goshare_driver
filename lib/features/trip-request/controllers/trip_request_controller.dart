@@ -25,7 +25,7 @@ class TripRequestController extends StateNotifier<bool> {
     final result = await _tripRepository.acceptTripRequest(tripId, isAccepted);
     result.fold((l) {
       state = false;
-      showSnackBar(
+      showErrorAcceptDialog(
         context: context,
         message: l.message,
       );
