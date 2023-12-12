@@ -18,6 +18,7 @@ class RouteConstants {
   static const setPassCode = 'passcode';
   static const userExistVerify = 'user-exist-verify';
   static const driverRegisSuccess = 'driver-regis-success';
+  static const statistic = 'statistic';
 
   ///**
   ///Route url constants
@@ -38,4 +39,5 @@ class RouteConstants {
   static const passcodeUrl = '/passcode/:setToken/:phone';
   static const userExistVerifyUrl = '/user-exist-verify';
   static const driverRegisSuccessUrl = '/driver-regis-success';
+  static const statisticUrl = '/statistic';
 }

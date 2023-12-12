@@ -197,7 +197,7 @@ class SignUpRepository {
     String licensePlate,
     String make,
     String model,
-    double capacity,
+    int capacity,
     List<Map<String, dynamic>> imageList,
     String phone,
   ) async {
@@ -210,14 +210,14 @@ class SignUpRepository {
     var uri =
         Uri.parse('$baseUrl/auth/driver-register'); // Replace with your URL
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final accessToken = prefs.getString('driverAccessToken');
+    //final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //final accessToken = prefs.getString('driverAccessToken');
     var request = http.MultipartRequest('POST', uri)
       ..fields['Car[LicensePlate]'] = licensePlate
       ..fields['Car[Make]'] = make
       ..fields['Car[Model]'] = model
-      ..fields['Capacity'] = '2'
-      ..fields['Phone'] = phone;
+      ..fields['Capacity'] = capacity.toString()
+      ..fields['Phone'] = convertPhoneNumber(phone);
     for (var i = 0; i < imageList.length; i++) {
       var image = imageList[i];
       var filePath = image['pic'];

@@ -4,6 +4,8 @@ import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/dashboard/repository/dash_board_repository.dart';
 import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/models/statistic_model.dart';
+import 'package:goshare_driver/models/transaction_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 
 final dashBoardControllerProvider =
@@ -93,5 +95,58 @@ class DashBoardController extends StateNotifier<bool> {
       trip = r;
     });
     return trip;
+  }
+
+  Future<WalletTransactionModel?> getWalletTransaction(
+    //String sortBy,
+    int page,
+    int pageSize,
+    BuildContext context,
+  ) async {
+    WalletTransactionModel? trip;
+    final result = await _dashBoardRepository.getWalletTransaction(
+      //sortBy,
+      page,
+      pageSize,
+    );
+    result.fold((l) {
+      state = false;
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      trip = r;
+    });
+    return trip;
+  }
+
+  Future<List<StatisticModel>> getStatistic(
+    BuildContext context,
+  ) async {
+    List<StatisticModel> list = [];
+    final result = await _dashBoardRepository.getStatistic();
+    result.fold((l) {
+      state = false;
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      list = r;
+    });
+    return list;
   }
 }

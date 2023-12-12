@@ -23,7 +23,10 @@ class TripRepository {
   });
 
   FutureEither<Trip> confirmPickUpPassenger(
-      double? currentLat, double? currentLon, String tripId) async {
+    double? currentLat,
+    double? currentLon,
+    String tripId,
+  ) async {
     try {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,7 +64,10 @@ class TripRepository {
   }
 
   FutureEither<Trip> confirmEndTrip(
-      double? currentLat, double? currentLon, String tripId) async {
+    double? currentLat,
+    double? currentLon,
+    String tripId,
+  ) async {
     try {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();

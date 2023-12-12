@@ -31,7 +31,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _carModelTextController = TextEditingController();
   final TextEditingController _carMakeController = TextEditingController();
-
+  int groupValue = 0;
   void selectDriverLicenseImage() async {
     final res = await pickImage();
     if (res != null) {
@@ -72,6 +72,21 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
     context.goNamed(RouteConstants.driverRegisSuccess);
   }
 
+  Widget buildRadioButton(int value) {
+    return ListTile(
+      leading: Radio(
+        value: value,
+        groupValue: groupValue,
+        onChanged: (int? newValue) {
+          setState(() {
+            groupValue = newValue!;
+          });
+        },
+      ),
+      title: Text('$value'),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +105,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
           ),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
@@ -142,6 +157,31 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
                 AppTextField(
                   controller: _carMakeController,
                   hintText: 'Dream, Sirius',
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                const Text(
+                  'Xe bao nhiêu chỗ',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .8,
+                  height: 150,
+                  child: GridView.count(
+                    crossAxisCount: 2,
+                    childAspectRatio: 2,
+                    children: [
+                      buildRadioButton(2),
+                      buildRadioButton(4),
+                      buildRadioButton(7),
+                      buildRadioButton(9),
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   height: 15,
@@ -327,7 +367,7 @@ class _DriverInfoRegisScreenState extends ConsumerState<DriverInfoRegisScreen> {
                             _nameTextController.text,
                             _carModelTextController.text,
                             _carMakeController.text,
-                            4,
+                            groupValue,
                             widget.phone,
                             imageList,
                             context,

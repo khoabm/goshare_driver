@@ -123,7 +123,7 @@ class SignUpController extends StateNotifier<bool> {
     String licensePlate,
     String make,
     String model,
-    double capacity,
+    int capacity,
     String phone,
     List<Map<String, dynamic>> imageList,
     BuildContext context,

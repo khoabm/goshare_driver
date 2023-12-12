@@ -22,7 +22,7 @@ void showLoginTimeOut({
   showDialog(
     barrierDismissible: false,
     context: context,
-    builder: (BuildContext context) {
+    builder: (BuildContext dialogContext) {
       return AlertDialog(
         title: const Text('Phiên đăng nhập hết hạn'),
         content: const Text('Vui lòng đăng nhập lại.'),
@@ -30,8 +30,8 @@ void showLoginTimeOut({
           TextButton(
             child: const Text('OK'),
             onPressed: () {
-              context.pop();
-              context.go(RouteConstants.loginUrl);
+              Navigator.of(dialogContext).pop();
+              GoRouter.of(context).goNamed(RouteConstants.login);
             },
           ),
         ],
@@ -46,7 +46,7 @@ void showErrorDialog({
 }) {
   showDialog(
     context: context,
-    builder: (BuildContext context) {
+    builder: (BuildContext dialogContext) {
       return AlertDialog(
         title: const Text('Có lỗi xảy ra'),
         content: Text(message),
@@ -54,7 +54,7 @@ void showErrorDialog({
           TextButton(
             child: const Text('OK'),
             onPressed: () {
-              context.pop();
+              Navigator.of(dialogContext).pop();
             },
           ),
         ],
@@ -69,7 +69,7 @@ void showErrorAcceptDialog({
 }) {
   showDialog(
     context: context,
-    builder: (BuildContext context) {
+    builder: (BuildContext dialogContext) {
       return AlertDialog(
         title: const Text('Có lỗi xảy ra khi xác nhận chuyến'),
         content: const SizedBox.shrink(), //Text(message),
@@ -77,7 +77,8 @@ void showErrorAcceptDialog({
           TextButton(
             child: const Text('OK'),
             onPressed: () {
-              context.pop();
+              //context.pop();
+              Navigator.of(dialogContext).pop();
               context.goNamed(RouteConstants.dashBoard);
             },
           ),
@@ -93,7 +94,7 @@ void showErrorRegisDialog({
 }) {
   showDialog(
     context: context,
-    builder: (BuildContext context) {
+    builder: (BuildContext abcContext) {
       return AlertDialog(
         title: const Text('Có lỗi xảy ra khi đăng ký thông tin'),
         content: Text(message),
@@ -101,7 +102,7 @@ void showErrorRegisDialog({
           TextButton(
             child: const Text('Xác nhận'),
             onPressed: () {
-              context.pop();
+              Navigator.of(abcContext).pop();
             },
           ),
         ],

@@ -206,6 +206,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
+                                      color: Colors.white,
                                     ),
                                   ),
                                   Container(
@@ -223,6 +224,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],

@@ -7,6 +7,8 @@ import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
 import 'package:goshare_driver/models/driver_personal_information_model.dart';
+import 'package:goshare_driver/models/statistic_model.dart';
+import 'package:goshare_driver/models/transaction_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -107,6 +109,70 @@ class DashBoardRepository {
         Trip trip = Trip.fromMap(tripData);
 
         return right(trip);
+      } else if (response.statusCode == 429) {
+        return left(Failure('Too many request'));
+      } else if (response.statusCode == 401) {
+        return left(UnauthorizedFailure('Unauthorized'));
+      } else {
+        return left(Failure('Co loi xay ra'));
+      }
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<WalletTransactionModel> getWalletTransaction(
+    //String sortBy,
+    int page,
+    int pageSize,
+  ) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final response = await client.get(
+        Uri.parse(
+            '$baseApiUrl/wallettransaction?page=$page&pageSize=$pageSize'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> walletTransactionData = json.decode(response.body);
+        print(walletTransactionData.toString());
+        WalletTransactionModel walletTransaction =
+            WalletTransactionModel.fromMap(walletTransactionData);
+
+        return right(walletTransaction);
+      } else if (response.statusCode == 429) {
+        return left(Failure('Too many request'));
+      } else if (response.statusCode == 401) {
+        return left(UnauthorizedFailure('Unauthorized'));
+      } else {
+        return left(Failure('Co loi xay ra'));
+      }
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<List<StatisticModel>> getStatistic() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final response = await client.get(
+        Uri.parse('$baseApiUrl/driver/statistic'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+        List<StatisticModel> statistics =
+            jsonResponse.map((item) => StatisticModel.fromMap(item)).toList();
+        return right(statistics);
       } else if (response.statusCode == 429) {
         return left(Failure('Too many request'));
       } else if (response.statusCode == 401) {

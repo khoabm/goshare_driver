@@ -11,6 +11,7 @@ import 'package:goshare_driver/features/auth/screens/user_exist_confirm_screen.d
 import 'package:goshare_driver/features/auth/screens/user_exist_verify.dart';
 import 'package:goshare_driver/features/auth/screens/user_info_regis_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
+import 'package:goshare_driver/features/dashboard/screen/statistics_screen.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/deliver_passenger_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
@@ -18,12 +19,14 @@ import 'package:goshare_driver/features/trip/screens/payment_result_screen.dart'
 import 'package:goshare_driver/features/trip/screens/pick_up_passenger_screen.dart';
 import 'package:goshare_driver/features/trip-request/screens/trip_request_screen.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/test_step_screen.dart';
 
 class AppRouter {
   /// The route configuration.
   GoRouter createRouter(String initialLocation) {
     return GoRouter(
-      initialLocation: initialLocation, //'/find-trip',
+      initialLocation:
+          initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(
           name: RouteConstants.login,
@@ -92,6 +95,19 @@ class AppRouter {
               child: const DriverInfoRegisScreen(
                 phone: '+84333333331',
               ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'test3',
+          path: '/test3',
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const MyHomePage(),
               key: state.pageKey,
             );
           },
@@ -300,6 +316,19 @@ class AppRouter {
             //final String receiver = params['receiver'] as String;
             return SlideRightTransition(
               child: PaymentResultScreen(trip: trip),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.statistic,
+          path: RouteConstants.statisticUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const StatisticScreen(),
               key: state.pageKey,
             );
           },

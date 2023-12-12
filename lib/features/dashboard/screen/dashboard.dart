@@ -76,7 +76,6 @@ class _DashBoardState extends ConsumerState<DashBoard> {
     if (mounted) {
       final currentOnTripId = ref.read(currentOnTripIdProvider);
       if (currentOnTripId != null && currentOnTripId.isNotEmpty) {
-        // Fetch trip information based on the currentOnTripId (you need to implement this)
         final tripInfo =
             await ref.read(dashBoardControllerProvider.notifier).getTripInfo(
                   currentOnTripId,
@@ -84,7 +83,6 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 );
         // Navigate to the screen based on the trip status
         if (tripInfo?.status == 1) {
-          // Navigate to the completed trip screen
           if (context.mounted) {
             context.goNamed(
               RouteConstants.pickUpPassenger,
@@ -102,6 +100,16 @@ class _DashBoardState extends ConsumerState<DashBoard> {
             );
           }
         }
+      } else {
+        if (mounted) {
+          if (context.mounted) {
+            await ref.watch(tripControllerProvider.notifier).updateLocation(
+                  context,
+                  currentLocation?.latitude ?? 0.0,
+                  currentLocation?.longitude ?? 0.0,
+                );
+          }
+        }
       }
     }
   }
@@ -109,47 +117,13 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   void initState() {
     if (!mounted) return;
+    initSignalR();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         if (mounted) {
           getWallet();
           getDriverInformation();
           await checkCurrentTripStatus();
-          final hubConnection = await ref.watch(
-            hubConnectionProvider.future,
-          );
-
-          hubConnection.on(
-            "NotifyDriverNewTripRequest",
-            (arguments) {
-              try {
-                if (mounted) {
-                  context.goNamed(
-                    RouteConstants.tripRequest,
-                    extra: arguments,
-                  );
-                }
-              } catch (e) {
-                print(
-                  e.toString(),
-                );
-                rethrow;
-              }
-            },
-          );
-          if (hubConnection.state == HubConnectionState.disconnected) {
-            await hubConnection.start()?.then(
-                  (value) => {
-                    print('Start thanh cong'),
-                  },
-                );
-          }
-
-          hubConnection.onclose((exception) {
-            print(
-              exception.toString(),
-            );
-          });
         }
         if (mounted) {
           final isFcmTokenUpdated = await ref
@@ -162,17 +136,46 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         print(e.toString());
         rethrow;
       }
-      if (mounted) {
-        if (context.mounted) {
-          await ref.watch(tripControllerProvider.notifier).updateLocation(
-                context,
-                currentLocation?.latitude ?? 0.0,
-                currentLocation?.longitude ?? 0.0,
-              );
-        }
-      }
     });
     super.initState();
+  }
+
+  void initSignalR() async {
+    final hubConnection = await ref.watch(
+      hubConnectionProvider.future,
+    );
+
+    hubConnection.on(
+      "NotifyDriverNewTripRequest",
+      (arguments) {
+        try {
+          if (mounted) {
+            context.goNamed(
+              RouteConstants.tripRequest,
+              extra: arguments,
+            );
+          }
+        } catch (e) {
+          print(
+            e.toString(),
+          );
+          rethrow;
+        }
+      },
+    );
+    if (hubConnection.state == HubConnectionState.disconnected) {
+      await hubConnection.start()?.then(
+            (value) => {
+              print('Start thanh cong'),
+            },
+          );
+    }
+
+    hubConnection.onclose((exception) {
+      print(
+        exception.toString(),
+      );
+    });
   }
 
   void displayDrawer(BuildContext context) {
@@ -241,10 +244,22 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                     final loginController =
                         ref.watch(LoginControllerProvider.notifier);
                     return InkWell(
-                      onTap: () {
+                      onTap: () async {
                         // Call the appropriate method of the LoginController
                         if (currentState) {
-                          loginController.driverDeactivate(context);
+                          final check =
+                              await loginController.driverDeactivate(context);
+                          if (check) {
+                            if (mounted) {
+                              ref
+                                  .watch(tripControllerProvider.notifier)
+                                  .updateLocation(
+                                    context,
+                                    currentLocation?.latitude ?? 0.0,
+                                    currentLocation?.longitude ?? 0.0,
+                                  );
+                            }
+                          }
                         } else {
                           loginController.driverActivate(context);
                         }

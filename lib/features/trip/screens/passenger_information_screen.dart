@@ -100,10 +100,11 @@ class _PassengerInformationScreenState
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            widget.trip?.distance.toString() ?? '1km',
+                            '${widget.trip?.distance.toString() ?? 1} km',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
+                              color: Colors.white,
                             ),
                           ),
                           Container(
@@ -119,6 +120,7 @@ class _PassengerInformationScreenState
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -131,6 +133,7 @@ class _PassengerInformationScreenState
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -156,6 +159,7 @@ class _PassengerInformationScreenState
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -170,6 +174,7 @@ class _PassengerInformationScreenState
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
+                          color: Colors.white,
                         ),
                       ),
                     ),
