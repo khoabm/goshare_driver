@@ -102,6 +102,8 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         }
       } else {
         if (mounted) {
+          final location = ref.read(locationProvider);
+          currentLocation = await location.getCurrentLocation();
           if (context.mounted) {
             await ref.watch(tripControllerProvider.notifier).updateLocation(
                   context,
@@ -247,9 +249,16 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                       onTap: () async {
                         // Call the appropriate method of the LoginController
                         if (currentState) {
-                          final check =
+                          final check1 =
                               await loginController.driverDeactivate(context);
+                          if (check1) {}
+                        } else {
+                          final check =
+                              await loginController.driverActivate(context);
                           if (check) {
+                            final location = ref.read(locationProvider);
+                            currentLocation =
+                                await location.getCurrentLocation();
                             if (mounted) {
                               ref
                                   .watch(tripControllerProvider.notifier)
@@ -260,8 +269,6 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                   );
                             }
                           }
-                        } else {
-                          loginController.driverActivate(context);
                         }
                       },
                       child: Row(
@@ -350,6 +357,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   currentLocation = await location.getCurrentLocation();
                   // getWallet();
                   // getDriverInformation();
+
                   if (context.mounted) {
                     await ref
                         .watch(tripControllerProvider.notifier)

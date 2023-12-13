@@ -22,6 +22,7 @@ class TripController extends StateNotifier<bool> {
     BuildContext context,
     double? currentLat,
     double? currentLon,
+    String? imagePath,
     String tripId,
   ) async {
     Trip? trip;
@@ -29,6 +30,7 @@ class TripController extends StateNotifier<bool> {
     final result = await _tripRepository.confirmPickUpPassenger(
       currentLat,
       currentLon,
+      imagePath,
       tripId,
     );
     result.fold((l) {
@@ -38,7 +40,7 @@ class TripController extends StateNotifier<bool> {
           context: context,
         );
       } else {
-        showSnackBar(
+        showErrorDialog(
           context: context,
           message: l.message,
         );
@@ -53,6 +55,7 @@ class TripController extends StateNotifier<bool> {
     BuildContext context,
     double? currentLat,
     double? currentLon,
+    String? imagePath,
     String tripId,
   ) async {
     Trip? trip;
@@ -60,6 +63,7 @@ class TripController extends StateNotifier<bool> {
     final result = await _tripRepository.confirmEndTrip(
       currentLat,
       currentLon,
+      imagePath,
       tripId,
     );
     result.fold((l) {

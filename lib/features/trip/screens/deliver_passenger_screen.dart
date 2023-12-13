@@ -517,6 +517,7 @@ class _DeliverPassengerScreenState
                                                               ?.latitude,
                                                           locationData
                                                               ?.longitude,
+                                                          null,
                                                           widget.trip?.id ?? '',
                                                         );
                                                     if (tripResult != null) {
