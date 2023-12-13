@@ -97,14 +97,12 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
     final location = ref.read(locationProvider);
     locationData = await location.getCurrentLocation();
-
-    await _listenLocation();
     wayPoints.clear();
     wayPoints.add(
       WayPoint(
         name: 'origin point',
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
+        latitude: locationData?.latitude ?? 10.882105930222338,
+        longitude: locationData?.longitude ?? 106.78253348225114,
       ),
     );
     wayPoints.add(
@@ -114,6 +112,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
         longitude: widget.trip?.startLocation.longitude,
       ),
     );
+    await _listenLocation();
 
     setState(() {});
   }
@@ -305,10 +304,10 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                     await VietMapHelper.getBytesFromAsset(
                                         'assets/download.jpeg'),
                                   );
-                                  _isRunning = true;
                                   await _controller?.buildAndStartNavigation(
                                     wayPoints: wayPoints,
                                   );
+                                  _isRunning = true;
                                 },
                                 onRouteProgressChange:
                                     (RouteProgressEvent routeProgressEvent) {
@@ -321,19 +320,19 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                     routeProgressEvent.currentModifierType,
                                   );
                                 },
-                                onArrival: () {
-                                  _isRunning = false;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Container(
-                                        height: 100,
-                                        color: Pallete.primaryColor,
-                                        child:
-                                            const Text('Bạn đã đến điểm đón'),
-                                      ),
-                                    ),
-                                  );
-                                },
+                                // onArrival: () {
+                                //   _isRunning = false;
+                                //   ScaffoldMessenger.of(context).showSnackBar(
+                                //     SnackBar(
+                                //       content: Container(
+                                //         height: 100,
+                                //         color: Pallete.primaryColor,
+                                //         child:
+                                //             const Text('Bạn đã đến điểm đón'),
+                                //       ),
+                                //     ),
+                                //   );
+                                // },
                               ),
                               !_isRunning
                                   ? const SizedBox.shrink()
@@ -573,28 +572,36 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                     // locationData =
                                                     //     await location.getCurrentLocation();
                                                     if (context.mounted) {
-                                                      final tripResult = await ref
-                                                          .watch(
-                                                              tripControllerProvider
-                                                                  .notifier)
-                                                          .confirmPickUpPassenger(
-                                                            context,
-                                                            locationData
-                                                                ?.latitude,
-                                                            locationData
-                                                                ?.longitude,
-                                                            widget.trip?.id ??
-                                                                '',
-                                                          );
-                                                      if (tripResult != null) {
-                                                        if (tripResult
-                                                            .id.isNotEmpty) {
-                                                          _controller
-                                                              ?.clearRoute();
-                                                          _controller
-                                                              ?.finishNavigation();
-                                                          _onStopNavigation();
-                                                          navigateToDeliverPassenger();
+                                                      final location = ref.read(
+                                                          locationProvider);
+                                                      locationData = await location
+                                                          .getCurrentLocation();
+                                                      if (mounted) {
+                                                        final tripResult = await ref
+                                                            .watch(
+                                                                tripControllerProvider
+                                                                    .notifier)
+                                                            .confirmPickUpPassenger(
+                                                              context,
+                                                              locationData
+                                                                  ?.latitude,
+                                                              locationData
+                                                                  ?.longitude,
+                                                              null,
+                                                              widget.trip?.id ??
+                                                                  '',
+                                                            );
+                                                        if (tripResult !=
+                                                            null) {
+                                                          if (tripResult
+                                                              .id.isNotEmpty) {
+                                                            _controller
+                                                                ?.clearRoute();
+                                                            _controller
+                                                                ?.finishNavigation();
+                                                            _onStopNavigation();
+                                                            navigateToDeliverPassenger();
+                                                          }
                                                         }
                                                       }
                                                     }

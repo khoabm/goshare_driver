@@ -64,7 +64,7 @@ class _CountdownButtonState extends State<CountdownButton> {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: SizedBox(
         height: 65,
-        width: MediaQuery.of(context).size.width * .8,
+        width: MediaQuery.of(context).size.width * .9,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.greenAccent[700],
@@ -206,7 +206,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   Container(
@@ -224,7 +224,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
-                                      color: Colors.white,
+                                      color: Colors.black,
                                     ),
                                   ),
                                 ],
@@ -236,8 +236,8 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -248,7 +248,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                             ),
                             const SizedBox(height: 12),
                             Container(
-                              height: 60, // Adjust the height as needed
+                              height: 100, // Adjust the height as needed
                               padding: const EdgeInsets.symmetric(
                                 vertical: 12.0,
                                 horizontal: 8.0,
@@ -262,8 +262,8 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -278,7 +278,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500,
-                                  color: Colors.white,
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -313,11 +313,14 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                         }
                       },
                     ),
+                    const SizedBox(
+                      height: 15,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: SizedBox(
                         height: 65,
-                        width: MediaQuery.of(context).size.width * .8,
+                        width: MediaQuery.of(context).size.width * .9,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red[700],

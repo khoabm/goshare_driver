@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
@@ -8,6 +9,7 @@ import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 final tripRepositoryProvider = Provider(
   (ref) => TripRepository(
@@ -25,35 +27,57 @@ class TripRepository {
   FutureEither<Trip> confirmPickUpPassenger(
     double? currentLat,
     double? currentLon,
+    String? imagePath,
     String tripId,
   ) async {
     try {
-      // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final accessToken = prefs.getString('driverAccessToken');
+      var uri = Uri.parse('$baseApiUrl/driver/confirm-pickup/$tripId');
+      var request = http.MultipartRequest('POST', uri)
+        ..fields['driverLatitude'] = currentLat.toString()
+        ..fields['driverLongitude'] = currentLon.toString();
+      if (imagePath != null) {
+        // Read the file as bytes
+        var fileBytes = await File(imagePath).readAsBytes();
 
-      final client = HttpClientWithAuth(accessToken ?? '');
-      final response = await client.post(
-        Uri.parse('$baseApiUrl/driver/confirm-pickup/$tripId'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          "driverLatitude": currentLat,
-          "driverLongitude": currentLon,
-        }),
-      );
-      print(response.body);
+        // Add the image file to the multipart request
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'image',
+            fileBytes,
+            filename: 'image', // Provide a filename for the image
+          ),
+        );
+      }
+      request.headers.addAll(<String, String>{
+        'Authorization': 'Bearer $accessToken',
+      });
+      var response = await request.send();
+      String responseData = await response.stream.bytesToString();
       if (response.statusCode == 200) {
-        Map<String, dynamic> tripData = json.decode(response.body);
+        Map<String, dynamic> tripData = json.decode(responseData);
         Trip trip = Trip.fromMap(tripData);
         return right(trip);
       } else if (response.statusCode == 429) {
         return left(Failure('Too many request'));
       } else if (response.statusCode == 401) {
         return left(UnauthorizedFailure('Unauthorized'));
+      } else if (response.statusCode == 400) {
+        if (jsonDecode(responseData)['message'] ==
+            'The driver is not near the pickup location. $currentLat & $currentLon') {
+          return left(
+            Failure('Không đủ gần điểm trả khách'),
+          );
+        } else {
+          return left(
+            Failure(jsonDecode(responseData)['message']),
+          );
+        }
       } else {
-        return left(Failure('Co loi xay ra'));
+        return left(
+          Failure('Có lỗi xảy ra'),
+        );
       }
     } catch (e) {
       print(e.toString());
@@ -66,27 +90,49 @@ class TripRepository {
   FutureEither<Trip> confirmEndTrip(
     double? currentLat,
     double? currentLon,
+    String? imagePath,
     String tripId,
   ) async {
     try {
       // Map<String, dynamic> tripModelMap = tripModel.toMap();
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final accessToken = prefs.getString('driverAccessToken');
+      var uri = Uri.parse('$baseApiUrl/driver/end-trip/$tripId');
+      var request = http.MultipartRequest('POST', uri)
+        ..fields['driverLatitude'] = currentLat.toString()
+        ..fields['driverLongitude'] = currentLon.toString();
+      if (imagePath != null) {
+        // Read the file as bytes
+        var fileBytes = await File(imagePath).readAsBytes();
 
-      final client = HttpClientWithAuth(accessToken ?? '');
-      final response = await client.post(
-        Uri.parse('$baseApiUrl/driver/end-trip/$tripId'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: json.encode({
-          "driverLatitude": currentLat,
-          "driverLongitude": currentLon,
-        }),
-      );
-      print(response.body);
+        // Add the image file to the multipart request
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'image',
+            fileBytes,
+            filename: 'image', // Provide a filename for the image
+          ),
+        );
+      }
+      request.headers.addAll(<String, String>{
+        'Authorization': 'Bearer $accessToken',
+      });
+      var response = await request.send();
+      String responseData = await response.stream.bytesToString();
+      // final client = HttpClientWithAuth(accessToken ?? '');
+      // final response = await client.post(
+      //   Uri.parse('$baseApiUrl/driver/end-trip/$tripId'),
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: json.encode({
+      //     "driverLatitude": currentLat,
+      //     "driverLongitude": currentLon,
+      //   }),
+      // );
+      // print(response.body);
       if (response.statusCode == 200) {
-        Map<String, dynamic> tripData = json.decode(response.body);
+        Map<String, dynamic> tripData = json.decode(responseData);
         Trip trip = Trip.fromMap(tripData);
         return right(trip);
       } else if (response.statusCode == 429) {
@@ -94,14 +140,14 @@ class TripRepository {
       } else if (response.statusCode == 401) {
         return left(UnauthorizedFailure('Unauthorized'));
       } else if (response.statusCode == 400) {
-        if (jsonDecode(response.body)['message'] ==
+        if (jsonDecode(responseData)['message'] ==
             'The driver is not near the drop-off location.') {
           return left(
             Failure('Không đủ gần điểm trả khách'),
           );
         } else {
           return left(
-            Failure('Có lỗi xảy ra'),
+            Failure(jsonDecode(responseData)['message']),
           );
         }
       } else {
