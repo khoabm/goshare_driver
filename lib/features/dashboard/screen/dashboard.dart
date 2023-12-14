@@ -119,10 +119,11 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   void initState() {
     if (!mounted) return;
-    initSignalR();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
         if (mounted) {
+          initSignalR();
           getWallet();
           getDriverInformation();
           await checkCurrentTripStatus();

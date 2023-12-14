@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/core/enums/trip_type_enum.dart';
 
 import 'package:goshare_driver/core/utils/locations_util.dart';
+import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
@@ -71,13 +74,15 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
 
   StreamSubscription<LocationData>? _locationSubscription;
   String? _error;
-
+  late final Trip? trip;
+  File? pickupPictureFile;
   // bool _isChatOn = false;
   FocusNode focusNode = FocusNode();
   @override
   void initState() {
-    initialize();
-
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      initialize();
+    });
     super.initState();
   }
 
@@ -97,21 +102,21 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
     final location = ref.read(locationProvider);
     locationData = await location.getCurrentLocation();
-    wayPoints.clear();
-    wayPoints.add(
-      WayPoint(
-        name: 'origin point',
-        latitude: locationData?.latitude ?? 10.882105930222338,
-        longitude: locationData?.longitude ?? 106.78253348225114,
-      ),
-    );
-    wayPoints.add(
-      WayPoint(
-        name: 'destination point',
-        latitude: widget.trip?.startLocation.latitude,
-        longitude: widget.trip?.startLocation.longitude,
-      ),
-    );
+    // wayPoints.clear();
+    // wayPoints.add(
+    //   WayPoint(
+    //     name: 'origin point',
+    //     latitude: locationData?.latitude ?? 10.882105930222338,
+    //     longitude: locationData?.longitude ?? 106.78253348225114,
+    //   ),
+    // );
+    // wayPoints.add(
+    //   WayPoint(
+    //     name: 'destination point',
+    //     latitude: widget.trip?.startLocation.latitude,
+    //     longitude: widget.trip?.startLocation.longitude,
+    //   ),
+    // );
     await _listenLocation();
 
     setState(() {});
@@ -183,6 +188,15 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
         }
       });
     });
+  }
+
+  Future<void> takePictureToPickup() async {
+    final res = await takeImage();
+    if (res != null) {
+      setState(() {
+        pickupPictureFile = File(res.path);
+      });
+    }
   }
 
   @override
@@ -300,6 +314,25 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                   });
                                 },
                                 onMapRendered: () async {
+                                  // wayPoints.clear();
+                                  wayPoints.add(
+                                    WayPoint(
+                                      name: 'origin point',
+                                      latitude: locationData?.latitude ??
+                                          10.882105930222338,
+                                      longitude: locationData?.longitude ??
+                                          106.78253348225114,
+                                    ),
+                                  );
+                                  wayPoints.add(
+                                    WayPoint(
+                                      name: 'destination point',
+                                      latitude:
+                                          widget.trip?.startLocation.latitude,
+                                      longitude:
+                                          widget.trip?.startLocation.longitude,
+                                    ),
+                                  );
                                   _controller?.setCenterIcon(
                                     await VietMapHelper.getBytesFromAsset(
                                         'assets/download.jpeg'),
@@ -577,30 +610,43 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                       locationData = await location
                                                           .getCurrentLocation();
                                                       if (mounted) {
-                                                        final tripResult = await ref
-                                                            .watch(
-                                                                tripControllerProvider
-                                                                    .notifier)
-                                                            .confirmPickUpPassenger(
-                                                              context,
-                                                              locationData
-                                                                  ?.latitude,
-                                                              locationData
-                                                                  ?.longitude,
-                                                              null,
-                                                              widget.trip?.id ??
-                                                                  '',
-                                                            );
-                                                        if (tripResult !=
-                                                            null) {
-                                                          if (tripResult
-                                                              .id.isNotEmpty) {
-                                                            _controller
-                                                                ?.clearRoute();
-                                                            _controller
-                                                                ?.finishNavigation();
-                                                            _onStopNavigation();
-                                                            navigateToDeliverPassenger();
+                                                        if (widget.trip?.type ==
+                                                            TripType
+                                                                .bookForDepNoApp
+                                                                .value) {
+                                                          await takePictureToPickup();
+                                                          print(
+                                                              pickupPictureFile
+                                                                  ?.path);
+                                                        }
+                                                        if (mounted) {
+                                                          final tripResult = await ref
+                                                              .watch(
+                                                                  tripControllerProvider
+                                                                      .notifier)
+                                                              .confirmPickUpPassenger(
+                                                                context,
+                                                                locationData
+                                                                    ?.latitude,
+                                                                locationData
+                                                                    ?.longitude,
+                                                                pickupPictureFile
+                                                                    ?.path,
+                                                                widget.trip
+                                                                        ?.id ??
+                                                                    '',
+                                                              );
+                                                          if (tripResult !=
+                                                              null) {
+                                                            if (tripResult.id
+                                                                .isNotEmpty) {
+                                                              _controller
+                                                                  ?.clearRoute();
+                                                              _controller
+                                                                  ?.finishNavigation();
+                                                              _onStopNavigation();
+                                                              navigateToDeliverPassenger();
+                                                            }
                                                           }
                                                         }
                                                       }

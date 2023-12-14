@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/core/enums/trip_type_enum.dart';
 
 import 'package:goshare_driver/core/utils/locations_util.dart';
+import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
 import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
@@ -74,6 +77,7 @@ class _DeliverPassengerScreenState
 
   StreamSubscription<LocationData>? _locationSubscription;
   String? _error;
+  File? deliverPictureFile;
 
   @override
   void initState() {
@@ -119,6 +123,15 @@ class _DeliverPassengerScreenState
       ),
     );
     setState(() {});
+  }
+
+  Future<void> takePictureToDeliver() async {
+    final res = await takeImage();
+    if (res != null) {
+      setState(() {
+        deliverPictureFile = File(res.path);
+      });
+    }
   }
 
   Future<void> _listenLocation() async {
@@ -507,6 +520,13 @@ class _DeliverPassengerScreenState
                                                   locationData = await location
                                                       .getCurrentLocation();
                                                   if (mounted) {
+                                                    if (widget.trip?.type ==
+                                                        TripType.bookForDepNoApp
+                                                            .value) {
+                                                      await takePictureToDeliver();
+                                                    }
+                                                  }
+                                                  if (mounted) {
                                                     final tripResult = await ref
                                                         .watch(
                                                             tripControllerProvider
@@ -517,7 +537,8 @@ class _DeliverPassengerScreenState
                                                               ?.latitude,
                                                           locationData
                                                               ?.longitude,
-                                                          null,
+                                                          deliverPictureFile
+                                                              ?.path,
                                                           widget.trip?.id ?? '',
                                                         );
                                                     if (tripResult != null) {
