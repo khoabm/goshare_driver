@@ -20,6 +20,7 @@ import 'package:goshare_driver/providers/signalr_providers.dart';
 // import 'package:goshare_driver/providers/current_location_provider.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:location/location.dart';
+import 'package:signalr_core/signalr_core.dart';
 import 'package:vietmap_flutter_navigation/embedded/controller.dart';
 import 'package:vietmap_flutter_navigation/helpers.dart';
 import 'package:vietmap_flutter_navigation/models/options.dart';
@@ -148,6 +149,8 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     );
     location.changeSettings(
       accuracy: LocationAccuracy.high,
+      distanceFilter: 2,
+      interval: 2000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {
@@ -165,21 +168,28 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
         if (mounted) {
-          hubConnection.invoke(
-            "SendDriverLocation",
-            args: [
-              jsonEncode({
-                'latitude': currentLocation.latitude,
-                'longitude': currentLocation.longitude
-              }),
-              widget.trip?.id,
-            ],
-          ).then((value) {
-            print(
-                "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}");
-          }).catchError((error) {
-            print("Error sending location to server: $error");
-          });
+          if (hubConnection.state == HubConnectionState.connected) {
+            hubConnection.invoke(
+              "SendDriverLocation",
+              args: [
+                jsonEncode({
+                  'latitude': currentLocation.latitude,
+                  'longitude': currentLocation.longitude
+                }),
+                widget.trip?.id,
+              ],
+            ).then(
+              (value) {
+                print(
+                  "Location sent to server: ${currentLocation.latitude} + ${currentLocation.longitude}",
+                );
+              },
+            ).catchError((error) {
+              print("Error sending location to server: $error");
+            });
+          } else {
+            print("Connection is not in the 'Connected' state");
+          }
         }
       });
     });

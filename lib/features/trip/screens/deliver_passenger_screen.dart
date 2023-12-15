@@ -127,6 +127,8 @@ class _DeliverPassengerScreenState
     );
     location.changeSettings(
       accuracy: LocationAccuracy.high,
+      distanceFilter: 2,
+      interval: 2000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {
