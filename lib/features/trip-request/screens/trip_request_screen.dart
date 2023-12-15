@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -241,10 +242,17 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                               ),
                             ),
                             const SizedBox(height: 12),
-                            const Icon(
-                              Icons.keyboard_arrow_down,
-                              color: Colors.grey,
-                              size: 30,
+                            Transform.rotate(
+                              angle: 180 *
+                                  3.14159 /
+                                  180, // convert degrees to radians
+                              child: const Icon(
+                                IconData(
+                                  0xf6f0,
+                                  fontFamily: CupertinoIcons.iconFont,
+                                  fontPackage: CupertinoIcons.iconFontPackage,
+                                ),
+                              ), // replace with your icon
                             ),
                             const SizedBox(height: 12),
                             Container(
@@ -303,7 +311,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                             );
                         if (result != null) {
                           if (result.id.isNotEmpty) {
-                            if (context.mounted) {
+                            if (mounted) {
                               context.goNamed(
                                 RouteConstants.pickUpPassenger,
                                 extra: trip,

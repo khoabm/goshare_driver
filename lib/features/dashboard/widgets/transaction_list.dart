@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/features/dashboard/controllers/dash_board_controller.dart';
 import 'package:goshare_driver/models/transaction_model.dart';
+import 'package:goshare_driver/theme/pallet.dart';
 import 'package:intl/intl.dart';
 
 class TransactionList extends ConsumerStatefulWidget {
@@ -62,8 +63,15 @@ class _TransactionListState extends ConsumerState<TransactionList> {
       itemBuilder: (context, index) {
         return Card(
           child: ListTile(
-            leading: const Icon(
-                Icons.monetization_on), // replace with your actual icon
+            leading: _walletTransactionModel!.items[index].type == "DRIVER_WAGE"
+                ? const Icon(
+                    IconData(0xe1d7, fontFamily: 'MaterialIcons'),
+                    color: Pallete.primaryColor,
+                  )
+                : const Icon(
+                    Icons.monetization_on,
+                    color: Colors.yellow,
+                  ), // replace with your actual icon
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[

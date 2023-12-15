@@ -56,21 +56,24 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
             ),
             ListTile(
               title: const Text(
-                'Đăng xuất',
-              ),
-              leading: const Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => _onLogout(ref),
-            ),
-            ListTile(
-              title: const Text(
                 'Thống kê',
               ),
               leading: const Icon(
                 IconData(0xebef, fontFamily: 'MaterialIcons'),
               ),
               onTap: () => navigateToStatistic(),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ListTile(
+              title: const Text(
+                'Đăng xuất',
+              ),
+              leading: const Icon(
+                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
+              ),
+              onTap: () => _onLogout(ref),
             ),
           ],
         ),

@@ -1,24 +1,30 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
+
 class DriverPersonalInformationModel {
   final int ratingNum;
   final double rating;
   final double dailyIncome;
+  final DateTime? dueDate;
   DriverPersonalInformationModel({
     required this.ratingNum,
     required this.rating,
     required this.dailyIncome,
+    this.dueDate,
   });
 
   DriverPersonalInformationModel copyWith({
     int? ratingNum,
     double? rating,
     double? dailyIncome,
+    ValueGetter<DateTime?>? dueDate,
   }) {
     return DriverPersonalInformationModel(
       ratingNum: ratingNum ?? this.ratingNum,
       rating: rating ?? this.rating,
       dailyIncome: dailyIncome ?? this.dailyIncome,
+      dueDate: dueDate?.call() ?? this.dueDate,
     );
   }
 
@@ -27,6 +33,7 @@ class DriverPersonalInformationModel {
       'ratingNum': ratingNum,
       'rating': rating,
       'dailyIncome': dailyIncome,
+      'dueDate': dueDate?.millisecondsSinceEpoch,
     };
   }
 
@@ -35,6 +42,11 @@ class DriverPersonalInformationModel {
       ratingNum: map['ratingNum']?.toInt() ?? 0,
       rating: map['rating']?.toDouble() ?? 0.0,
       dailyIncome: map['dailyIncome']?.toDouble() ?? 0.0,
+      dueDate: map['dueDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              DateTime.parse(map['dueDate']).millisecondsSinceEpoch,
+            )
+          : null,
     );
   }
 
@@ -44,8 +56,9 @@ class DriverPersonalInformationModel {
       DriverPersonalInformationModel.fromMap(json.decode(source));
 
   @override
-  String toString() =>
-      'DriverPersonalInformationModel(ratingNum: $ratingNum, rating: $rating, dailyIncome: $dailyIncome)';
+  String toString() {
+    return 'DriverPersonalInformationModel(ratingNum: $ratingNum, rating: $rating, dailyIncome: $dailyIncome, dueDate: $dueDate)';
+  }
 
   @override
   bool operator ==(Object other) {
@@ -54,10 +67,15 @@ class DriverPersonalInformationModel {
     return other is DriverPersonalInformationModel &&
         other.ratingNum == ratingNum &&
         other.rating == rating &&
-        other.dailyIncome == dailyIncome;
+        other.dailyIncome == dailyIncome &&
+        other.dueDate == dueDate;
   }
 
   @override
-  int get hashCode =>
-      ratingNum.hashCode ^ rating.hashCode ^ dailyIncome.hashCode;
+  int get hashCode {
+    return ratingNum.hashCode ^
+        rating.hashCode ^
+        dailyIncome.hashCode ^
+        dueDate.hashCode;
+  }
 }

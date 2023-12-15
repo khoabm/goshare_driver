@@ -1,41 +1,99 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/common/app_text_field.dart';
+import 'package:goshare_driver/features/auth/controllers/sign_up_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  State createState() => _MyHomePageState();
+  ConsumerState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   int _currentStep = 0;
   final List<List<File?>> _images = [
     [null, null],
     [null, null],
     [null, null],
-    [null, null],
+    //[null, null],
+    [null],
     [null],
   ];
   final TextEditingController _nameTextController = TextEditingController();
   final TextEditingController _carModelTextController = TextEditingController();
   final TextEditingController _carMakeController = TextEditingController();
+  final _driverInfoFormKey = GlobalKey<FormState>();
   int groupValue = 0;
 
-  void checkFiles() {
-    for (int i = 0; i < _images.length; i++) {
-      for (int j = 0; j < _images[i].length; j++) {
-        if (_images[i][j] == null) {
-          print('File at index $i, $j is still null');
-          // Handle the null file here
-          return;
+  void checkFiles() async {
+    if (_driverInfoFormKey.currentState!.validate()) {
+      for (int i = 0; i < _images.length; i++) {
+        for (int j = 0; j < _images[i].length; j++) {
+          if (_images[i][j] == null) {
+            if (i == 0) {
+              showErrorRegisDialog(
+                context: context,
+                message: 'Vui lòng bổ sung ảnh căn cước',
+              );
+            } else if (i == 1) {
+            } else if (i == 2) {
+            } else if (i == 3) {
+            } else if (i == 4) {
+            } else if (i == 5) {}
+            return;
+          }
         }
       }
+      print('All files are not null');
+      List<Map<String, dynamic>> imageList = [
+        {"pic": _images[0][0]?.path, "type": 0},
+        {"pic": _images[0][1]?.path, "type": 0},
+        {"pic": _images[1][0]?.path, "type": 1},
+        {"pic": _images[1][1]?.path, "type": 1},
+        {"pic": _images[2][0]?.path, "type": 2},
+        {"pic": _images[2][1]?.path, "type": 2},
+        {"pic": _images[3][0]?.path, "type": 3},
+        {"pic": _images[4][0]?.path, "type": 4},
+      ];
+      final result =
+          await ref.watch(signUpControllerProvider.notifier).sendRequest(
+                _nameTextController.text,
+                _carModelTextController.text,
+                _carMakeController.text,
+                groupValue,
+                '0',
+                imageList,
+                context,
+              );
     }
-    print('All files are not null');
+  }
+
+  void showErrorRegisDialog({
+    required BuildContext context,
+    required String message,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('Có lỗi xảy ra khi đăng ký thông tin'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Xác nhận'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -49,12 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
         controlsBuilder: (context, details) {
           return Row(
             children: <Widget>[
-              if (_currentStep > 0 && _currentStep <= 4)
+              if (_currentStep > 0 && _currentStep <= 5)
                 TextButton(
                   onPressed: details.onStepCancel,
                   child: const Text('Quay lại'),
                 ),
-              if (_currentStep > 0 && _currentStep != 4)
+              if (_currentStep > 0 && _currentStep != 5)
                 ElevatedButton(
                   onPressed: details.onStepContinue,
                   child: const Text('Tiếp tục'),
@@ -64,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: details.onStepContinue,
                   child: const Text('Tiếp tục'),
                 ),
-              if (_currentStep == 4)
+              if (_currentStep == 5)
                 ElevatedButton(
                   onPressed: () {
                     checkFiles();
@@ -83,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         currentStep: _currentStep,
         onStepContinue: () {
-          if (_currentStep >= 4) return;
+          if (_currentStep >= 5) return;
           setState(() {
             _currentStep += 1;
           });
@@ -107,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       _buildImagePicker(index, 0),
                       const SizedBox(height: 10),
-                      if (index < 4)
+                      if (index < 3)
                         _buildImagePicker(index,
                             1), // Only add a second image picker for the first 4 steps
                     ],
@@ -119,95 +177,121 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _buildForm() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(
-          width: double.infinity,
-          child: Text(
-            'Đăng ký thông tin tài xế',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+    return Form(
+      key: _driverInfoFormKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            width: double.infinity,
+            child: Text(
+              'Đăng ký thông tin tài xế',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'Biển số xe',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
+          const SizedBox(
+            height: 20,
           ),
-        ),
-        AppTextField(
-          controller: _nameTextController,
-          hintText: '62F3-XXXXX',
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'Hãng xe',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
+          const Text(
+            'Biển số xe',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
           ),
-        ),
-        AppTextField(
-          controller: _carModelTextController,
-          hintText: 'Honda, Yamaha',
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'Dòng xe',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        AppTextField(
-          controller: _carMakeController,
-          hintText: 'Dream, Sirius',
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        const Text(
-          'Xe bao nhiêu chỗ',
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 17,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * .8,
-          height: 100,
-          child: GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 3,
-            children: [
-              buildRadioButton(2),
-              buildRadioButton(4),
-              buildRadioButton(7),
-              buildRadioButton(9),
+          AppTextField(
+            controller: _nameTextController,
+            hintText: '62F3-XXXXX',
+            formatters: [
+              LengthLimitingTextInputFormatter(8),
             ],
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Biển số xe không được trống';
+              } else if (value.length < 8) {
+                return 'Biển số xe phải là 8 ký tự';
+              }
+              return null;
+            },
           ),
-        ),
-        const SizedBox(
-          height: 20,
-        )
-      ],
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Hãng xe',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          AppTextField(
+            controller: _carModelTextController,
+            hintText: 'Honda, Yamaha',
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Hãng xe không được trống';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Dòng xe',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          AppTextField(
+            controller: _carMakeController,
+            hintText: 'Dream, Sirius',
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Dòng xe không được trống';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Xe bao nhiêu chỗ',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .8,
+            height: 100,
+            child: GridView.count(
+              crossAxisCount: 2,
+              childAspectRatio: 3,
+              children: [
+                buildRadioButton(2),
+                buildRadioButton(4),
+                buildRadioButton(7),
+                buildRadioButton(9),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          )
+        ],
+      ),
     );
   }
 

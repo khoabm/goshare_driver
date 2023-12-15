@@ -294,11 +294,11 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                   });
                                 },
                                 onMapMove: () => _showRecenterButton(),
-                                onRouteBuilt: (p0) {
-                                  setState(() {
-                                    _isRouteBuilt = true;
-                                  });
-                                },
+                                // onRouteBuilt: (p0) {
+                                //   setState(() {
+                                //     _isRouteBuilt = true;
+                                //   });
+                                // },
                                 onMapRendered: () async {
                                   _controller?.setCenterIcon(
                                     await VietMapHelper.getBytesFromAsset(
@@ -353,11 +353,14 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                 child: GestureDetector(
                                   onVerticalDragUpdate: (details) {
                                     // Adjust height based on the swipe direction
-                                    setState(() {
-                                      _containerHeight += details.primaryDelta!;
-                                      _containerHeight =
-                                          _containerHeight.clamp(60.0, 300.0);
-                                    });
+                                    setState(
+                                      () {
+                                        _containerHeight +=
+                                            details.primaryDelta!;
+                                        _containerHeight =
+                                            _containerHeight.clamp(60.0, 300.0);
+                                      },
+                                    );
                                   },
                                   onVerticalDragEnd: (details) {
                                     // Determine whether to fully reveal or hide the container based on the gesture velocity
@@ -392,30 +395,39 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                               Row(
                                                 children: [
                                                   Expanded(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        vertical: 10.0,
-                                                        horizontal: 16.0,
-                                                      ),
-                                                      child: Text(
-                                                        maxLines: 3,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 20,
-                                                          color: Colors.white,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            vertical: 10.0,
+                                                            horizontal: 16.0,
+                                                          ),
+                                                          child: Text(
+                                                            maxLines: 3,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              fontSize: 20,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            widget
+                                                                    .trip
+                                                                    ?.startLocation
+                                                                    .address ??
+                                                                '',
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                          ),
                                                         ),
-                                                        widget
-                                                                .trip
-                                                                ?.startLocation
-                                                                .address ??
-                                                            '',
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                      ),
+                                                      ],
                                                     ),
                                                   ),
                                                   InkWell(
@@ -486,7 +498,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                         style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w400,
-                                                          fontSize: 20,
+                                                          fontSize: 16,
                                                           color: Colors.white,
                                                         ),
                                                         widget.trip?.note ?? '',

@@ -119,10 +119,14 @@ class _DashBoardState extends ConsumerState<DashBoard> {
   @override
   void initState() {
     if (!mounted) return;
-    initSignalR();
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        _isLoading = true;
+      });
       try {
         if (mounted) {
+          initSignalR();
           getWallet();
           getDriverInformation();
           await checkCurrentTripStatus();
@@ -138,6 +142,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         print(e.toString());
         rethrow;
       }
+    });
+    setState(() {
+      _isLoading = false;
     });
     super.initState();
   }
@@ -297,15 +304,15 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                 ),
 
                 // Comment icon on the right
-                IconButton(
-                  icon: const Icon(
-                    Icons.comment,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    // Handle comment button tap
-                  },
-                ),
+                // IconButton(
+                //   icon: const Icon(
+                //     Icons.comment,
+                //     color: Colors.white,
+                //   ),
+                //   onPressed: () {
+                //     // Handle comment button tap
+                //   },
+                // ),
               ],
             ),
           ),
@@ -465,28 +472,86 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                           Radius.circular(20),
                                         ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
+                                      child: Column(
                                         children: [
-                                          Column(
+                                          informationModel.dueDate != null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          dialogContext) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                            'Thông báo',
+                                                          ),
+                                                          content: Text(
+                                                            'Tài khoản của bạn đang âm tiền và cần thanh toán ${DateFormat('dd/MM/yyyy').format(
+                                                              informationModel
+                                                                  .dueDate!,
+                                                            )}. Nếu đã thanh toán vui lòng bỏ qua hệ thống sẽ cập nhật lại',
+                                                          ),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              child: const Text(
+                                                                'Đóng',
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      const Icon(IconData(
+                                                        0xe33c,
+                                                        fontFamily:
+                                                            'MaterialIcons',
+                                                      )),
+                                                      const SizedBox(
+                                                          width:
+                                                              8.0), // You can adjust the space between the icon and text
+                                                      Text(
+                                                        'Thời hạn thanh toán tiền xe đến ngày ${DateFormat('dd/MM/yyyy').format(
+                                                          informationModel
+                                                              .dueDate!,
+                                                        )}',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink(),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
                                             children: [
-                                              const Text(
-                                                  'Doanh thu trong ngày'),
-                                              Text(
-                                                  "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
+                                              Column(
+                                                children: [
+                                                  const Text(
+                                                      'Doanh thu trong ngày'),
+                                                  Text(
+                                                      "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  const Text(
+                                                    'Đánh giá của tôi',
+                                                  ),
+                                                  Text(
+                                                    informationModel.rating
+                                                        .toStringAsFixed(2),
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           ),
-                                          Column(
-                                            children: [
-                                              const Text(
-                                                'Đánh giá của tôi',
-                                              ),
-                                              Text(
-                                                '${informationModel.rating}',
-                                              ),
-                                            ],
-                                          )
                                         ],
                                       ),
                                     ),
