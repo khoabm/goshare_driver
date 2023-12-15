@@ -22,7 +22,7 @@ class LoginController extends StateNotifier<bool> {
   })  : _loginRepository = loginRepository,
         _ref = ref,
         super(false);
-  Future<String> login(
+  Future<LoginResult> login(
     String phone,
     String passcode,
     WidgetRef ref,
