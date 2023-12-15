@@ -47,7 +47,7 @@ class LoginRepository {
 
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
+        Uri.parse('$baseUrl/auth/driver/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
