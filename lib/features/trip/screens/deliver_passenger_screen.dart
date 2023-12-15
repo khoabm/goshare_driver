@@ -301,6 +301,7 @@ class _DeliverPassengerScreenState
                               await _controller?.buildAndStartNavigation(
                                 wayPoints: wayPoints,
                               );
+                              //_controller?.startNavigation();
                             },
                             onRouteProgressChange:
                                 (RouteProgressEvent routeProgressEvent) {
