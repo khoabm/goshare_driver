@@ -37,6 +37,10 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
     context.pushNamed(RouteConstants.statistic);
   }
 
+  void navigateToEditProfile() {
+    context.pushNamed(RouteConstants.editProfile);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -49,7 +53,9 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
               leading: const Icon(
                 Icons.person_outline,
               ),
-              onTap: () {},
+              onTap: () {
+                navigateToEditProfile();
+              },
             ),
             const SizedBox(
               height: 30,

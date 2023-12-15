@@ -19,6 +19,7 @@ class RouteConstants {
   static const userExistVerify = 'user-exist-verify';
   static const driverRegisSuccess = 'driver-regis-success';
   static const statistic = 'statistic';
+  static const editProfile = 'profile';
 
   ///**
   ///Route url constants
@@ -40,4 +41,5 @@ class RouteConstants {
   static const userExistVerifyUrl = '/user-exist-verify';
   static const driverRegisSuccessUrl = '/driver-regis-success';
   static const statisticUrl = '/statistic';
+  static const editProfileUrl = '/profile';
 }
