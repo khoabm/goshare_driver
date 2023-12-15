@@ -127,3 +127,9 @@ Future<XFile?> pickImage() async {
   final XFile? image = await picker.pickImage(source: ImageSource.gallery);
   return image;
 }
+
+Future<XFile?> takeImage() async {
+  final ImagePicker picker = ImagePicker();
+  final XFile? image = await picker.pickImage(source: ImageSource.camera);
+  return image;
+}

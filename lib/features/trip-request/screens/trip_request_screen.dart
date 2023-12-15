@@ -25,6 +25,7 @@ class CountdownButton extends StatefulWidget {
 
 class _CountdownButtonState extends State<CountdownButton> {
   late Timer _timer;
+  //int _countdown = 120; // 2 minutes in seconds
   int _countdown = 120; // 2 minutes in seconds
 
   @override
@@ -120,11 +121,12 @@ class _TripRequestState extends ConsumerState<TripRequest> {
         setState(() {
           _isLoading = true;
         });
+
         final tripData = (widget.content as List<dynamic>)
             .cast<Map<String, dynamic>>()
             .first;
-
         trip = Trip.fromMap(tripData);
+        print(trip?.toJson());
         setState(() {
           _isLoading = false;
         });

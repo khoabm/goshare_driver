@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/widgets.dart';
 
 class Trip {
@@ -26,6 +25,7 @@ class Trip {
   final EndLocation endLocation;
   final StartLocation startLocation;
   final CarType cartype;
+  final int type;
   Trip({
     required this.id,
     required this.passengerId,
@@ -44,6 +44,7 @@ class Trip {
     required this.endLocation,
     required this.startLocation,
     required this.cartype,
+    required this.type,
   });
 
   Trip copyWith({
@@ -64,6 +65,7 @@ class Trip {
     EndLocation? endLocation,
     StartLocation? startLocation,
     CarType? cartype,
+    int? type,
   }) {
     return Trip(
       id: id ?? this.id,
@@ -83,6 +85,7 @@ class Trip {
       endLocation: endLocation ?? this.endLocation,
       startLocation: startLocation ?? this.startLocation,
       cartype: cartype ?? this.cartype,
+      type: type ?? this.type,
     );
   }
 
@@ -105,6 +108,7 @@ class Trip {
       'endLocation': endLocation.toMap(),
       'startLocation': startLocation.toMap(),
       'cartype': cartype.toMap(),
+      'type': type,
     };
   }
 
@@ -127,6 +131,7 @@ class Trip {
       endLocation: EndLocation.fromMap(map['endLocation']),
       startLocation: StartLocation.fromMap(map['startLocation']),
       cartype: CarType.fromMap(map['cartype']),
+      type: map['type']?.toInt() ?? 0,
     );
   }
 
@@ -136,7 +141,7 @@ class Trip {
 
   @override
   String toString() {
-    return 'Trip(id: $id, passengerId: $passengerId, driverId: $driverId, startLocationId: $startLocationId, endLocationId: $endLocationId, distance: $distance, price: $price, cartypeId: $cartypeId, status: $status, paymentMethod: $paymentMethod, bookerId: $bookerId, note: $note, passenger: $passenger, booker: $booker, endLocation: $endLocation, startLocation: $startLocation, cartype: $cartype)';
+    return 'Trip(id: $id, passengerId: $passengerId, driverId: $driverId, startLocationId: $startLocationId, endLocationId: $endLocationId, distance: $distance, price: $price, cartypeId: $cartypeId, status: $status, paymentMethod: $paymentMethod, bookerId: $bookerId, note: $note, passenger: $passenger, booker: $booker, endLocation: $endLocation, startLocation: $startLocation, cartype: $cartype, type: $type)';
   }
 
   @override
@@ -160,7 +165,8 @@ class Trip {
         other.booker == booker &&
         other.endLocation == endLocation &&
         other.startLocation == startLocation &&
-        other.cartype == cartype;
+        other.cartype == cartype &&
+        other.type == type;
   }
 
   @override
@@ -181,7 +187,8 @@ class Trip {
         booker.hashCode ^
         endLocation.hashCode ^
         startLocation.hashCode ^
-        cartype.hashCode;
+        cartype.hashCode ^
+        type.hashCode;
   }
 }
 

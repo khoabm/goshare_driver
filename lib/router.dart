@@ -25,8 +25,8 @@ class AppRouter {
   /// The route configuration.
   GoRouter createRouter(String initialLocation) {
     return GoRouter(
-      initialLocation:
-          initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
+      initialLocation: initialLocation,
+      // initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(
           name: RouteConstants.login,
@@ -78,6 +78,7 @@ class AppRouter {
                       latitude: 10.6666667,
                       longitude: 106.66666667),
                   cartype: CarType(capacity: 4),
+                  type: 3,
                 ),
               ),
               key: state.pageKey,
