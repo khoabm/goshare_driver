@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/repository/trip_repository.dart';
+import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 
 final tripControllerProvider = StateNotifierProvider<TripController, bool>(
@@ -51,14 +52,14 @@ class TripController extends StateNotifier<bool> {
     return trip;
   }
 
-  Future<Trip?> confirmEndTrip(
+  Future<EndTripModel?> confirmEndTrip(
     BuildContext context,
     double? currentLat,
     double? currentLon,
     String? imagePath,
     String tripId,
   ) async {
-    Trip? trip;
+    EndTripModel? trip;
 
     final result = await _tripRepository.confirmEndTrip(
       currentLat,

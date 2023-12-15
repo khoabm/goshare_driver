@@ -1,30 +1,32 @@
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
-
 class DriverPersonalInformationModel {
   final int ratingNum;
   final double rating;
   final double dailyIncome;
   final DateTime? dueDate;
+  final DateTime? warnedTime;
   DriverPersonalInformationModel({
     required this.ratingNum,
     required this.rating,
     required this.dailyIncome,
     this.dueDate,
+    this.warnedTime,
   });
 
   DriverPersonalInformationModel copyWith({
     int? ratingNum,
     double? rating,
     double? dailyIncome,
-    ValueGetter<DateTime?>? dueDate,
+    DateTime? dueDate,
+    DateTime? warnedTime,
   }) {
     return DriverPersonalInformationModel(
       ratingNum: ratingNum ?? this.ratingNum,
       rating: rating ?? this.rating,
       dailyIncome: dailyIncome ?? this.dailyIncome,
-      dueDate: dueDate?.call() ?? this.dueDate,
+      dueDate: dueDate ?? this.dueDate,
+      warnedTime: warnedTime ?? this.warnedTime,
     );
   }
 
@@ -34,6 +36,7 @@ class DriverPersonalInformationModel {
       'rating': rating,
       'dailyIncome': dailyIncome,
       'dueDate': dueDate?.millisecondsSinceEpoch,
+      'warnedTime': warnedTime?.millisecondsSinceEpoch,
     };
   }
 
@@ -43,6 +46,11 @@ class DriverPersonalInformationModel {
       rating: map['rating']?.toDouble() ?? 0.0,
       dailyIncome: map['dailyIncome']?.toDouble() ?? 0.0,
       dueDate: map['dueDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+              DateTime.parse(map['dueDate']).millisecondsSinceEpoch,
+            )
+          : null,
+      warnedTime: map['warnedTime'] != null
           ? DateTime.fromMillisecondsSinceEpoch(
               DateTime.parse(map['dueDate']).millisecondsSinceEpoch,
             )
@@ -57,7 +65,7 @@ class DriverPersonalInformationModel {
 
   @override
   String toString() {
-    return 'DriverPersonalInformationModel(ratingNum: $ratingNum, rating: $rating, dailyIncome: $dailyIncome, dueDate: $dueDate)';
+    return 'DriverPersonalInformationModel(ratingNum: $ratingNum, rating: $rating, dailyIncome: $dailyIncome, dueDate: $dueDate, warnedTime: $warnedTime)';
   }
 
   @override
@@ -68,7 +76,8 @@ class DriverPersonalInformationModel {
         other.ratingNum == ratingNum &&
         other.rating == rating &&
         other.dailyIncome == dailyIncome &&
-        other.dueDate == dueDate;
+        other.dueDate == dueDate &&
+        other.warnedTime == warnedTime;
   }
 
   @override
@@ -76,6 +85,7 @@ class DriverPersonalInformationModel {
     return ratingNum.hashCode ^
         rating.hashCode ^
         dailyIncome.hashCode ^
-        dueDate.hashCode;
+        dueDate.hashCode ^
+        warnedTime.hashCode;
   }
 }

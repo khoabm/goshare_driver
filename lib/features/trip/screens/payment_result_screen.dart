@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
-import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/models/end_trip_model.dart';
 
 class PaymentResultScreen extends ConsumerWidget {
-  final Trip? trip;
+  final EndTripModel? trip;
   const PaymentResultScreen({
     super.key,
     this.trip,
@@ -97,7 +97,9 @@ class PaymentResultScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    trip?.price != null ? '${trip!.price * 0.01}đ' : "1.000đ",
+                    trip?.systemCommission != null
+                        ? '${trip!.systemCommission}đ'
+                        : "1.000đ",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,

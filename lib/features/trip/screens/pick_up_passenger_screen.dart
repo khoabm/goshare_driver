@@ -18,6 +18,7 @@ import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
 import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/is_chat_on_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 // import 'package:goshare_driver/providers/current_location_provider.dart';
@@ -81,8 +82,12 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
   FocusNode focusNode = FocusNode();
   @override
   void initState() {
+    if (!mounted) return;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      initialize();
+      if (mounted) {
+        initSignalR();
+        initialize();
+      }
     });
     super.initState();
   }
@@ -121,6 +126,39 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     await _listenLocation();
 
     setState(() {});
+  }
+
+  void initSignalR() async {
+    final hubConnection = await ref.watch(
+      hubConnectionProvider.future,
+    );
+
+    hubConnection.on(
+      "NotifyPassengerTripCanceled",
+      (arguments) {
+        try {
+          if (mounted) {
+            ref
+                .watch(currentOnTripIdProvider.notifier)
+                .setCurrentOnTripId(null);
+            context.goNamed(
+              RouteConstants.dashBoard,
+            );
+          }
+        } catch (e) {
+          print(
+            e.toString(),
+          );
+          rethrow;
+        }
+      },
+    );
+
+    hubConnection.onclose((exception) {
+      print(
+        exception.toString(),
+      );
+    });
   }
 
   void navigateToPassengerInformation() {
