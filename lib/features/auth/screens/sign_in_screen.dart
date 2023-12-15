@@ -10,7 +10,9 @@ import 'package:goshare_driver/common/app_text_field.dart';
 import 'package:goshare_driver/common/home_center_container.dart';
 import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/constants.dart';
+import 'package:goshare_driver/core/constants/login_error_constants.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
 
 import 'package:goshare_driver/theme/pallet.dart';
@@ -106,33 +108,43 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
       setState(() {
         _isLoading = false;
       });
-      if (result.isNotEmpty) {
-        Map<String, dynamic> resultMap = json.decode(result);
-        print(resultMap);
-        if (resultMap.containsKey('accessToken')) {
-          String accessToken = resultMap['accessToken'];
-          String refreshToken = resultMap['refreshToken'];
-          final SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setString('driverAccessToken', accessToken);
-          prefs.setString('driverRefreshToken', refreshToken);
-          //ref.read(accessTokenProvider.notifier).state = accessToken;
+      if (result.error != null) {
+        print('Error: ${result.error}');
+        if (result.error == LoginErrorConstants.phoneNumberNotExist ||
+            result.error == LoginErrorConstants.wrongPassword) {
+          if (mounted) {
+            showWrongPasswordDialog(context);
+          }
+        } else if (result.error == LoginErrorConstants.accountNotVerified) {
+          if (mounted) {
+            showNotVerifiedDialog(context, ref, phone);
+          }
+        } else {
+          if (mounted) {
+            showBannedDialog(context, result.error ?? 'Có lỗi xảy ra');
+          }
         }
-        if (resultMap.containsKey('id') &&
-            resultMap.containsKey('phone') &&
-            resultMap.containsKey('name') &&
-            resultMap.containsKey('role')) {
-          User userTmp = User(
-            id: resultMap['id'],
-            phone: resultMap['phone'],
-            name: resultMap['name'],
-            role: resultMap['role'],
-          );
-          ref.read(userProvider.notifier).state = userTmp;
-          setState(() {});
-          //print(ref.read(userProvider.notifier).state?.id);
-        }
-        navigateToDashBoardScreen();
-      } else {}
+      } else {
+        // Map<String, dynamic> resultMap = json.decode(result);
+        // print(resultMap);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('driverAccessToken', result.accessToken!);
+        prefs.setString('driverRefreshToken', result.refreshToken!);
+        // if (resultMap.containsKey('id') &&
+        //     resultMap.containsKey('phone') &&
+        //     resultMap.containsKey('name') &&
+        //     resultMap.containsKey('role')) {
+        //   User userTmp = User(
+        //     id: resultMap['id'],
+        //     phone: resultMap['phone'],
+        //     name: resultMap['name'],
+        //     role: resultMap['role'],
+        //   );
+        ref.read(userProvider.notifier).state = result.user;
+        setState(() {});
+        //print(ref.read(userProvider.notifier).state?.id);
+      }
+      navigateToDashBoardScreen();
     }
   }
 

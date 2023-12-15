@@ -105,11 +105,11 @@ class _DashBoardState extends ConsumerState<DashBoard> {
           final location = ref.read(locationProvider);
           currentLocation = await location.getCurrentLocation();
           if (context.mounted) {
-            await ref.watch(tripControllerProvider.notifier).updateLocation(
-                  context,
-                  currentLocation?.latitude ?? 0.0,
-                  currentLocation?.longitude ?? 0.0,
-                );
+            // await ref.watch(tripControllerProvider.notifier).updateLocation(
+            //       context,
+            //       currentLocation?.latitude ?? 0.0,
+            //       currentLocation?.longitude ?? 0.0,
+            //     );
           }
         }
       }
@@ -522,6 +522,63 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                                           informationModel
                                                               .dueDate!,
                                                         )}',
+                                                        style: const TextStyle(
+                                                          color: Colors
+                                                              .yellowAccent,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : const SizedBox.shrink(),
+                                          informationModel.warnedTime != null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          dialogContext) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                            'Thông báo',
+                                                          ),
+                                                          content: const Text(
+                                                            'Tài khoản của bạn đang có đánh giá quá thấp.',
+                                                          ),
+                                                          actions: <Widget>[
+                                                            TextButton(
+                                                              child: const Text(
+                                                                'Đóng',
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        dialogContext)
+                                                                    .pop();
+                                                              },
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: const Row(
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        IconData(
+                                                          0xe33c,
+                                                          fontFamily:
+                                                              'MaterialIcons',
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                          width:
+                                                              8.0), // You can adjust the space between the icon and text
+                                                      Text(
+                                                        'Tài khoản của bạn đang có đánh giá quá thấp.',
+                                                        style: TextStyle(
+                                                          color: Colors
+                                                              .yellowAccent,
+                                                        ),
                                                       ),
                                                     ],
                                                   ),

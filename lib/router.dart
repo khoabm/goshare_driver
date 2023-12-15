@@ -19,6 +19,7 @@ import 'package:goshare_driver/features/trip/screens/passenger_information_scree
 import 'package:goshare_driver/features/trip/screens/payment_result_screen.dart';
 import 'package:goshare_driver/features/trip/screens/pick_up_passenger_screen.dart';
 import 'package:goshare_driver/features/trip-request/screens/trip_request_screen.dart';
+import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:goshare_driver/test_step_screen.dart';
 
@@ -314,7 +315,7 @@ class AppRouter {
             GoRouterState state,
           ) {
             //final params = state.extra as Map<String, dynamic>;
-            final trip = state.extra as Trip?;
+            final trip = state.extra as EndTripModel?;
             //final String receiver = params['receiver'] as String;
             return SlideRightTransition(
               child: PaymentResultScreen(trip: trip),

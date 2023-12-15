@@ -7,6 +7,7 @@ import 'package:goshare_driver/core/constants/constants.dart';
 import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
+import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -87,7 +88,7 @@ class TripRepository {
     }
   }
 
-  FutureEither<Trip> confirmEndTrip(
+  FutureEither<EndTripModel> confirmEndTrip(
     double? currentLat,
     double? currentLon,
     String? imagePath,
@@ -133,7 +134,7 @@ class TripRepository {
       // print(response.body);
       if (response.statusCode == 200) {
         Map<String, dynamic> tripData = json.decode(responseData);
-        Trip trip = Trip.fromMap(tripData);
+        EndTripModel trip = EndTripModel.fromMap(tripData);
         return right(trip);
       } else if (response.statusCode == 429) {
         return left(Failure('Too many request'));

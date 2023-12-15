@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:goshare_driver/features/auth/controllers/sign_up_controller.dart';
 import 'package:image_picker/image_picker.dart';
 
 void showSnackBar({
@@ -104,6 +106,144 @@ void showErrorRegisDialog({
             onPressed: () {
               Navigator.of(abcContext).pop();
             },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showBannedDialog(BuildContext context, String message) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Center(
+          child: Text(
+            'Lỗi đăng nhập',
+          ),
+        ),
+        content: Center(
+          child: Text(message),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showWrongPasswordDialog(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Center(
+          child: Text(
+            'Lỗi đăng nhập',
+          ),
+        ),
+        content: const Center(
+          child: Text('Số điện thoại hoặc mật khẩu không chính xác'),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showNotVerifiedDialog(BuildContext context, WidgetRef ref, String phone) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Center(
+          child: Text(
+            'Lỗi đăng nhập',
+          ),
+        ),
+        content: const Center(
+          child: Text(
+              'Tài khoản chưa xác thực. Chọn "Xác nhận" để tiếp tục xác thực'),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              final result = await ref
+                  .watch(signUpControllerProvider.notifier)
+                  .reSendOtpVerification(
+                    phone,
+                    context,
+                  );
+              if (context.mounted) {
+                Navigator.of(abcContext).pop();
+                if (result == true) {
+                  context.goNamed(
+                    RouteConstants.otp,
+                  );
+                }
+              }
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Hủy',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showFeedBackError(BuildContext context, String message) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Center(
+          child: Text(
+            'Lỗi phản hồi',
+          ),
+        ),
+        content: Center(
+          child: Text(message),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
           ),
         ],
       );

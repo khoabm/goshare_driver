@@ -16,6 +16,7 @@ import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
 import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
+import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/is_chat_on_provider.dart';
@@ -81,11 +82,13 @@ class _DeliverPassengerScreenState
 
   @override
   void initState() {
-    initialize();
-    print('--------------------------------');
-    print(widget.trip?.endLocation.latitude);
-    print(widget.trip?.endLocation.longitude);
-    print('----------------------------------');
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        initSignalR();
+        initialize();
+      }
+    });
     super.initState();
   }
 
@@ -132,6 +135,39 @@ class _DeliverPassengerScreenState
         deliverPictureFile = File(res.path);
       });
     }
+  }
+
+  void initSignalR() async {
+    final hubConnection = await ref.watch(
+      hubConnectionProvider.future,
+    );
+
+    hubConnection.on(
+      "NotifyPassengerTripCanceled",
+      (arguments) {
+        try {
+          if (mounted) {
+            ref
+                .watch(currentOnTripIdProvider.notifier)
+                .setCurrentOnTripId(null);
+            context.goNamed(
+              RouteConstants.dashBoard,
+            );
+          }
+        } catch (e) {
+          print(
+            e.toString(),
+          );
+          rethrow;
+        }
+      },
+    );
+
+    hubConnection.onclose((exception) {
+      print(
+        exception.toString(),
+      );
+    });
   }
 
   Future<void> _listenLocation() async {
@@ -193,10 +229,10 @@ class _DeliverPassengerScreenState
     );
   }
 
-  void navigateToPaymentResult() {
+  void navigateToPaymentResult(EndTripModel endTripModel) {
     context.goNamed(
       RouteConstants.endTrip,
-      extra: widget.trip,
+      extra: endTripModel,
     );
   }
 
@@ -558,7 +594,9 @@ class _DeliverPassengerScreenState
                                                                     .notifier)
                                                             .setCurrentOnTripId(
                                                                 null);
-                                                        navigateToPaymentResult();
+                                                        navigateToPaymentResult(
+                                                          tripResult,
+                                                        );
                                                       }
                                                     }
                                                   }

@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:goshare_driver/core/constants/constants.dart';
+import 'package:goshare_driver/core/constants/login_error_constants.dart';
 import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
@@ -23,16 +24,27 @@ final loginRepositoryProvider = Provider(
   ),
 );
 
+class LoginResult {
+  final String? accessToken;
+  final String? refreshToken;
+  final User? user;
+  final String? error;
+
+  LoginResult({this.accessToken, this.refreshToken, this.user, this.error});
+}
+
 class LoginRepository {
   final String baseUrl;
 
   LoginRepository({required this.baseUrl});
 
-  Future<String> login(
-    String phone,
-    String passcode,
-    WidgetRef ref,
-  ) async {
+  Future<LoginResult> login(
+      String phone, String passcode, WidgetRef ref) async {
+    // if (phone.isEmpty || passcode.isEmpty) {
+    //   phone = '+84363111098';
+    //   passcode = '123456';
+    // }
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/driver/login'),
@@ -44,20 +56,43 @@ class LoginRepository {
           'passcode': passcode,
         }),
       );
-      print(response.body);
+      final resultMap = json.decode(response.body);
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         final userData = UserDataModel.fromMap(jsonData);
-
         ref
             .watch(currentOnTripIdProvider.notifier)
             .setCurrentOnTripId(userData.currentTrip);
-        return response.body;
+
+        return LoginResult(
+          accessToken: resultMap['accessToken'],
+          refreshToken: resultMap['refreshToken'],
+          user: User(
+            id: resultMap['id'],
+            phone: resultMap['phone'],
+            name: resultMap['name'],
+            role: resultMap['role'],
+          ),
+        );
+      } else if (response.statusCode == 404) {
+        if (resultMap['message'] == 'Phone number not found') {
+          return LoginResult(error: LoginErrorConstants.phoneNumberNotExist);
+        }
+        return LoginResult();
+      } else if (response.statusCode == 401) {
+        if (resultMap['message'] == 'User is not verified') {
+          return LoginResult(error: LoginErrorConstants.accountNotVerified);
+        } else if (resultMap['message'] == 'Wrong passcode') {
+          return LoginResult(error: LoginErrorConstants.wrongPassword);
+        }
+        return LoginResult();
+      } else if (response.statusCode == 403) {
+        return LoginResult(error: resultMap['message']);
       } else {
-        return 'cannot login';
+        return LoginResult(error: 'Login failed');
       }
     } catch (e) {
-      return 'uuu';
+      return LoginResult(error: 'An error occurred');
     }
   }
 
