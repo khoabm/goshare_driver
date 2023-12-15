@@ -11,6 +11,7 @@ import 'package:goshare_driver/features/auth/screens/user_exist_confirm_screen.d
 import 'package:goshare_driver/features/auth/screens/user_exist_verify.dart';
 import 'package:goshare_driver/features/auth/screens/user_info_regis_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
+import 'package:goshare_driver/features/dashboard/screen/profile_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/statistics_screen.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/deliver_passenger_screen.dart';
@@ -330,6 +331,19 @@ class AppRouter {
           ) {
             return SlideRightTransition(
               child: const StatisticScreen(),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.editProfile,
+          path: RouteConstants.editProfileUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const EditProfilePage(),
               key: state.pageKey,
             );
           },

@@ -7,6 +7,7 @@ import 'package:goshare_driver/models/driver_personal_information_model.dart';
 import 'package:goshare_driver/models/statistic_model.dart';
 import 'package:goshare_driver/models/transaction_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
+import 'package:goshare_driver/models/user_profile_model.dart';
 
 final dashBoardControllerProvider =
     StateNotifierProvider<DashBoardController, bool>(
@@ -148,5 +149,60 @@ class DashBoardController extends StateNotifier<bool> {
       list = r;
     });
     return list;
+  }
+
+  Future<UserProfileModel?> editUserProfile(
+    BuildContext context,
+    String name,
+    String? imagePath,
+    int gender,
+    DateTime birth,
+  ) async {
+    UserProfileModel? profile;
+
+    final result = await _dashBoardRepository.editUserProfile(
+      name,
+      imagePath,
+      gender,
+      birth,
+    );
+    result.fold((l) {
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      // print(r.length.toString());
+      profile = r;
+    });
+    return profile;
+  }
+
+  Future<UserProfileModel?> getUserProfile(BuildContext context) async {
+    UserProfileModel? profile;
+
+    final result = await _dashBoardRepository.getUserProfile();
+    result.fold((l) {
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      // print(r.length.toString());
+      profile = r;
+    });
+    return profile;
   }
 }
