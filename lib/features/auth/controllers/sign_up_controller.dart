@@ -69,6 +69,28 @@ class SignUpController extends StateNotifier<bool> {
     return data;
   }
 
+  Future<String> getDriverRegisCode(
+    String token,
+    BuildContext context,
+  ) async {
+    final result = await _signUpRepository.getDriverRegisCode(
+      token,
+    );
+    String data = '';
+    result.fold(
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
+      (success) {
+        data = success;
+      },
+    );
+    return data;
+  }
+
   Future<String?> sendOtpVerification(
     String phone,
     String otp,

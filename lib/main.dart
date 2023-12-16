@@ -11,12 +11,19 @@ import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 import 'package:goshare_driver/firebase_options.dart';
 import 'package:goshare_driver/router.dart';
 import 'package:goshare_driver/theme/pallet.dart';
+import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:image_picker_android/image_picker_android.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final ImagePickerPlatform imagePickerImplementation =
+      ImagePickerPlatform.instance;
+  if (imagePickerImplementation is ImagePickerAndroid) {
+    imagePickerImplementation.useAndroidPhotoPicker = true;
+  }
   runApp(
     const ProviderScope(
       child: MyApp(),

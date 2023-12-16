@@ -178,6 +178,34 @@ class SignUpRepository {
         }),
       );
       if (response.statusCode == 200) {
+        final resultMap = json.decode(response.body);
+        return right(resultMap['accessToken']);
+      } else {
+        return left(
+          Failure('Có lỗi xác thực'),
+        );
+      }
+    } catch (e) {
+      return left(
+        Failure(
+          'Lỗi hệ thống',
+        ),
+      );
+    }
+  }
+
+  FutureEither<String> getDriverRegisCode(
+    String token,
+  ) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/user/driver-register-code'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': token,
+        },
+      );
+      if (response.statusCode == 200) {
         return right(response.body);
       } else {
         return left(
