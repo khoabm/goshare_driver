@@ -26,6 +26,7 @@ class DriverInformationRegister extends ConsumerStatefulWidget {
 class _DriverInformationRegisterState
     extends ConsumerState<DriverInformationRegister> {
   int _currentStep = 0;
+  bool _isLoading = false;
   final List<List<File?>> _images = [
     [null, null],
     [null, null],
@@ -42,6 +43,9 @@ class _DriverInformationRegisterState
 
   void checkFiles() async {
     if (_driverInfoFormKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
       for (int i = 0; i < _images.length; i++) {
         for (int j = 0; j < _images[i].length; j++) {
           if (_images[i][j] == null) {
@@ -51,9 +55,26 @@ class _DriverInformationRegisterState
                 message: 'Vui lòng bổ sung ảnh căn cước',
               );
             } else if (i == 1) {
+              showErrorRegisDialog(
+                context: context,
+                message: 'Vui lòng bổ sung ảnh bằng lái',
+              );
             } else if (i == 2) {
+              showErrorRegisDialog(
+                context: context,
+                message: 'Vui lòng bổ sung ảnh giấy tờ',
+              );
             } else if (i == 3) {
-            } else if (i == 4) {}
+              showErrorRegisDialog(
+                context: context,
+                message: 'Vui lòng bổ sung ảnh đăng kiểm',
+              );
+            } else if (i == 4) {
+              showErrorRegisDialog(
+                context: context,
+                message: 'Vui lòng bổ sung ảnh giấy tờ',
+              );
+            }
             return;
           }
         }
@@ -90,6 +111,9 @@ class _DriverInformationRegisterState
           );
         }
       }
+      setState(() {
+        _isLoading = true;
+      });
     } else {
       showErrorRegisDialog(
         context: context,
@@ -200,7 +224,7 @@ class _DriverInformationRegisterState
                                 : index == 3
                                     ? 'Giấy tờ xe'
                                     : index == 4
-                                        ? 'Đăng kiểm'
+                                        ? 'Đăng kiểm (Bảo hiểm nếu là xe 2 bánh)'
                                         : index == 5
                                             ? 'Ảnh nhận diện'
                                             : '',
@@ -329,7 +353,7 @@ class _DriverInformationRegisterState
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width * .8,
-            height: 100,
+            height: 50,
             child: GridView.count(
               crossAxisCount: 2,
               childAspectRatio: 3,
