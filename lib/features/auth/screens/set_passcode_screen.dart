@@ -56,19 +56,20 @@ class _SetPassCodeScreenState extends ConsumerState<SetPassCodeScreen> {
         _isLoading = false;
       });
       if (result) {
-        if (context.mounted) {
-          context.goNamed(
-            RouteConstants.driverInfoRegis,
-            pathParameters: {
-              'phone': phone,
-            },
-          );
+        if (mounted) {
+          navigateToDriverInfoRegisScreen(passcode);
         }
         print('Set thanh cong');
       } else {
         print('Set that bai');
       }
     }
+  }
+
+  void navigateToDriverInfoRegisScreen(String passcode) {
+    context.goNamed(RouteConstants.driverInformationRegister, pathParameters: {
+      'passcode': passcode,
+    });
   }
 
   void navigateToDriverInfoRegis(String phone) {

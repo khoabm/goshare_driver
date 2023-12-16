@@ -199,9 +199,9 @@ class SignUpRepository {
     String model,
     int capacity,
     List<Map<String, dynamic>> imageList,
-    String phone,
+    String passcode,
   ) async {
-    print(phone);
+    print(passcode);
     print(make);
     print(model);
     print(capacity);
@@ -217,7 +217,7 @@ class SignUpRepository {
       ..fields['Car[Make]'] = make
       ..fields['Car[Model]'] = model
       ..fields['Capacity'] = capacity.toString()
-      ..fields['Phone'] = convertPhoneNumber(phone);
+      ..fields['Passcode'] = convertPhoneNumber(passcode);
     for (var i = 0; i < imageList.length; i++) {
       var image = imageList[i];
       var filePath = image['pic'];

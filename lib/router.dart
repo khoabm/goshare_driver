@@ -21,7 +21,7 @@ import 'package:goshare_driver/features/trip/screens/pick_up_passenger_screen.da
 import 'package:goshare_driver/features/trip-request/screens/trip_request_screen.dart';
 import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
-import 'package:goshare_driver/test_step_screen.dart';
+import 'package:goshare_driver/driver_information_register_screen.dart';
 
 class AppRouter {
   /// The route configuration.
@@ -103,14 +103,18 @@ class AppRouter {
           },
         ),
         GoRoute(
-          name: 'test3',
-          path: '/test3',
+          name: RouteConstants.driverInformationRegister,
+          path: RouteConstants.driverInformationRegisterUrl,
           pageBuilder: (
             BuildContext context,
             GoRouterState state,
           ) {
+            final params = state.pathParameters;
+            final String passcode = params['passcode'] ?? '';
             return SlideRightTransition(
-              child: const MyHomePage(),
+              child: DriverInformationRegister(
+                passcode: passcode,
+              ),
               key: state.pageKey,
             );
           },

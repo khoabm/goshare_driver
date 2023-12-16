@@ -230,7 +230,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
               top: 16,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Menu icon on the left
@@ -247,6 +247,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   );
                 }),
                 // InkWell with Text "Bắt đầu" and turn on icon
+                const SizedBox(
+                  width: 30,
+                ),
                 Consumer(
                   builder: (context, ref, child) {
                     final currentState = ref.watch(currentStateProvider);

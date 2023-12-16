@@ -1,20 +1,30 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goshare_driver/core/constants/route_constants.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:goshare_driver/common/app_text_field.dart';
 import 'package:goshare_driver/features/auth/controllers/sign_up_controller.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
-class MyHomePage extends ConsumerStatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class DriverInformationRegister extends ConsumerStatefulWidget {
+  final String passcode;
+
+  const DriverInformationRegister({
+    super.key,
+    required this.passcode,
+  });
 
   @override
-  ConsumerState createState() => _MyHomePageState();
+  ConsumerState createState() => _DriverInformationRegisterState();
 }
 
-class _MyHomePageState extends ConsumerState<MyHomePage> {
+class _DriverInformationRegisterState
+    extends ConsumerState<DriverInformationRegister> {
   int _currentStep = 0;
   final List<List<File?>> _images = [
     [null, null],
@@ -43,8 +53,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             } else if (i == 1) {
             } else if (i == 2) {
             } else if (i == 3) {
-            } else if (i == 4) {
-            } else if (i == 5) {}
+            } else if (i == 4) {}
             return;
           }
         }
@@ -66,11 +75,26 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                 _carModelTextController.text,
                 _carMakeController.text,
                 groupValue,
-                '0',
+                widget.passcode,
                 imageList,
                 context,
               );
+      if (result == true) {
+        navigateToSuccessScreen();
+      } else {
+        if (mounted) {
+          showErrorRegisDialog(
+            context: context,
+            message:
+                'Vui lòng xem lại thông tin đã điền, nếu đây là lỗi vui lòng liên hệ với hệ thống',
+          );
+        }
+      }
     }
+  }
+
+  void navigateToSuccessScreen() {
+    context.goNamed(RouteConstants.driverRegisSuccess);
   }
 
   void showErrorRegisDialog({

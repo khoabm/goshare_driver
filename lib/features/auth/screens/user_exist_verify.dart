@@ -48,14 +48,14 @@ class _UserExistVerifyScreenState extends ConsumerState<UserExistVerifyScreen> {
         _isLoading = false;
       });
       if (result.isNotEmpty) {
-        navigateToDriverInfoRegisScreen(phone);
+        navigateToDriverInfoRegisScreen(passcode);
       } else {}
     }
   }
 
-  void navigateToDriverInfoRegisScreen(String phone) {
-    context.goNamed(RouteConstants.driverInfoRegis, pathParameters: {
-      'phone': phone,
+  void navigateToDriverInfoRegisScreen(String passcode) {
+    context.goNamed(RouteConstants.driverInformationRegister, pathParameters: {
+      'passcode': passcode,
     });
   }
 
