@@ -90,6 +90,11 @@ class _DriverInformationRegisterState
           );
         }
       }
+    } else {
+      showErrorRegisDialog(
+        context: context,
+        message: 'Vui lòng điền thông tin tài xế',
+      );
     }
   }
 
@@ -172,7 +177,7 @@ class _DriverInformationRegisterState
         },
         onStepTapped: (step) => setState(() => _currentStep = step),
         steps: List<Step>.generate(
-          5,
+          6,
           (index) => Step(
             state: index == _currentStep
                 ? StepState.editing
@@ -187,11 +192,36 @@ class _DriverInformationRegisterState
                 ? _buildForm() // Display a form for the first step
                 : Column(
                     children: [
-                      _buildImagePicker(index, 0),
-                      const SizedBox(height: 10),
-                      if (index < 3)
-                        _buildImagePicker(index,
-                            1), // Only add a second image picker for the first 4 steps
+                      Text(
+                        index == 1
+                            ? 'Căn cước'
+                            : index == 2
+                                ? 'Bằng lái xe'
+                                : index == 3
+                                    ? 'Giấy tờ xe'
+                                    : index == 4
+                                        ? 'Đăng kiểm'
+                                        : index == 5
+                                            ? 'Ảnh nhận diện'
+                                            : '',
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold), // Add this line
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      if (_images[index - 1].length > 1)
+                        const Text('Mặt trước'),
+                      _buildImagePicker(index - 1, 0),
+                      const SizedBox(height: 20),
+                      if (_images[index - 1].length > 1) ...[
+                        const Text('Mặt sau'),
+                        _buildImagePicker(index - 1, 1),
+                      ],
+                      const SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
           ),

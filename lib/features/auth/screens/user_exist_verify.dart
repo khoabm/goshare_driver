@@ -48,7 +48,14 @@ class _UserExistVerifyScreenState extends ConsumerState<UserExistVerifyScreen> {
         _isLoading = false;
       });
       if (result.isNotEmpty) {
-        navigateToDriverInfoRegisScreen(passcode);
+        if (mounted) {
+          final driverRegisCode = await ref
+              .read(signUpControllerProvider.notifier)
+              .getDriverRegisCode(result, context);
+          if (driverRegisCode.isNotEmpty) {
+            navigateToDriverInfoRegisScreen(driverRegisCode);
+          }
+        }
       } else {}
     }
   }

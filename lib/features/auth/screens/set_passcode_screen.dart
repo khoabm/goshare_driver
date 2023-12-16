@@ -57,7 +57,23 @@ class _SetPassCodeScreenState extends ConsumerState<SetPassCodeScreen> {
       });
       if (result) {
         if (mounted) {
-          navigateToDriverInfoRegisScreen(passcode);
+          final verifyAccountResult = await ref
+              .read(signUpControllerProvider.notifier)
+              .verifyAccountExist(
+                phone,
+                passcode,
+                context,
+              );
+          if (verifyAccountResult.isNotEmpty) {
+            if (mounted) {
+              final driverRegisCode = await ref
+                  .read(signUpControllerProvider.notifier)
+                  .getDriverRegisCode(verifyAccountResult, context);
+              if (driverRegisCode.isNotEmpty) {
+                navigateToDriverInfoRegisScreen(driverRegisCode);
+              }
+            }
+          }
         }
         print('Set thanh cong');
       } else {

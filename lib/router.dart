@@ -27,7 +27,7 @@ class AppRouter {
   /// The route configuration.
   GoRouter createRouter(String initialLocation) {
     return GoRouter(
-      initialLocation: initialLocation,
+      initialLocation: RouteConstants.driverInformationRegisterUrl,
       // initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(

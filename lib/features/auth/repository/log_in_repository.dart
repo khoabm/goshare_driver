@@ -148,6 +148,10 @@ class LoginRepository {
       if (response.statusCode == 200) {
         return right(true);
       } else {
+        if (response.statusCode == 400) {
+          final resultMap = json.decode(response.body);
+          return left(resultMap['message']);
+        }
         return left(
           Failure('Có lỗi khi bật nhận chuyến'),
         );
@@ -174,6 +178,10 @@ class LoginRepository {
       );
       if (response.statusCode == 200) {
         return right(true);
+      }
+      if (response.statusCode == 400) {
+        final resultMap = json.decode(response.body);
+        return left(resultMap['message']);
       } else {
         return left(
           Failure('Có lỗi khi tắt nhận chuyến'),
