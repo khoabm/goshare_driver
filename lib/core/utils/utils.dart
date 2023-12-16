@@ -18,6 +18,13 @@ void showSnackBar({
     );
 }
 
+String convertBackPhoneNumber(String phoneNumber) {
+  if (phoneNumber.startsWith('+84')) {
+    return '0${phoneNumber.substring(3)}';
+  }
+  return phoneNumber;
+}
+
 void showLoginTimeOut({
   required BuildContext context,
 }) {
@@ -153,8 +160,13 @@ void showWrongPasswordDialog(BuildContext context) {
             'Lỗi đăng nhập',
           ),
         ),
-        content: const Center(
-          child: Text('Số điện thoại hoặc mật khẩu không chính xác'),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text('Số điện thoại hoặc mật khẩu không chính xác'),
+            ),
+          ],
         ),
         actions: [
           ElevatedButton(

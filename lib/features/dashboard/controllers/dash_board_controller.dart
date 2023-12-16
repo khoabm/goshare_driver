@@ -205,4 +205,23 @@ class DashBoardController extends StateNotifier<bool> {
     });
     return profile;
   }
+
+  Future<List<Trip>> tripHistory(
+    BuildContext context,
+  ) async {
+    final result = await _dashBoardRepository.getTripHistory();
+    List<Trip> res = [];
+    result.fold(
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
+      (success) {
+        res = success;
+      },
+    );
+    return res;
+  }
 }
