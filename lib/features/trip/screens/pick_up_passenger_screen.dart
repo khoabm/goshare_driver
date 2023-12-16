@@ -104,7 +104,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     _navigationOption.mapStyle =
         "https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm";
     _navigationOption.customLocationCenterIcon =
-        await VietMapHelper.getBytesFromAsset('assets/download.jpeg');
+        await VietmapHelper.getBytesFromAsset('assets/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
     final location = ref.read(locationProvider);
     locationData = await location.getCurrentLocation();
@@ -382,7 +382,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                     ),
                                   );
                                   _controller?.setCenterIcon(
-                                    await VietMapHelper.getBytesFromAsset(
+                                    await VietmapHelper.getBytesFromAsset(
                                         'assets/download.jpeg'),
                                   );
                                   await _controller?.buildAndStartNavigation(
@@ -669,6 +669,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                           locationProvider);
                                                       locationData = await location
                                                           .getCurrentLocation();
+
                                                       print("--------------");
                                                       print(locationData
                                                           .toString());
@@ -689,10 +690,14 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                                       .notifier)
                                                               .confirmPickUpPassenger(
                                                                 context,
-                                                                locationData
-                                                                    ?.latitude,
-                                                                locationData
-                                                                    ?.longitude,
+                                                                routeProgressEvent
+                                                                    ?.currentLocation
+                                                                    ?.latitude!
+                                                                    .toDouble(),
+                                                                routeProgressEvent
+                                                                    ?.currentLocation
+                                                                    ?.longitude!
+                                                                    .toDouble(),
                                                                 pickupPictureFile
                                                                     ?.path,
                                                                 widget.trip

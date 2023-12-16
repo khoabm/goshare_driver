@@ -801,26 +801,26 @@ packages:
     dependency: "direct main"
     description:
       name: vietmap_flutter_gl
-      sha256: "96ec98537c8c70bd36aa0c3184952c6e8696ce129bd5e44bb010508f4d7a588a"
+      sha256: e905762e358b7dbbe9c71457b5ddbbdb6608007d5ad33319e3124d5869f4298b
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.3.3"
   vietmap_flutter_navigation:
     dependency: "direct main"
     description:
       name: vietmap_flutter_navigation
-      sha256: "24639012af37a967acc25a050be8a1ba0e5968eadb37343fe926b80b3d845dff"
+      sha256: "1c33df00589ff71bae4a6f6888da6de2b18c5387abd5a32b29c0376937a385c7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.2"
+    version: "1.5.0"
   vietmap_gl_platform_interface:
     dependency: transitive
     description:
       name: vietmap_gl_platform_interface
-      sha256: ef9515a1267e6d4774030ffb1e259472b8f1de9db53ffa7aa3d21664fa9285f7
+      sha256: e9bc6b0d85bb6c55fabf62f97e2b41fc1172a51e56b4feda702fd84d4797fdca
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.1.3"
   web:
     dependency: transitive
     description:

@@ -105,26 +105,26 @@ class _DeliverPassengerScreenState
     _navigationOption.mapStyle =
         "https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm";
     _navigationOption.customLocationCenterIcon =
-        await VietMapHelper.getBytesFromAsset('assets/download.jpeg');
+        await VietmapHelper.getBytesFromAsset('assets/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
     final location = ref.read(locationProvider);
     locationData = await location.getCurrentLocation();
     await _listenLocation();
-    wayPoints.clear();
-    wayPoints.add(
-      WayPoint(
-        name: 'origin point',
-        latitude: locationData?.latitude,
-        longitude: locationData?.longitude,
-      ),
-    );
-    wayPoints.add(
-      WayPoint(
-        name: 'destination point',
-        latitude: widget.trip?.endLocation.latitude,
-        longitude: widget.trip?.endLocation.longitude,
-      ),
-    );
+    // wayPoints.clear();
+    // wayPoints.add(
+    //   WayPoint(
+    //     name: 'origin point',
+    //     latitude: locationData?.latitude,
+    //     longitude: locationData?.longitude,
+    //   ),
+    // );
+    // wayPoints.add(
+    //   WayPoint(
+    //     name: 'destination point',
+    //     latitude: widget.trip?.endLocation.latitude,
+    //     longitude: widget.trip?.endLocation.longitude,
+    //   ),
+    // );
     setState(() {});
   }
 
@@ -343,8 +343,23 @@ class _DeliverPassengerScreenState
                               });
                             },
                             onMapRendered: () async {
+                              wayPoints.clear();
+                              wayPoints.add(
+                                WayPoint(
+                                  name: 'origin point',
+                                  latitude: locationData?.latitude,
+                                  longitude: locationData?.longitude,
+                                ),
+                              );
+                              wayPoints.add(
+                                WayPoint(
+                                  name: 'destination point',
+                                  latitude: widget.trip?.endLocation.latitude,
+                                  longitude: widget.trip?.endLocation.longitude,
+                                ),
+                              );
                               _controller?.setCenterIcon(
-                                await VietMapHelper.getBytesFromAsset(
+                                await VietmapHelper.getBytesFromAsset(
                                     'assets/download.jpeg'),
                               );
                               //_controller?.buildRoute(wayPoints: wayPoints);
