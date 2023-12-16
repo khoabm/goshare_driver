@@ -670,6 +670,9 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                       locationData = await location
                                                           .getCurrentLocation();
 
+                                                      print("--------------");
+                                                      print(locationData
+                                                          .toString());
                                                       if (mounted) {
                                                         if (widget.trip?.type ==
                                                             TripType
@@ -705,6 +708,10 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                               null) {
                                                             if (tripResult.id
                                                                 .isNotEmpty) {
+                                                              print(
+                                                                  "--------------------------");
+                                                              print(tripResult
+                                                                  .toJson());
                                                               _controller
                                                                   ?.clearRoute();
                                                               _controller
