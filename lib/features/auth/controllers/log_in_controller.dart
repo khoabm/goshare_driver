@@ -101,4 +101,21 @@ class LoginController extends StateNotifier<bool> {
     });
     return data;
   }
+
+  Future<bool> removeFcmToken(BuildContext context) async {
+    bool check = false;
+    final result = await _loginRepository.removeFcmToken();
+    result.fold(
+      (l) {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      },
+      (success) {
+        check = success;
+      },
+    );
+    return check;
+  }
 }

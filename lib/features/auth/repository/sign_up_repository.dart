@@ -177,12 +177,15 @@ class SignUpRepository {
           'passcode': passcode,
         }),
       );
+      print(response.body);
+      print(response.statusCode);
+      final resultMap = json.decode(response.body);
+      print(resultMap.toString());
       if (response.statusCode == 200) {
-        final resultMap = json.decode(response.body);
         return right(resultMap['accessToken']);
       } else {
         return left(
-          Failure('Có lỗi xác thực'),
+          Failure(resultMap['message']),
         );
       }
     } catch (e) {
@@ -198,18 +201,23 @@ class SignUpRepository {
     String token,
   ) async {
     try {
-      final response = await http.post(
+      print(token);
+      final response = await http.get(
         Uri.parse('$baseUrl/user/driver-register-code'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
-          'Authorization': token,
+          'Authorization': 'Bearer $token',
         },
       );
+      print(response.statusCode);
+      print(response.body);
+
       if (response.statusCode == 200) {
         return right(response.body);
       } else {
+        final resultMap = json.decode(response.body);
         return left(
-          Failure('Có lỗi xác thực'),
+          Failure(resultMap['message']),
         );
       }
     } catch (e) {
@@ -245,7 +253,7 @@ class SignUpRepository {
       ..fields['Car[Make]'] = make
       ..fields['Car[Model]'] = model
       ..fields['Capacity'] = capacity.toString()
-      ..fields['Passcode'] = convertPhoneNumber(passcode);
+      ..fields['Otp'] = convertPhoneNumber(passcode);
     for (var i = 0; i < imageList.length; i++) {
       var image = imageList[i];
       var filePath = image['pic'];

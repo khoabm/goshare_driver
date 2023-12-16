@@ -21,6 +21,7 @@ class RouteConstants {
   static const statistic = 'statistic';
   static const editProfile = 'profile';
   static const driverInformationRegister = 'driver-information-register';
+  static const tripHistory = 'trip-history';
 
   ///**
   ///Route url constants
@@ -45,4 +46,5 @@ class RouteConstants {
   static const driverRegisSuccessUrl = '/driver-regis-success';
   static const statisticUrl = '/statistic';
   static const editProfileUrl = '/profile';
+  static const tripHistoryUrl = '/trip-history';
 }

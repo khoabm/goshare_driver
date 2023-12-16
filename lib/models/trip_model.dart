@@ -7,6 +7,7 @@ class Trip {
   final String driverId;
   final String startLocationId;
   final String endLocationId;
+  final DateTime startTime;
   // int startTime;
   // int endTime;
   // int pickupTime;
@@ -32,6 +33,7 @@ class Trip {
     required this.driverId,
     required this.startLocationId,
     required this.endLocationId,
+    required this.startTime,
     required this.distance,
     required this.price,
     required this.cartypeId,
@@ -53,6 +55,7 @@ class Trip {
     String? driverId,
     String? startLocationId,
     String? endLocationId,
+    DateTime? startTime,
     double? distance,
     double? price,
     String? cartypeId,
@@ -73,6 +76,7 @@ class Trip {
       driverId: driverId ?? this.driverId,
       startLocationId: startLocationId ?? this.startLocationId,
       endLocationId: endLocationId ?? this.endLocationId,
+      startTime: startTime ?? this.startTime,
       distance: distance ?? this.distance,
       price: price ?? this.price,
       cartypeId: cartypeId ?? this.cartypeId,
@@ -119,6 +123,9 @@ class Trip {
       driverId: map['driverId'] ?? '',
       startLocationId: map['startLocationId'] ?? '',
       endLocationId: map['endLocationId'] ?? '',
+      startTime: DateTime.fromMillisecondsSinceEpoch(
+        DateTime.parse(map['startTime']).millisecondsSinceEpoch,
+      ),
       distance: map['distance']?.toDouble() ?? 0.0,
       price: map['price']?.toDouble() ?? 0.0,
       cartypeId: map['cartypeId'] ?? '',

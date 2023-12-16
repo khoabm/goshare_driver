@@ -13,6 +13,7 @@ import 'package:goshare_driver/features/auth/screens/user_info_regis_screen.dart
 import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
 import 'package:goshare_driver/features/dashboard/screen/profile_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/statistics_screen.dart';
+import 'package:goshare_driver/features/dashboard/screen/trip_history_screen.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/deliver_passenger_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
@@ -27,7 +28,8 @@ class AppRouter {
   /// The route configuration.
   GoRouter createRouter(String initialLocation) {
     return GoRouter(
-      initialLocation: RouteConstants.driverInformationRegisterUrl,
+      initialLocation: //RouteConstants.driverInformationRegisterUrl,
+          initialLocation,
       // initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(
@@ -58,6 +60,7 @@ class AppRouter {
                   driverId: '123',
                   startLocationId: '123',
                   endLocationId: '123',
+                  startTime: DateTime.now(),
                   distance: 10,
                   price: 123,
                   cartypeId: '123',
@@ -349,6 +352,19 @@ class AppRouter {
           ) {
             return SlideRightTransition(
               child: const EditProfilePage(),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: RouteConstants.tripHistory,
+          path: RouteConstants.tripHistoryUrl,
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            return SlideRightTransition(
+              child: const TripHistoryScreen(),
               key: state.pageKey,
             );
           },

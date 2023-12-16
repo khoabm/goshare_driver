@@ -143,8 +143,8 @@ class _LogInScreenState extends ConsumerState<LogInScreen> {
         ref.read(userProvider.notifier).state = result.user;
         setState(() {});
         //print(ref.read(userProvider.notifier).state?.id);
+        navigateToDashBoardScreen();
       }
-      navigateToDashBoardScreen();
     }
   }
 

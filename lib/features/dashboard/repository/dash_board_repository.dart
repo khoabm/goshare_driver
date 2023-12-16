@@ -278,4 +278,42 @@ class DashBoardRepository {
       );
     }
   }
+
+  Future<Either<Failure, List<Trip>>> getTripHistory() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('driverAccessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+
+      final res = await client.get(
+        Uri.parse('$baseApiUrl/trip/history'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (res.statusCode == 200) {
+        final dynamic responseData = jsonDecode(res.body);
+        print(responseData.toString());
+        if (responseData.isEmpty || responseData is! List) {
+          throw Exception('Unexpected response format');
+        }
+
+        final List<dynamic> data = responseData;
+
+        final List<Trip> trips = List<Map<String, dynamic>>.from(data)
+            .map((tripData) => Trip.fromMap(tripData))
+            .toList();
+
+        return right(trips);
+      } else {
+        final responseData = jsonDecode(res.body);
+        //throw Exception('Failed to load trip history');
+        return left(
+          Failure(responseData['message']),
+        );
+      }
+    } catch (error) {
+      throw Exception('Failed to load trip history: $error');
+    }
+  }
 }
