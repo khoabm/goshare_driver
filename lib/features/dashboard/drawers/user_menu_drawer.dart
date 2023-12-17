@@ -16,9 +16,9 @@ class UserMenuDrawer extends ConsumerStatefulWidget {
 class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
   void _onLogout(WidgetRef ref) async {
     if (mounted) {
-      final connection = await ref.read(
-        hubConnectionProvider.future,
-      );
+      // final connection = await ref.read(
+      //   hubConnectionProvider.future,
+      // );
       if (mounted) {
         await ref
             .watch(LoginControllerProvider.notifier)
@@ -26,10 +26,10 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
       }
       ref.invalidate(userProvider);
       //ref.invalidate(userProvider);
-      await connection.stop().then((value) {
-        print('DA STOP THANH CONG');
-        ref.invalidate(hubConnectionProvider);
-      });
+      // await connection.stop().then((value) {
+      //   print('DA STOP THANH CONG');
+      // });
+      ref.invalidate(hubConnectionProvider);
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('driverAccessToken');
       await prefs.remove('driverRefreshToken');
