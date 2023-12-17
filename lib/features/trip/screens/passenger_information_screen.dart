@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:goshare_driver/providers/is_chat_on_provider.dart';
@@ -33,9 +34,10 @@ class _PassengerInformationScreenState
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
-            ref
-                .watch(isPassengerInformationOnProvider.notifier)
-                .setIsPassengerInformation(false);
+            context.pop();
+            // ref
+            //     .watch(isPassengerInformationOnProvider.notifier)
+            //     .setIsPassengerInformation(false);
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_outlined,

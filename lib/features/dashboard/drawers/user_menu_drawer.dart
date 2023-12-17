@@ -62,59 +62,63 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
       child: SafeArea(
         child: Column(
           children: [
-            ListTile(
-              title: const Text('Thông tin'),
-              leading: const Icon(
-                Icons.person_outline,
+            Expanded(
+              flex: 9,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListTile(
+                    title: const Text('Thông tin'),
+                    leading: const Icon(
+                      Icons.person_outline,
+                    ),
+                    onTap: () {
+                      navigateToEditProfile();
+                    },
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Thống kê',
+                    ),
+                    leading: const Icon(
+                      IconData(0xebef, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToStatistic(),
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Lịch sử',
+                    ),
+                    leading: const Icon(
+                      IconData(0xe314, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToTripHistory(),
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Ví của tôi',
+                    ),
+                    leading: const Icon(
+                      IconData(0xe041, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToMoneyTopup(),
+                  ),
+                ],
               ),
-              onTap: () {
-                navigateToEditProfile();
-              },
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Thống kê',
+            Expanded(
+              flex: 1,
+              child: ListTile(
+                title: const Text(
+                  'Đăng xuất',
+                ),
+                leading: const Icon(
+                  IconData(0xe3b3, fontFamily: 'MaterialIcons'),
+                ),
+                onTap: () => _onLogout(ref),
               ),
-              leading: const Icon(
-                IconData(0xebef, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => navigateToStatistic(),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Lịch sử',
-              ),
-              leading: const Icon(
-                IconData(0xe314, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => navigateToTripHistory(),
-            ),
-            ListTile(
-              title: const Text(
-                'Ví của tôi',
-              ),
-              leading: const Icon(
-                IconData(0xe041, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => navigateToMoneyTopup(),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Đăng xuất',
-              ),
-              leading: const Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => _onLogout(ref),
             ),
           ],
         ),

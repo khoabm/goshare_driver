@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +26,7 @@ class CountdownButton extends StatefulWidget {
 class _CountdownButtonState extends State<CountdownButton> {
   late Timer _timer;
   //int _countdown = 120; // 2 minutes in seconds
-  int _countdown = 1000; // 2 minutes in seconds
+  int _countdown = 120; // 2 minutes in seconds
 
   @override
   void initState() {
@@ -201,7 +200,7 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                         Text(
                           '${oCcy.format(trip?.price)}đ',
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 23,
                             fontWeight: FontWeight.w500,
                             color: Colors.green[500],
                           ),

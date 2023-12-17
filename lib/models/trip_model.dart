@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class Trip {
   final String id;
+  final String? passengerName;
+  final String? passengerPhoneNumber;
   final String passengerId;
   final String driverId;
   final String startLocationId;
@@ -29,6 +31,8 @@ class Trip {
   final int type;
   Trip({
     required this.id,
+    this.passengerName,
+    this.passengerPhoneNumber,
     required this.passengerId,
     required this.driverId,
     required this.startLocationId,
@@ -51,6 +55,8 @@ class Trip {
 
   Trip copyWith({
     String? id,
+    String? passengerName,
+    String? passengerPhoneNumber,
     String? passengerId,
     String? driverId,
     String? startLocationId,
@@ -72,6 +78,8 @@ class Trip {
   }) {
     return Trip(
       id: id ?? this.id,
+      passengerName: passengerName ?? this.passengerName,
+      passengerPhoneNumber: passengerPhoneNumber ?? this.passengerPhoneNumber,
       passengerId: passengerId ?? this.passengerId,
       driverId: driverId ?? this.driverId,
       startLocationId: startLocationId ?? this.startLocationId,
@@ -96,6 +104,8 @@ class Trip {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'passengerName': passengerName,
+      'passengerPhoneNumber': passengerPhoneNumber,
       'passengerId': passengerId,
       'driverId': driverId,
       'startLocationId': startLocationId,
@@ -119,6 +129,8 @@ class Trip {
   factory Trip.fromMap(Map<String, dynamic> map) {
     return Trip(
       id: map['id'] ?? '',
+      passengerName: map['passengerName'] ?? '',
+      passengerPhoneNumber: map['passengerPhoneNumber'] ?? '',
       passengerId: map['passengerId'] ?? '',
       driverId: map['driverId'] ?? '',
       startLocationId: map['startLocationId'] ?? '',
@@ -148,7 +160,7 @@ class Trip {
 
   @override
   String toString() {
-    return 'Trip(id: $id, passengerId: $passengerId, driverId: $driverId, startLocationId: $startLocationId, endLocationId: $endLocationId, distance: $distance, price: $price, cartypeId: $cartypeId, status: $status, paymentMethod: $paymentMethod, bookerId: $bookerId, note: $note, passenger: $passenger, booker: $booker, endLocation: $endLocation, startLocation: $startLocation, cartype: $cartype, type: $type)';
+    return 'Trip(id: $id,passengerName:$passengerName,passengerPhoneNumber:$passengerPhoneNumber , passengerId: $passengerId, driverId: $driverId, startLocationId: $startLocationId, endLocationId: $endLocationId, distance: $distance, price: $price, cartypeId: $cartypeId, status: $status, paymentMethod: $paymentMethod, bookerId: $bookerId, note: $note, passenger: $passenger, booker: $booker, endLocation: $endLocation, startLocation: $startLocation, cartype: $cartype, type: $type)';
   }
 
   @override

@@ -219,64 +219,6 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                               )
                             : const SizedBox.shrink(),
                         const SizedBox(height: 20),
-                        // const Text('Thông tin tài xế',
-                        //     style: TextStyle(
-                        //         fontSize: 18, fontWeight: FontWeight.bold)),
-                        // const SizedBox(height: 5),
-                        // Row(
-                        //   children: [
-                        //     Expanded(
-                        //       flex: 3,
-                        //       child: CircleAvatar(
-                        //         backgroundImage: NetworkImage(
-                        //             trip.driver?.avatarUrl ?? '',
-                        //             scale: 0.7),
-                        //         radius: 60,
-                        //       ),
-                        //     ),
-                        //     const SizedBox(width: 20),
-                        //     Expanded(
-                        //       flex: 7,
-                        //       child: Column(
-                        //         crossAxisAlignment: CrossAxisAlignment.start,
-                        //         children: [
-                        //           Text(
-                        //             '${trip.driver?.name}',
-                        //             style: const TextStyle(
-                        //                 fontSize: 16,
-                        //                 fontWeight: FontWeight.w500),
-                        //           ),
-                        //           Text(
-                        //             convertBackPhoneNumber(trip.driver!.phone),
-                        //             style: const TextStyle(
-                        //                 fontSize: 16,
-                        //                 fontWeight: FontWeight.w500),
-                        //           ),
-                        //           const SizedBox(height: 10),
-                        //           Text(
-                        //             'Xe ${trip.cartype.capacity} chỗ',
-                        //             style: const TextStyle(
-                        //                 fontSize: 16,
-                        //                 fontWeight: FontWeight.w400),
-                        //           ),
-                        //           Text(
-                        //             'Biển số xe: ${trip.driver?.car?.licensePlate}',
-                        //             style: const TextStyle(
-                        //                 fontSize: 16,
-                        //                 fontWeight: FontWeight.w400),
-                        //           ),
-                        //           Text(
-                        //             '${trip.driver?.car?.make} ${trip.driver?.car?.model}',
-                        //             style: const TextStyle(
-                        //                 fontSize: 16,
-                        //                 fontWeight: FontWeight.w400),
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                        const SizedBox(height: 20),
                         const Text('Thông tin người đặt',
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
@@ -353,6 +295,57 @@ class _TripHistoryScreenState extends ConsumerState<TripHistoryScreen> {
                                             Text(
                                               convertBackPhoneNumber(
                                                   trip.passenger.phone),
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : const SizedBox.shrink(),
+                        trip.type == 2
+                            ? Column(
+                                children: [
+                                  const SizedBox(height: 20),
+                                  const Text('Thông tin người đi',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(height: 5),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 3,
+                                        child: CircleAvatar(
+                                          backgroundImage: NetworkImage(trip
+                                                  .passenger.avatarUrl ??
+                                              'https://firebasestorage.googleapis.com/v0/b/goshare-bc3c4.appspot.com/o/default-user-avatar.webp?alt=media&token=cd67cce4-611c-49c5-a819-956a33ce90ba'),
+                                          radius: 60,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 20),
+                                      Expanded(
+                                        flex: 7,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              trip.passengerName ?? "",
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text(
+                                              convertBackPhoneNumber(
+                                                  trip.passengerPhoneNumber ??
+                                                      ""),
                                               style: const TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.w500),
