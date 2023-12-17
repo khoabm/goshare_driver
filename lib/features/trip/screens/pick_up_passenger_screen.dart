@@ -55,7 +55,7 @@ class PickUpPassenger extends ConsumerStatefulWidget {
 class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
   double _containerHeight = 60.0;
   MapNavigationViewController? _controller;
-  LocationData? locationData;
+  // LocationData? locationData;
   LocationData? driverLocation;
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
@@ -105,10 +105,10 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     _navigationOption.mapStyle =
         "https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm";
     _navigationOption.customLocationCenterIcon =
-        await VietmapHelper.getBytesFromAsset('assets/download.jpeg');
+        await VietmapHelper.getBytesFromAsset('assets/images/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
-    final location = ref.read(locationProvider);
-    locationData = await location.getCurrentLocation();
+    // final location = ref.read(locationProvider);
+    // locationData = await location.getCurrentLocation();
     // wayPoints.clear();
     // wayPoints.add(
     //   WayPoint(
@@ -178,7 +178,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
 
   void navigateToChat(String receiver) {
     if (receiver.isNotEmpty) {
-      context.replaceNamed(
+      context.pushNamed(
         RouteConstants.chat,
         pathParameters: {
           'receiver': receiver,
@@ -194,7 +194,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     location.changeSettings(
       accuracy: LocationAccuracy.high,
       distanceFilter: 2,
-      interval: 2000,
+      interval: 1000,
     );
     _locationSubscription =
         location.onLocationChanged.handleError((dynamic err) {
@@ -213,6 +213,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
         if (mounted) {
           driverLocation = currentLocation;
+
           if (hubConnection.state == HubConnectionState.connected) {
             hubConnection.invoke(
               "SendDriverLocation",
@@ -270,12 +271,14 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ref.watch(isChatOnProvider)
-          ? ChatScreen(
-              receiver: widget.trip?.bookerId ?? '',
-              bookerAvatar: widget.trip?.booker.avatarUrl,
-            )
-          : ref.watch(isPassengerInformationOnProvider)
+      child:
+          // ref.watch(isChatOnProvider)
+          //     ? ChatScreen(
+          //         receiver: widget.trip?.bookerId ?? '',
+          //         bookerAvatar: widget.trip?.booker.avatarUrl,
+          //       )
+          //     :
+          ref.watch(isPassengerInformationOnProvider)
               ? PassengerInformationScreen(
                   trip: widget.trip,
                 )
@@ -344,7 +347,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                     ),
                   ),
                   body: SafeArea(
-                    child: locationData == null
+                    child: driverLocation == null
                         ? const Loader()
                         : Stack(
                             children: [
@@ -368,9 +371,9 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                   wayPoints.add(
                                     WayPoint(
                                       name: 'origin point',
-                                      latitude: locationData?.latitude ??
+                                      latitude: driverLocation?.latitude ??
                                           10.882105930222338,
-                                      longitude: locationData?.longitude ??
+                                      longitude: driverLocation?.longitude ??
                                           106.78253348225114,
                                     ),
                                   );
@@ -383,9 +386,10 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                           widget.trip?.startLocation.longitude,
                                     ),
                                   );
+                                  print(wayPoints.toString());
                                   _controller?.setCenterIcon(
                                     await VietmapHelper.getBytesFromAsset(
-                                        'assets/download.jpeg'),
+                                        'assets/images/download.jpeg'),
                                   );
                                   await _controller?.buildAndStartNavigation(
                                     wayPoints: wayPoints,
@@ -515,12 +519,13 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                   ),
                                                   InkWell(
                                                     onTap: () {
-                                                      ref
-                                                          .watch(
-                                                              isPassengerInformationOnProvider
-                                                                  .notifier)
-                                                          .setIsPassengerInformation(
-                                                              true);
+                                                      navigateToPassengerInformation();
+                                                      // ref
+                                                      //     .watch(
+                                                      //         isPassengerInformationOnProvider
+                                                      //             .notifier)
+                                                      //     .setIsPassengerInformation(
+                                                      //         true);
                                                     },
                                                     child: const Padding(
                                                       padding:
@@ -595,15 +600,17 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                       // setState(() {
                                                       //   _isChatOn = true;
                                                       // });
-                                                      ref
-                                                          .watch(
-                                                              isChatOnProvider
-                                                                  .notifier)
-                                                          .setIsChatOnData(
-                                                              true);
-                                                      // navigateToChat(
-                                                      //   widget.trip?.booker.id ?? '',
-                                                      // );
+                                                      // ref
+                                                      //     .watch(
+                                                      //         isChatOnProvider
+                                                      //             .notifier)
+                                                      //     .setIsChatOnData(
+                                                      //         true);
+                                                      navigateToChat(
+                                                        widget.trip?.booker
+                                                                .id ??
+                                                            '',
+                                                      );
                                                     },
                                                     child: const Padding(
                                                       padding:

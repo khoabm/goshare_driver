@@ -65,25 +65,35 @@ class _StatisticScreenState extends ConsumerState<StatisticScreen> {
         ),
         body: Column(
           children: [
-            SizedBox(
-              height: 170, // Set this to the height you want
-              child: TabBarView(
-                children:
-                    list.reversed.map((item) => IncomeDetails(item)).toList(),
+            Expanded(
+              flex: 3,
+              child: SizedBox(
+                // height: 170, // Set this to the height you want
+                child: TabBarView(
+                  children:
+                      list.reversed.map((item) => IncomeDetails(item)).toList(),
+                ),
               ),
-            ),
-            const Text(
-              'Lịch sử giao dịch',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-              ),
-            ),
-            const SizedBox(
-              height: 20,
             ),
             const Expanded(
-              child: TransactionList(),
+              flex: 7,
+              child: Column(
+                children: [
+                  Text(
+                    'Lịch sử giao dịch',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: TransactionList(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -52,7 +52,7 @@ class PaymentResultScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Phương thức thanh toán',
+                    'Phương thức\nthanh toán',
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -92,7 +92,7 @@ class PaymentResultScreen extends ConsumerWidget {
                   const Text(
                     'Phí hệ thống',
                     style: TextStyle(
-                      fontSize: 25,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

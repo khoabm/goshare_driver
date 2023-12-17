@@ -104,12 +104,13 @@ class _DashBoardState extends ConsumerState<DashBoard> {
         if (mounted) {
           final location = ref.read(locationProvider);
           currentLocation = await location.getCurrentLocation();
+
           if (context.mounted) {
-            // await ref.watch(tripControllerProvider.notifier).updateLocation(
-            //       context,
-            //       currentLocation?.latitude ?? 0.0,
-            //       currentLocation?.longitude ?? 0.0,
-            //     );
+            await ref.watch(tripControllerProvider.notifier).updateLocation(
+                  context,
+                  currentLocation?.latitude ?? 0.0,
+                  currentLocation?.longitude ?? 0.0,
+                );
           }
         }
       }
@@ -225,87 +226,97 @@ class _DashBoardState extends ConsumerState<DashBoard> {
           automaticallyImplyLeading: false, // Hide default back button
           title: Container(
             padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
               top: 16,
+              bottom: 16,
             ),
             child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Menu icon on the left
-                Builder(builder: (context) {
-                  return IconButton(
-                    icon: const Icon(
-                      Icons.menu,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      // Handle menu button tap
-                      displayDrawer(context);
-                    },
-                  );
-                }),
-                // InkWell with Text "Bắt đầu" and turn on icon
-                const SizedBox(
-                  width: 30,
-                ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    final currentState = ref.watch(currentStateProvider);
-                    final loginController =
-                        ref.watch(LoginControllerProvider.notifier);
-                    return InkWell(
-                      onTap: () async {
-                        // Call the appropriate method of the LoginController
-                        if (currentState) {
-                          final check1 =
-                              await loginController.driverDeactivate(context);
-                          if (check1) {}
-                        } else {
-                          final check =
-                              await loginController.driverActivate(context);
-                          if (check) {
-                            final location = ref.read(locationProvider);
-                            currentLocation =
-                                await location.getCurrentLocation();
-                            if (mounted) {
-                              ref
-                                  .watch(tripControllerProvider.notifier)
-                                  .updateLocation(
-                                    context,
-                                    currentLocation?.latitude ?? 0.0,
-                                    currentLocation?.longitude ?? 0.0,
-                                  );
-                            }
-                          }
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          AnimatedDefaultTextStyle(
-                            // Use green color when currentState is true, otherwise use white
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: currentState ? Colors.green : Colors.white,
-                            ),
-                            duration: const Duration(
-                                milliseconds:
-                                    200), // Change to your desired duration
-                            child: const Text('Bắt đầu'),
-                          ),
-                          const SizedBox(width: 8),
-                          const Icon(
-                            Icons.power_settings_new,
+                Expanded(
+                  flex: 5,
+                  child: Row(
+                    children: [
+                      Builder(builder: (context) {
+                        return IconButton(
+                          icon: const Icon(
+                            Icons.menu,
                             color: Colors.white,
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                          onPressed: () {
+                            // Handle menu button tap
+                            displayDrawer(context);
+                          },
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-
+                // InkWell with Text "Bắt đầu" and turn on icon
+                Expanded(
+                  flex: 5,
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final currentState = ref.watch(currentStateProvider);
+                      final loginController =
+                          ref.watch(LoginControllerProvider.notifier);
+                      return InkWell(
+                        onTap: () async {
+                          // Call the appropriate method of the LoginController
+                          if (currentState) {
+                            final check1 =
+                                await loginController.driverDeactivate(context);
+                            if (check1) {}
+                          } else {
+                            final check =
+                                await loginController.driverActivate(context);
+                            if (check) {
+                              final location = ref.read(locationProvider);
+                              currentLocation =
+                                  await location.getCurrentLocation();
+                              if (mounted) {
+                                ref
+                                    .watch(tripControllerProvider.notifier)
+                                    .updateLocation(
+                                      context,
+                                      currentLocation?.latitude ?? 0.0,
+                                      currentLocation?.longitude ?? 0.0,
+                                    );
+                              }
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AnimatedDefaultTextStyle(
+                              // Use green color when currentState is true, otherwise use white
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color:
+                                    currentState ? Colors.green : Colors.white,
+                              ),
+                              duration: const Duration(
+                                  milliseconds:
+                                      200), // Change to your desired duration
+                              child: const Text('Bắt đầu'),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.power_settings_new,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const Spacer(
+                  flex: 5,
+                ),
                 // Comment icon on the right
                 // IconButton(
                 //   icon: const Icon(
@@ -368,15 +379,15 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                   // getWallet();
                   // getDriverInformation();
 
-                  if (context.mounted) {
-                    await ref
-                        .watch(tripControllerProvider.notifier)
-                        .updateLocation(
-                          context,
-                          currentLocation?.latitude ?? 0.0,
-                          currentLocation?.longitude ?? 0.0,
-                        );
-                  }
+                  // if (context.mounted) {
+                  //   await ref
+                  //       .watch(tripControllerProvider.notifier)
+                  //       .updateLocation(
+                  //         context,
+                  //         currentLocation?.latitude ?? 0.0,
+                  //         currentLocation?.longitude ?? 0.0,
+                  //       );
+                  // }
 
                   _mapController?.animateCamera(
                     CameraUpdate.newCameraPosition(
@@ -446,7 +457,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     'Số dư của tài khoản',
                                     style: TextStyle(
                                       fontSize: 25,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.normal,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -454,7 +465,7 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     '${oCcy.format(wallet)} đ',
                                     style: const TextStyle(
                                       fontSize: 25,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w300,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -586,34 +597,60 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                                   ),
                                                 )
                                               : const SizedBox.shrink(),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              Column(
-                                                children: [
-                                                  const Text('Doanh thu ngày'),
-                                                  Text(
-                                                      "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
-                                                ],
-                                              ),
-                                              Container(
-                                                color: Colors.black,
-                                                width: 1,
-                                                height: 50,
-                                              ),
-                                              Column(
-                                                children: [
-                                                  const Text(
-                                                    'Đánh giá',
+                                          Container(
+                                            //color: Colors.red,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        'Doanh thu ngày',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Text(
+                                                        "${oCcy.format(informationModel.dailyIncome)} VNĐ",
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Text(
-                                                    informationModel.rating
-                                                        .toStringAsFixed(2),
+                                                ),
+                                                // Container(
+                                                //   color: Colors.black,
+                                                //   width: 1,
+                                                //   height: 50,
+                                                // ),
+                                                Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        'Đánh giá',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w500),
+                                                      ),
+                                                      Text(
+                                                        informationModel.rating
+                                                            .toStringAsFixed(2),
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              )
-                                            ],
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),

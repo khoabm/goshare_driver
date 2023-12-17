@@ -31,6 +31,7 @@ class AppRouter {
     return GoRouter(
       initialLocation: //RouteConstants.driverInformationRegisterUrl,
           initialLocation,
+      // '/test4',
       // initialLocation, //RouteConstants.statisticUrl, //'/test3',  //'/find-trip',
       routes: <RouteBase>[
         GoRoute(
@@ -56,6 +57,8 @@ class AppRouter {
             return SlideRightTransition(
               child: PickUpPassenger(
                 trip: Trip(
+                  passengerName: "asdasd",
+                  passengerPhoneNumber: "asdasd",
                   id: '123',
                   passengerId: '123',
                   driverId: '123',

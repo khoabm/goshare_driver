@@ -56,7 +56,7 @@ class _DeliverPassengerScreenState
     extends ConsumerState<DeliverPassengerScreen> {
   double _containerHeight = 60.0;
   MapNavigationViewController? _controller;
-  LocationData? locationData;
+  // LocationData? locationData;
   LocationData? driverLocation;
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
@@ -106,10 +106,10 @@ class _DeliverPassengerScreenState
     _navigationOption.mapStyle =
         "https://api.maptiler.com/maps/basic-v2/style.json?key=erfJ8OKYfrgKdU6J1SXm";
     _navigationOption.customLocationCenterIcon =
-        await VietmapHelper.getBytesFromAsset('assets/download.jpeg');
+        await VietmapHelper.getBytesFromAsset('assets/images/download.jpeg');
     _vietmapNavigationPlugin.setDefaultOptions(_navigationOption);
-    final location = ref.read(locationProvider);
-    locationData = await location.getCurrentLocation();
+    // final location = ref.read(locationProvider);
+    // locationData = await location.getCurrentLocation();
     await _listenLocation();
     // wayPoints.clear();
     // wayPoints.add(
@@ -195,8 +195,11 @@ class _DeliverPassengerScreenState
       setState(() {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
+
         if (mounted) {
           driverLocation = currentLocation;
+
+          print(wayPoints.toString());
           if (hubConnection.state == HubConnectionState.connected) {
             hubConnection.invoke(
               "SendDriverLocation",
@@ -327,7 +330,7 @@ class _DeliverPassengerScreenState
                 ),
               ),
               body: SafeArea(
-                child: locationData == null
+                child: driverLocation == null
                     ? const Loader()
                     : Stack(
                         children: [
@@ -349,8 +352,8 @@ class _DeliverPassengerScreenState
                               wayPoints.add(
                                 WayPoint(
                                   name: 'origin point',
-                                  latitude: locationData?.latitude,
-                                  longitude: locationData?.longitude,
+                                  latitude: driverLocation?.latitude,
+                                  longitude: driverLocation?.longitude,
                                 ),
                               );
                               wayPoints.add(
@@ -362,7 +365,7 @@ class _DeliverPassengerScreenState
                               );
                               _controller?.setCenterIcon(
                                 await VietmapHelper.getBytesFromAsset(
-                                    'assets/download.jpeg'),
+                                    'assets/images/download.jpeg'),
                               );
                               //_controller?.buildRoute(wayPoints: wayPoints);
                               _isRunning = true;
