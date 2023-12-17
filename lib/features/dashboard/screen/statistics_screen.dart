@@ -46,7 +46,7 @@ class _StatisticScreenState extends ConsumerState<StatisticScreen> {
           ),
           bottom: TabBar(
             isScrollable: true,
-            tabs: list
+            tabs: list.reversed
                 .map(
                   (item) => Container(
                     width: MediaQuery.of(context).size.width /
@@ -66,9 +66,10 @@ class _StatisticScreenState extends ConsumerState<StatisticScreen> {
         body: Column(
           children: [
             SizedBox(
-              height: 200, // Set this to the height you want
+              height: 170, // Set this to the height you want
               child: TabBarView(
-                children: list.map((item) => IncomeDetails(item)).toList(),
+                children:
+                    list.reversed.map((item) => IncomeDetails(item)).toList(),
               ),
             ),
             const Text(
@@ -127,7 +128,7 @@ class IncomeDetails extends StatelessWidget {
             height: 20,
           ),
           Text(
-            'Chênh lệch so với tháng trước: ${statisticModel.compareToLastMonth.toStringAsFixed(2)}%',
+            'Chênh lệch so với tháng trước: ${(statisticModel.compareToLastMonth * 100).toStringAsFixed(2)}%',
             style: const TextStyle(
               fontWeight: FontWeight.w500,
               //color: Colors.grey,

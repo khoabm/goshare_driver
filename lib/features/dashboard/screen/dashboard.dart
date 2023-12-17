@@ -461,10 +461,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0,
-                                    ),
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 0),
                                     child: Container(
                                       padding: const EdgeInsets.all(
                                         40,
@@ -589,20 +588,24 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                               : const SizedBox.shrink(),
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
+                                                MainAxisAlignment.spaceEvenly,
                                             children: [
                                               Column(
                                                 children: [
-                                                  const Text(
-                                                      'Doanh thu trong ngày'),
+                                                  const Text('Doanh thu ngày'),
                                                   Text(
                                                       "${oCcy.format(informationModel.dailyIncome)} VNĐ"),
                                                 ],
                                               ),
+                                              Container(
+                                                color: Colors.black,
+                                                width: 1,
+                                                height: 50,
+                                              ),
                                               Column(
                                                 children: [
                                                   const Text(
-                                                    'Đánh giá của tôi',
+                                                    'Đánh giá',
                                                   ),
                                                   Text(
                                                     informationModel.rating

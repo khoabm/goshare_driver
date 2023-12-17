@@ -57,6 +57,7 @@ class _DeliverPassengerScreenState
   double _containerHeight = 60.0;
   MapNavigationViewController? _controller;
   LocationData? locationData;
+  LocationData? driverLocation;
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
 
@@ -195,6 +196,7 @@ class _DeliverPassengerScreenState
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
         if (mounted) {
+          driverLocation = currentLocation;
           if (hubConnection.state == HubConnectionState.connected) {
             hubConnection.invoke(
               "SendDriverLocation",
@@ -569,10 +571,10 @@ class _DeliverPassengerScreenState
                                                   _isLoading = true;
                                                 });
                                                 if (context.mounted) {
-                                                  final location = ref
-                                                      .read(locationProvider);
-                                                  locationData = await location
-                                                      .getCurrentLocation();
+                                                  // final location = ref
+                                                  //     .read(locationProvider);
+                                                  // locationData = await location
+                                                  //     .getCurrentLocation();
                                                   if (mounted) {
                                                     if (widget.trip?.type ==
                                                         TripType.bookForDepNoApp
@@ -587,9 +589,9 @@ class _DeliverPassengerScreenState
                                                                 .notifier)
                                                         .confirmEndTrip(
                                                           context,
-                                                          locationData
+                                                          driverLocation
                                                               ?.latitude,
-                                                          locationData
+                                                          driverLocation
                                                               ?.longitude,
                                                           deliverPictureFile
                                                               ?.path,

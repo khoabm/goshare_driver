@@ -14,6 +14,7 @@ import 'package:goshare_driver/features/dashboard/screen/dashboard.dart';
 import 'package:goshare_driver/features/dashboard/screen/profile_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/statistics_screen.dart';
 import 'package:goshare_driver/features/dashboard/screen/trip_history_screen.dart';
+import 'package:goshare_driver/features/money-topup/money-topup-screen.dart';
 import 'package:goshare_driver/features/trip/screens/chat_screen.dart';
 import 'package:goshare_driver/features/trip/screens/deliver_passenger_screen.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
@@ -86,6 +87,55 @@ class AppRouter {
                   type: 3,
                 ),
               ),
+              key: state.pageKey,
+            );
+          },
+        ),
+        GoRoute(
+          name: 'test4',
+          path: '/test4',
+          pageBuilder: (
+            BuildContext context,
+            GoRouterState state,
+          ) {
+            List<dynamic> data = [
+              Trip(
+                startTime: DateTime.now(),
+                id: '123',
+                passengerId: '123',
+                driverId: '123',
+                startLocationId: '123',
+                endLocationId: '123',
+                distance: 10,
+                price: 1230000000,
+                cartypeId: '123',
+                status: 1,
+                paymentMethod: 0,
+                bookerId: '123',
+                passenger: Passenger(
+                    id: '123', name: '123', phone: '123', avatarUrl: '123'),
+                booker: Booker(id: '123', name: '123', phone: '123'),
+                endLocation: EndLocation(
+                    id: '123',
+                    userId: '123',
+                    address:
+                        'asdasdasdyzxgbcolqnw cijasbcjaisasbda hjksbcashkjldgaskdhbqasilydga',
+                    latitude: 10.66666666,
+                    longitude: 106.6666666),
+                startLocation: StartLocation(
+                    id: '123',
+                    userId: '123',
+                    address:
+                        'asdasdasdyzxgbcolqnw cijasbcjaisasbda hjksbcashkjldgaskdhbqasilydga',
+                    latitude: 10.6666667,
+                    longitude: 106.66666667),
+                cartype: CarType(capacity: 4),
+                note: 'asdasdasdasddsadasdasdasdasdasdasdasdasdasdasasdasdasd',
+                type: 2,
+              ).toMap(),
+            ];
+            return SlideRightTransition(
+              child: TripRequest(data),
               key: state.pageKey,
             );
           },
@@ -368,6 +418,14 @@ class AppRouter {
               key: state.pageKey,
             );
           },
+        ),
+        GoRoute(
+          name: RouteConstants.moneyTopup,
+          path: RouteConstants.moneyTopupUrl,
+          pageBuilder: (context, state) => SlideRightTransition(
+            child: const MoneyTopupPage(),
+            key: state.pageKey,
+          ),
         ),
       ],
     );

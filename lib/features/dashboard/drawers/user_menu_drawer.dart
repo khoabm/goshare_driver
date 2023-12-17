@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
-// import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,6 +51,10 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
     context.pushNamed(RouteConstants.tripHistory);
   }
 
+  void navigateToMoneyTopup() {
+    context.pushNamed(RouteConstants.moneyTopup);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -91,6 +94,15 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
                 IconData(0xe314, fontFamily: 'MaterialIcons'),
               ),
               onTap: () => navigateToTripHistory(),
+            ),
+            ListTile(
+              title: const Text(
+                'Ví của tôi',
+              ),
+              leading: const Icon(
+                IconData(0xe041, fontFamily: 'MaterialIcons'),
+              ),
+              onTap: () => navigateToMoneyTopup(),
             ),
             const SizedBox(
               height: 30,

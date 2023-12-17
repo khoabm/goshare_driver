@@ -56,6 +56,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
   double _containerHeight = 60.0;
   MapNavigationViewController? _controller;
   LocationData? locationData;
+  LocationData? driverLocation;
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
 
@@ -211,6 +212,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
         _error = null;
         print('${currentLocation.latitude} + ${currentLocation.longitude},');
         if (mounted) {
+          driverLocation = currentLocation;
           if (hubConnection.state == HubConnectionState.connected) {
             hubConnection.invoke(
               "SendDriverLocation",
@@ -665,14 +667,14 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                     // locationData =
                                                     //     await location.getCurrentLocation();
                                                     if (context.mounted) {
-                                                      final location = ref.read(
-                                                          locationProvider);
-                                                      locationData = await location
-                                                          .getCurrentLocation();
+                                                      // final location = ref.read(
+                                                      //     locationProvider);
+                                                      // locationData = await location
+                                                      //     .getCurrentLocation();
 
-                                                      print("--------------");
-                                                      print(locationData
-                                                          .toString());
+                                                      // print("--------------");
+                                                      // print(locationData
+                                                      //     .toString());
                                                       if (mounted) {
                                                         if (widget.trip?.type ==
                                                             TripType
@@ -690,14 +692,10 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                                       .notifier)
                                                               .confirmPickUpPassenger(
                                                                 context,
-                                                                routeProgressEvent
-                                                                    ?.currentLocation
-                                                                    ?.latitude!
-                                                                    .toDouble(),
-                                                                routeProgressEvent
-                                                                    ?.currentLocation
-                                                                    ?.longitude!
-                                                                    .toDouble(),
+                                                                driverLocation
+                                                                    ?.latitude,
+                                                                driverLocation
+                                                                    ?.longitude,
                                                                 pickupPictureFile
                                                                     ?.path,
                                                                 widget.trip
