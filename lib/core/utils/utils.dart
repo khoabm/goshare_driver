@@ -263,6 +263,72 @@ void showFeedBackError(BuildContext context, String message) {
   );
 }
 
+void showErrorUpdateProfileDialog(BuildContext context, String message) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Lỗi cập nhật thông tin',
+              ),
+            ),
+          ],
+        ),
+        content: Center(
+          child: Text(message),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
+void showUpdateProfileSuccessDialog(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Cập nhật thành công',
+              ),
+            ),
+          ],
+        ),
+        content: const SizedBox.shrink(),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 String convertPhoneNumber(String phoneNumber) {
   // Check if the phone number starts with '0'
   if (phoneNumber.startsWith('0')) {

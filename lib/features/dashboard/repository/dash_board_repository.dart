@@ -238,7 +238,7 @@ class DashBoardRepository {
       //   },
       // );
       var uri = Uri.parse('$baseApiUrl/user/profile');
-      var request = http.MultipartRequest('POST', uri)
+      var request = http.MultipartRequest('PUT', uri)
         ..fields['name'] = name
         ..fields['gender'] = gender.toString()
         ..fields['birth'] = birth.toIso8601String();

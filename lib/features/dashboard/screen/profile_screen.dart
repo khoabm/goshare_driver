@@ -8,6 +8,7 @@ import 'package:goshare_driver/common/app_text_field.dart';
 import 'package:goshare_driver/core/date_time_formatters.dart';
 import 'package:goshare_driver/core/input_formatters.dart';
 import 'package:goshare_driver/core/input_validator.dart';
+import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
 import 'package:goshare_driver/features/dashboard/controllers/dash_board_controller.dart';
 import 'package:goshare_driver/models/user_profile_model.dart';
@@ -78,14 +79,17 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                 context,
                 _nameTextController.text,
                 null,
-                _gender!.index + 1,
+                _gender!.index,
                 DateTimeFormatters.convertStringToDate(
                     _birthDateTextController.text),
               );
       if (data != null) {
-        setState(() {
-          profile = data;
-        });
+        if (mounted) {
+          showUpdateProfileSuccessDialog(context);
+          setState(() {
+            profile = data;
+          });
+        }
       }
       setState(() {
         _isLoading = false;
