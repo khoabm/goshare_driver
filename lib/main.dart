@@ -128,7 +128,7 @@ class _MyAppState extends ConsumerState<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: "Go Share Driver",
+      title: "Goshare Driver",
       debugShowCheckedModeBanner: false,
       home: FutureBuilder<String>(
         future: ref

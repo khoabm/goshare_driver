@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
+import 'package:goshare_driver/providers/chat_provider.dart';
 import 'package:goshare_driver/providers/is_chat_on_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:signalr_core/signalr_core.dart';
@@ -27,7 +28,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
-  final List<ChatMessage> _messages = [];
+  // final List<ChatMessage> _messages = [];
   @override
   void initState() {
     super.initState();
@@ -44,7 +45,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           widget.receiver,
         );
     setState(() {
-      _messages.insert(0, ChatMessage(text, true));
+      // _messages.insert(0, ChatMessage(text, true));
+      ref.read(chatMessagesProvider.notifier).addMessage(ChatMessage(
+            text,
+            true,
+          ));
       // Add a message from the other user for testing
     });
   }
@@ -56,12 +61,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       );
 
       hubConnection.on('ReceiveSMSMessages', (message) {
-        print(
-            "${message.toString()} DAY ROI SIGNAL R DAY ROI RECEIVE SMS MESSAGE");
-        setState(() {
-          _messages.insert(
-              0, ChatMessage(message?.first.toString() ?? '', false));
-        });
+        if (mounted) {
+          print(
+              "${message.toString()} DAY ROI SIGNAL R DAY ROI RECEIVE SMS MESSAGE");
+          setState(() {
+            // _messages.insert(
+            //     0, ChatMessage(message?.first.toString() ?? '', false));
+            ref.read(chatMessagesProvider.notifier).addMessage(ChatMessage(
+                  message?.first.toString() ?? '',
+                  false,
+                ));
+          });
+        }
       });
 
       hubConnection.onclose((exception) async {
@@ -171,8 +182,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             child: ListView.builder(
               padding: const EdgeInsets.all(8.0),
               reverse: true,
-              itemBuilder: (_, int index) => _buildMessage(_messages[index]),
-              itemCount: _messages.length,
+              itemBuilder: (_, int index) =>
+                  _buildMessage(ref.watch(chatMessagesProvider)[index]),
+              itemCount: ref.watch(chatMessagesProvider).length,
             ),
           ),
           const Divider(height: 1.0),
