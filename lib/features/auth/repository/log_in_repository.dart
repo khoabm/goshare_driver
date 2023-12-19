@@ -60,6 +60,7 @@ class LoginRepository {
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         final userData = UserDataModel.fromMap(jsonData);
+        print(userData.toString());
         ref
             .watch(currentOnTripIdProvider.notifier)
             .setCurrentOnTripId(userData.currentTrip);
@@ -84,10 +85,14 @@ class LoginRepository {
           return LoginResult(error: LoginErrorConstants.accountNotVerified);
         } else if (resultMap['message'] == 'Wrong passcode') {
           return LoginResult(error: LoginErrorConstants.wrongPassword);
+        } else if (resultMap['message'] == 'User is not driver') {
+          return LoginResult(error: LoginErrorConstants.userIsNotDriver);
         }
-        return LoginResult();
-      } else if (response.statusCode == 403) {
         return LoginResult(error: resultMap['message']);
+      } else if (response.statusCode == 403) {
+        return LoginResult(
+          error: resultMap['message'],
+        );
       } else {
         return LoginResult(error: 'Login failed');
       }
