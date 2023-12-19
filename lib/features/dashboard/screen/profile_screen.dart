@@ -244,21 +244,21 @@ class _EditProfilePageState extends ConsumerState<EditProfilePage> {
                               const SizedBox(
                                 height: 40,
                               ),
-                              Container(
-                                padding: const EdgeInsets.all(
-                                  8.0,
-                                ),
-                                width: MediaQuery.of(context).size.width * .9,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  child: AppButton(
-                                    buttonText: 'Cập nhật',
-                                    onPressed: () => _onSubmit(ref),
-                                  ),
-                                ),
-                              ),
+                              // Container(
+                              //   padding: const EdgeInsets.all(
+                              //     8.0,
+                              //   ),
+                              //   width: MediaQuery.of(context).size.width * .9,
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.symmetric(
+                              //       vertical: 16,
+                              //     ),
+                              //     child: AppButton(
+                              //       buttonText: 'Cập nhật',
+                              //       onPressed: () => _onSubmit(ref),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),

@@ -126,13 +126,23 @@ void showBannedDialog(BuildContext context, String message) {
     context: context,
     builder: (BuildContext abcContext) {
       return AlertDialog(
-        title: const Center(
-          child: Text(
-            'Lỗi đăng nhập',
-          ),
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Lỗi đăng nhập',
+              ),
+            ),
+          ],
         ),
-        content: Center(
-          child: Text(message),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(message),
+            ),
+          ],
         ),
         actions: [
           ElevatedButton(
