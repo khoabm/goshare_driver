@@ -171,6 +171,11 @@ class DashBoardController extends StateNotifier<bool> {
         showLoginTimeOut(
           context: context,
         );
+      } else if (l is UpdateProfileFailure) {
+        showErrorUpdateProfileDialog(
+          context,
+          l.message,
+        );
       } else {
         showSnackBar(
           context: context,
