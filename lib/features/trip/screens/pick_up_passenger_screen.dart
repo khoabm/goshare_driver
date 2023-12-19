@@ -27,6 +27,7 @@ import 'package:location/location.dart';
 import 'package:signalr_core/signalr_core.dart';
 import 'package:vietmap_flutter_navigation/embedded/controller.dart';
 import 'package:vietmap_flutter_navigation/helpers.dart';
+import 'package:vietmap_flutter_navigation/models/marker.dart';
 import 'package:vietmap_flutter_navigation/models/options.dart';
 import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
 import 'package:vietmap_flutter_navigation/models/way_point.dart';
@@ -60,7 +61,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
 
-  List<WayPoint> wayPoints = [
+  List<LatLng> wayPoints = [
     // WayPoint(
     //     name: "origin point", latitude: 10.6828253, longitude: 106.7489981),
     // WayPoint(
@@ -369,21 +370,17 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                 onMapRendered: () async {
                                   // wayPoints.clear();
                                   wayPoints.add(
-                                    WayPoint(
-                                      name: 'origin point',
-                                      latitude: driverLocation?.latitude ??
+                                    LatLng(
+                                      driverLocation?.latitude ??
                                           10.882105930222338,
-                                      longitude: driverLocation?.longitude ??
+                                      driverLocation?.longitude ??
                                           106.78253348225114,
                                     ),
                                   );
                                   wayPoints.add(
-                                    WayPoint(
-                                      name: 'destination point',
-                                      latitude:
-                                          widget.trip?.startLocation.latitude,
-                                      longitude:
-                                          widget.trip?.startLocation.longitude,
+                                    LatLng(
+                                      widget.trip?.startLocation.latitude ?? 0,
+                                      widget.trip?.startLocation.longitude ?? 0,
                                     ),
                                   );
                                   print(wayPoints.toString());
@@ -392,7 +389,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                         'assets/images/download.jpeg'),
                                   );
                                   await _controller?.buildAndStartNavigation(
-                                    wayPoints: wayPoints,
+                                    waypoints: wayPoints,
                                   );
                                   _isRunning = true;
                                 },

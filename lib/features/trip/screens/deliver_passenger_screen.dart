@@ -11,11 +11,11 @@ import 'package:goshare_driver/common/loader.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/core/enums/trip_type_enum.dart';
 
-import 'package:goshare_driver/core/utils/locations_util.dart';
+// import 'package:goshare_driver/core/utils/locations_util.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
-import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
+// import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:goshare_driver/providers/current_on_trip_provider.dart';
@@ -25,13 +25,14 @@ import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:location/location.dart';
 import 'package:signalr_core/signalr_core.dart';
-import 'package:vietmap_flutter_navigation/embedded/controller.dart';
+// import 'package:vietmap_flutter_navigation/embedded/controller.dart';
 import 'package:vietmap_flutter_navigation/helpers.dart';
-import 'package:vietmap_flutter_navigation/models/options.dart';
-import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
-import 'package:vietmap_flutter_navigation/models/way_point.dart';
-import 'package:vietmap_flutter_navigation/navigation_plugin.dart';
-import 'package:vietmap_flutter_navigation/views/navigation_view.dart';
+// import 'package:vietmap_flutter_navigation/models/options.dart';
+// import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
+// import 'package:vietmap_flutter_navigation/models/way_point.dart';
+// import 'package:vietmap_flutter_navigation/navigation_plugin.dart';
+import 'package:vietmap_flutter_navigation/vietmap_flutter_navigation.dart';
+// import 'package:vietmap_flutter_navigation/views/navigation_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 // import 'package:goshare_driver/features/pick-up-passenger/components/bottom_sheet_address_info.dart';
@@ -61,7 +62,7 @@ class _DeliverPassengerScreenState
   late MapOptions _navigationOption;
   final _vietmapNavigationPlugin = VietMapNavigationPlugin();
 
-  List<WayPoint> wayPoints = [
+  List<LatLng> wayPoints = [
     // WayPoint(
     //     name: "origin point", latitude: 10.6828253, longitude: 106.7489981),
     // WayPoint(
@@ -350,17 +351,15 @@ class _DeliverPassengerScreenState
                             onMapRendered: () async {
                               wayPoints.clear();
                               wayPoints.add(
-                                WayPoint(
-                                  name: 'origin point',
-                                  latitude: driverLocation?.latitude,
-                                  longitude: driverLocation?.longitude,
+                                LatLng(
+                                  driverLocation?.latitude ?? 0,
+                                  driverLocation?.longitude ?? 0,
                                 ),
                               );
                               wayPoints.add(
-                                WayPoint(
-                                  name: 'destination point',
-                                  latitude: widget.trip?.endLocation.latitude,
-                                  longitude: widget.trip?.endLocation.longitude,
+                                LatLng(
+                                  widget.trip?.endLocation.latitude ?? 0,
+                                  widget.trip?.endLocation.longitude ?? 0,
                                 ),
                               );
                               _controller?.setCenterIcon(
@@ -370,7 +369,7 @@ class _DeliverPassengerScreenState
                               //_controller?.buildRoute(wayPoints: wayPoints);
                               _isRunning = true;
                               await _controller?.buildAndStartNavigation(
-                                wayPoints: wayPoints,
+                                waypoints: wayPoints,
                               );
                               //_controller?.startNavigation();
                             },
