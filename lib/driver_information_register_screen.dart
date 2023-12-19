@@ -353,7 +353,7 @@ class _DriverInformationRegisterState
           ),
           SizedBox(
             width: MediaQuery.of(context).size.width * .8,
-            height: 50,
+            height: 200,
             child: GridView.count(
               crossAxisCount: 2,
               childAspectRatio: 3,
