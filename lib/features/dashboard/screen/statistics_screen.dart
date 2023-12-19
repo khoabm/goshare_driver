@@ -46,7 +46,7 @@ class _StatisticScreenState extends ConsumerState<StatisticScreen> {
           ),
           bottom: TabBar(
             isScrollable: true,
-            tabs: list
+            tabs: list.reversed
                 .map(
                   (item) => Container(
                     width: MediaQuery.of(context).size.width /
@@ -65,24 +65,35 @@ class _StatisticScreenState extends ConsumerState<StatisticScreen> {
         ),
         body: Column(
           children: [
-            SizedBox(
-              height: 200, // Set this to the height you want
-              child: TabBarView(
-                children: list.map((item) => IncomeDetails(item)).toList(),
+            Expanded(
+              flex: 3,
+              child: SizedBox(
+                // height: 170, // Set this to the height you want
+                child: TabBarView(
+                  children:
+                      list.reversed.map((item) => IncomeDetails(item)).toList(),
+                ),
               ),
-            ),
-            const Text(
-              'Lịch sử giao dịch',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-              ),
-            ),
-            const SizedBox(
-              height: 20,
             ),
             const Expanded(
-              child: TransactionList(),
+              flex: 7,
+              child: Column(
+                children: [
+                  Text(
+                    'Lịch sử giao dịch',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Expanded(
+                    child: TransactionList(),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -127,7 +138,7 @@ class IncomeDetails extends StatelessWidget {
             height: 20,
           ),
           Text(
-            'Chênh lệch so với tháng trước: ${statisticModel.compareToLastMonth.toStringAsFixed(2)}%',
+            'Chênh lệch so với tháng trước: ${(statisticModel.compareToLastMonth * 100).toStringAsFixed(2)}%',
             style: const TextStyle(
               fontWeight: FontWeight.w500,
               //color: Colors.grey,

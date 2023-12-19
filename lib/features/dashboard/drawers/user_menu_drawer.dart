@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/constants/route_constants.dart';
 import 'package:goshare_driver/features/auth/controllers/log_in_controller.dart';
 import 'package:goshare_driver/features/auth/screens/sign_in_screen.dart';
-// import 'package:goshare_driver/providers/current_on_trip_provider.dart';
 import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,6 +51,10 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
     context.pushNamed(RouteConstants.tripHistory);
   }
 
+  void navigateToMoneyTopup() {
+    context.pushNamed(RouteConstants.moneyTopup);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -59,50 +62,63 @@ class _UserMenuDrawerState extends ConsumerState<UserMenuDrawer> {
       child: SafeArea(
         child: Column(
           children: [
-            ListTile(
-              title: const Text('Thông tin'),
-              leading: const Icon(
-                Icons.person_outline,
+            Expanded(
+              flex: 9,
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ListTile(
+                    title: const Text('Thông tin'),
+                    leading: const Icon(
+                      Icons.person_outline,
+                    ),
+                    onTap: () {
+                      navigateToEditProfile();
+                    },
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Thống kê',
+                    ),
+                    leading: const Icon(
+                      IconData(0xebef, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToStatistic(),
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Lịch sử',
+                    ),
+                    leading: const Icon(
+                      IconData(0xe314, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToTripHistory(),
+                  ),
+                  ListTile(
+                    title: const Text(
+                      'Ví của tôi',
+                    ),
+                    leading: const Icon(
+                      IconData(0xe041, fontFamily: 'MaterialIcons'),
+                    ),
+                    onTap: () => navigateToMoneyTopup(),
+                  ),
+                ],
               ),
-              onTap: () {
-                navigateToEditProfile();
-              },
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Thống kê',
+            Expanded(
+              flex: 1,
+              child: ListTile(
+                title: const Text(
+                  'Đăng xuất',
+                ),
+                leading: const Icon(
+                  IconData(0xe3b3, fontFamily: 'MaterialIcons'),
+                ),
+                onTap: () => _onLogout(ref),
               ),
-              leading: const Icon(
-                IconData(0xebef, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => navigateToStatistic(),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Lịch sử',
-              ),
-              leading: const Icon(
-                IconData(0xe314, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => navigateToTripHistory(),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            ListTile(
-              title: const Text(
-                'Đăng xuất',
-              ),
-              leading: const Icon(
-                IconData(0xe3b3, fontFamily: 'MaterialIcons'),
-              ),
-              onTap: () => _onLogout(ref),
             ),
           ],
         ),

@@ -60,6 +60,7 @@ dependencies:
   shared_preferences: ^2.2.2
   dotted_border: ^2.1.0
   flutter_local_notifications: ^16.1.0
+  webview_flutter: ^3.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -91,7 +92,7 @@ flutter:
   assets:
     - assets/images/
     - assets/navigation_symbol/
-    - assets/
+    - assets/icons/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

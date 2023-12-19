@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/providers/chat_provider.dart';
 import 'package:goshare_driver/providers/is_chat_on_provider.dart';
@@ -169,7 +170,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         title: const Text('Nhắn tin'),
         leading: IconButton(
           onPressed: () {
-            ref.watch(isChatOnProvider.notifier).setIsChatOnData(false);
+            context.pop();
           },
           icon: const Icon(
             Icons.arrow_back_ios_new_outlined,
