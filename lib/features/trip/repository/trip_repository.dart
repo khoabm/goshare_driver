@@ -215,7 +215,7 @@ class TripRepository {
     List<ChatModel> chats = [];
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final accessToken = prefs.getString('accessToken');
+      final accessToken = prefs.getString('driverAccessToken');
       final client = HttpClientWithAuth(accessToken ?? '');
       final res = await client.get(
         Uri.parse('$baseApiUrl/chat/get/$tripId'),
