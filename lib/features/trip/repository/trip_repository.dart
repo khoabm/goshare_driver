@@ -7,6 +7,7 @@ import 'package:goshare_driver/core/constants/constants.dart';
 import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/type_def.dart';
 import 'package:goshare_driver/core/utils/http_utils.dart';
+import 'package:goshare_driver/models/chat_model.dart';
 import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -165,6 +166,7 @@ class TripRepository {
   FutureEither<bool> sendChat(
     String content,
     String receiver,
+    String tripId,
   ) async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -178,6 +180,7 @@ class TripRepository {
         body: jsonEncode({
           "receiver": receiver,
           "content": content,
+          "tripId": tripId,
         }),
       );
       print(res.body);
@@ -202,6 +205,44 @@ class TripRepository {
       print(e.toString());
       return left(
         Failure('Lỗi hệ thống'),
+      );
+    }
+  }
+
+  FutureEither<List<ChatModel>> getChat(
+    String tripId,
+  ) async {
+    List<ChatModel> chats = [];
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final accessToken = prefs.getString('accessToken');
+      final client = HttpClientWithAuth(accessToken ?? '');
+      final res = await client.get(
+        Uri.parse('$baseApiUrl/chat/get/$tripId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      print(res.body);
+      if (res.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(res.body);
+        chats = jsonData.map((json) => ChatModel.fromMap(json)).toList();
+        return right(chats);
+      } else if (res.statusCode == 401) {
+        return left(UnauthorizedFailure('Unauthorized'));
+      } else if (res.statusCode == 429) {
+        return left(
+          Failure('Too many request'),
+        );
+      } else {
+        return left(
+          Failure('Co loi xay ra'),
+        );
+      }
+    } catch (e) {
+      print(e.toString());
+      return left(
+        Failure('Loi roi'),
       );
     }
   }

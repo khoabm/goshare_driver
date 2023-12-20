@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goshare_driver/core/failure.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/repository/trip_repository.dart';
+import 'package:goshare_driver/models/chat_model.dart';
 import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
 
@@ -86,11 +87,16 @@ class TripController extends StateNotifier<bool> {
   }
 
   Future<bool> sendChat(
-      BuildContext context, String content, String receiver) async {
+    BuildContext context,
+    String content,
+    String receiver,
+    String tripId,
+  ) async {
     bool isSent = false;
     final result = await _tripRepository.sendChat(
       content,
       receiver,
+      tripId,
     );
     result.fold((l) {
       if (l is UnauthorizedFailure) {
@@ -107,6 +113,31 @@ class TripController extends StateNotifier<bool> {
       isSent = r;
     });
     return isSent;
+  }
+
+  Future<List<ChatModel>> getChat(
+    BuildContext context,
+    String tripId,
+  ) async {
+    List<ChatModel> chats = [];
+    final result = await _tripRepository.getChat(
+      tripId,
+    );
+    result.fold((l) {
+      if (l is UnauthorizedFailure) {
+        showLoginTimeOut(
+          context: context,
+        );
+      } else {
+        showSnackBar(
+          context: context,
+          message: l.message,
+        );
+      }
+    }, (r) {
+      chats = r;
+    });
+    return chats;
   }
 
   Future<bool> updateLocation(

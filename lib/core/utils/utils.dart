@@ -339,6 +339,47 @@ void showUpdateProfileSuccessDialog(BuildContext context) {
   );
 }
 
+void showAdminCancelDialogInfo(BuildContext context) {
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext abcContext) {
+      return AlertDialog(
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Chuyến đi đã bị hủy',
+              ),
+            ),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Text(
+                'Chuyến đi đã bị hủy bởi quản trị viên',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(abcContext).pop();
+            },
+            child: const Text(
+              'Xác nhận',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 String convertPhoneNumber(String phoneNumber) {
   // Check if the phone number starts with '0'
   if (phoneNumber.startsWith('0')) {

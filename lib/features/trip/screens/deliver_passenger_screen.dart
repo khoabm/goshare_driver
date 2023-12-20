@@ -15,6 +15,7 @@ import 'package:goshare_driver/core/enums/trip_type_enum.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 import 'package:goshare_driver/features/trip/controller/trip_controller.dart';
 import 'package:goshare_driver/features/trip/screens/passenger_information_screen.dart';
+import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 // import 'package:goshare_driver/features/trip/views/banner_instruction.dart';
 import 'package:goshare_driver/models/end_trip_model.dart';
 import 'package:goshare_driver/models/trip_model.dart';
@@ -25,15 +26,21 @@ import 'package:goshare_driver/providers/signalr_providers.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:location/location.dart';
 import 'package:signalr_core/signalr_core.dart';
+import 'package:vietmap_flutter_navigation/embedded/controller.dart';
 // import 'package:vietmap_flutter_navigation/embedded/controller.dart';
 import 'package:vietmap_flutter_navigation/helpers.dart';
 // import 'package:vietmap_flutter_navigation/models/options.dart';
 // import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
 // import 'package:vietmap_flutter_navigation/models/way_point.dart';
 // import 'package:vietmap_flutter_navigation/navigation_plugin.dart';
-import 'package:vietmap_flutter_navigation/vietmap_flutter_navigation.dart';
+// import 'package:vietmap_flutter_navigation/vietmap_flutter_navigation.dart';
 // import 'package:vietmap_flutter_navigation/views/navigation_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vietmap_flutter_navigation/models/marker.dart';
+import 'package:vietmap_flutter_navigation/models/options.dart';
+import 'package:vietmap_flutter_navigation/models/route_progress_event.dart';
+import 'package:vietmap_flutter_navigation/navigation_plugin.dart';
+import 'package:vietmap_flutter_navigation/views/navigation_view.dart';
 
 // import 'package:goshare_driver/features/pick-up-passenger/components/bottom_sheet_address_info.dart';
 // import 'package:goshare_driver/features/pick-up-passenger/components/debouncer_search.dart';
@@ -152,6 +159,7 @@ class _DeliverPassengerScreenState
             ref
                 .watch(currentOnTripIdProvider.notifier)
                 .setCurrentOnTripId(null);
+            showAdminCancelDialogInfo(context);
             context.goNamed(
               RouteConstants.dashBoard,
             );

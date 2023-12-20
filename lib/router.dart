@@ -330,8 +330,14 @@ class AppRouter {
               ) {
                 final Map<String, dynamic> params = state.pathParameters;
                 final String receiver = params['receiver'] as String;
+                final String bookerAvatar = params['bookerAvatar'] as String;
+                final String tripId = params['tripId'] as String;
                 return SlideRightTransition(
-                  child: ChatScreen(receiver: receiver),
+                  child: ChatScreen(
+                    receiver: receiver,
+                    bookerAvatar: bookerAvatar,
+                    tripId: tripId,
+                  ),
                   key: state.pageKey,
                 );
               },

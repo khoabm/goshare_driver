@@ -6,15 +6,12 @@ final chatMessagesProvider =
         (ref) => ChatMessagesNotifier());
 
 class ChatMessagesNotifier extends StateNotifier<List<ChatMessage>> {
-
   ChatMessagesNotifier()
       : super(
           [],
         );
 
-
-
   void addMessage(ChatMessage message) {
-    state = [...state, message];
+    state = [message, ...state];
   }
 }

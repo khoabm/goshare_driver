@@ -143,6 +143,7 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
             ref
                 .watch(currentOnTripIdProvider.notifier)
                 .setCurrentOnTripId(null);
+            showAdminCancelDialogInfo(context);
             context.goNamed(
               RouteConstants.dashBoard,
             );
@@ -177,12 +178,18 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
     );
   }
 
-  void navigateToChat(String receiver) {
+  void navigateToChat(
+    String receiver,
+    String? bookerAvatar,
+    String tripId,
+  ) {
     if (receiver.isNotEmpty) {
       context.pushNamed(
         RouteConstants.chat,
         pathParameters: {
           'receiver': receiver,
+          'bookerAvatar': bookerAvatar ?? '',
+          'tripId': tripId,
         },
       );
     }
@@ -607,6 +614,9 @@ class _PickUpPassengerState extends ConsumerState<PickUpPassenger> {
                                                         widget.trip?.booker
                                                                 .id ??
                                                             '',
+                                                        widget.trip?.booker
+                                                            .avatarUrl,
+                                                        widget.trip?.id ?? '',
                                                       );
                                                     },
                                                     child: const Padding(

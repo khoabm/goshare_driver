@@ -32,7 +32,7 @@ class RouteConstants {
   static const tripRequestUrl = '/trip-request';
   static const pickUpPassengerUrl = '/pick-up';
   static const passengerInformationUrl = '/passenger-information';
-  static const chatUrl = 'chat/:receiver';
+  static const chatUrl = 'chat/:receiver/:bookerAvatar/:tripId';
   static const deliverPassengerUrl = '/deliver-passenger';
   static const loginUrl = '/login';
   static const endTripUrl = '/end-trip';
