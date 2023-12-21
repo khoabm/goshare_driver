@@ -476,8 +476,9 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 0),
                                     child: Container(
-                                      padding: const EdgeInsets.all(
-                                        40,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 40,
+                                        vertical: 40,
                                       ),
                                       decoration: const BoxDecoration(
                                         color: Colors.white,
@@ -487,200 +488,274 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                       ),
                                       child: Column(
                                         children: [
-                                          informationModel.dueDate != null
-                                              ? GestureDetector(
-                                                  onTap: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (
-                                                        BuildContext
-                                                            dialogContext,
-                                                      ) {
-                                                        return AlertDialog(
-                                                          title: const Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                'Thông báo',
+                                          Row(
+                                            children: [
+                                              informationModel.dueDate != null
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              dialogContext) {
+                                                            return AlertDialog(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20), // Rounded corners.
                                                               ),
-                                                            ],
-                                                          ),
-                                                          content: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                'Tài khoản của bạn đang âm tiền và cần thanh toán ${DateFormat('dd/MM/yyyy').format(
-                                                                  informationModel
-                                                                      .dueDate!,
-                                                                )}. Nếu đã thanh toán vui lòng bỏ qua hệ thống sẽ cập nhật lại',
+                                                              title: const Row(
+                                                                children: [
+                                                                  Icon(
+                                                                      Icons
+                                                                          .warning,
+                                                                      color: Colors
+                                                                          .red), // Add an icon for visual emphasis.
+                                                                  SizedBox(
+                                                                      width:
+                                                                          10), // Add some spacing between the icon and the text.
+                                                                  Text(
+                                                                    'Thông báo',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .red, // Red text for emphasis.
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold, // Bold text for emphasis.
+                                                                      fontSize:
+                                                                          20, // Larger font size.
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ],
-                                                          ),
-                                                          actions: <Widget>[
-                                                            TextButton(
-                                                              child: const Text(
-                                                                'Đóng',
+                                                              content: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Text(
+                                                                    'Tài khoản của bạn đang âm tiền và cần thanh toán ${DateFormat('dd/MM/yyyy').format(informationModel.dueDate!)}. \n\nNếu đã thanh toán vui lòng bỏ qua hệ thống sẽ cập nhật lại',
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          16, // Larger font size.
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        dialogContext)
-                                                                    .pop();
-                                                              },
-                                                            ),
-                                                          ],
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                    'Đóng',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Pallete
+                                                                          .primaryColor, // Blue text to stand out.
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold, // Bold text for emphasis.
+                                                                    ),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            dialogContext)
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
                                                         );
                                                       },
-                                                    );
-                                                  },
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      const Icon(IconData(
-                                                        0xe33c,
-                                                        fontFamily:
-                                                            'MaterialIcons',
-                                                      )),
-                                                      const SizedBox(
-                                                          width:
-                                                              8.0), // You can adjust the space between the icon and text
-                                                      Text(
-                                                        'Thời hạn thanh toán tiền xe đến ngày ${DateFormat('dd/MM/yyyy').format(
-                                                          informationModel
-                                                              .dueDate!,
-                                                        )}',
-                                                        style: const TextStyle(
-                                                          color: Colors
-                                                              .yellowAccent,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : const SizedBox.shrink(),
-                                          informationModel.warnedTime != null
-                                              ? GestureDetector(
-                                                  onTap: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          dialogContext) {
-                                                        return AlertDialog(
-                                                          title: const Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                'Thông báo',
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          content: const Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                               Text(
-                                                                'Tài khoản của bạn đang có đánh giá quá thấp.',
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          actions: <Widget>[
-                                                            TextButton(
-                                                              child: const Text(
-                                                                'Đóng',
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        dialogContext)
-                                                                    .pop();
-                                                              },
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          const Icon(IconData(
+                                                            0xe33c,
+                                                            fontFamily:
+                                                                'MaterialIcons',
+                                                          )),
+                                                          const SizedBox(
+                                                              width:
+                                                                  8.0), // You can adjust the space between the icon and text
+                                                          Text(
+                                                            'Hạn thanh toán tiền.',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 2,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .orange[500],
                                                             ),
-                                                          ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              informationModel.warnedTime !=
+                                                      null
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              dialogContext) {
+                                                            return AlertDialog(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20), // Rounded corners.
+                                                              ),
+                                                              title: const Row(
+                                                                children: [
+                                                                  Icon(
+                                                                      Icons
+                                                                          .warning,
+                                                                      color: Colors
+                                                                          .red), // Add an icon for visual emphasis.
+                                                                  SizedBox(
+                                                                      width:
+                                                                          10), // Add some spacing between the icon and the text.
+                                                                  Text(
+                                                                    'Thông báo',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .red, // Red text for emphasis.
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold, // Bold text for emphasis.
+                                                                      fontSize:
+                                                                          20, // Larger font size.
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              content:
+                                                                  const Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Text(
+                                                                    'Đánh giá của bạn đang quá thấp. Vui lòng liên hệ quản trị viên.',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          16, // Larger font size.
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                    'Đóng',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Pallete
+                                                                          .primaryColor, // Blue text to stand out.
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold, // Bold text for emphasis.
+                                                                    ),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            dialogContext)
+                                                                        .pop();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
                                                         );
                                                       },
-                                                    );
-                                                  },
-                                                  child: const Row(
-                                                    children: <Widget>[
-                                                      Icon(
-                                                        IconData(
-                                                          0xe33c,
-                                                          fontFamily:
-                                                              'MaterialIcons',
-                                                        ),
+                                                      child: Row(
+                                                        children: <Widget>[
+                                                          const Icon(
+                                                            IconData(
+                                                              0xe33c,
+                                                              fontFamily:
+                                                                  'MaterialIcons',
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width:
+                                                                  8.0), // You can adjust the space between the icon and text
+                                                          Text(
+                                                            'Đánh giá thấp.',
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .orange[500],
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(
-                                                          width:
-                                                              8.0), // You can adjust the space between the icon and text
-                                                      Text(
-                                                        'Tài khoản của bạn đang có đánh giá quá thấp.',
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .yellowAccent,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              : const SizedBox.shrink(),
-                                          Container(
-                                            //color: Colors.red,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    children: [
-                                                      const Text(
-                                                        'Doanh thu ngày',
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      Text(
-                                                        "${oCcy.format(informationModel.dailyIncome)} VNĐ",
-                                                        style: const TextStyle(
+                                                    )
+                                                  : const SizedBox.shrink(),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    const Text(
+                                                      'Doanh thu ngày',
+                                                      style: TextStyle(
                                                           fontSize: 16,
-                                                        ),
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                    Text(
+                                                      "${oCcy.format(informationModel.dailyIncome)} VNĐ",
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                // Container(
-                                                //   color: Colors.black,
-                                                //   width: 1,
-                                                //   height: 50,
-                                                // ),
-                                                Expanded(
-                                                  child: Column(
-                                                    children: [
-                                                      const Text(
-                                                        'Đánh giá',
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500),
-                                                      ),
-                                                      Text(
-                                                        informationModel.rating
-                                                            .toStringAsFixed(2),
-                                                        style: const TextStyle(
+                                              ),
+                                              // Container(
+                                              //   color: Colors.black,
+                                              //   width: 1,
+                                              //   height: 50,
+                                              // ),
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    const Text(
+                                                      'Đánh giá',
+                                                      style: TextStyle(
                                                           fontSize: 16,
-                                                        ),
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                    Text(
+                                                      informationModel.rating
+                                                          .toStringAsFixed(2),
+                                                      style: const TextStyle(
+                                                        fontSize: 16,
                                                       ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ],
                                       ),

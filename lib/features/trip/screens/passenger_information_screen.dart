@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goshare_driver/core/utils/utils.dart';
 
 import 'package:goshare_driver/models/trip_model.dart';
-import 'package:goshare_driver/providers/is_chat_on_provider.dart';
+// import 'package:goshare_driver/providers/is_chat_on_provider.dart';
 import 'package:goshare_driver/theme/pallet.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -98,50 +98,113 @@ class _PassengerInformationScreenState
                     height: 25,
                   ),
                   widget.trip?.type == 2
-                      ? Row(
-                          children: [
-                            Text(
-                              '${widget.trip?.passengerPhoneNumber ?? widget.trip?.passenger.phone}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontStyle: FontStyle.italic,
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
+                      ? Center(
+                          child: Row(
+                            children: [
+                              Text(
+                                '${widget.trip?.passengerPhoneNumber ?? widget.trip?.passenger.phone}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            CircleAvatar(
-                              radius: 20.0, // Adjust the size as needed.
-                              backgroundColor:
-                                  Pallete.green, // Choose your desired color.
-                              child: IconButton(
-                                icon: const Icon(
-                                    Icons.phone), // This is the phone icon.
-                                color: Colors
-                                    .white, // Choose the color of the icon.
-                                onPressed: () async {
-                                  if (widget.trip != null) {
-                                    if (widget.trip?.passengerPhoneNumber !=
-                                        null) {
-                                      final call = Uri.parse(
-                                          'tel:${convertPhoneNumber(widget.trip!.passengerPhoneNumber!)}');
-                                      if (await canLaunchUrl(call)) {
-                                        launchUrl(call);
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              CircleAvatar(
+                                radius: 20.0, // Adjust the size as needed.
+                                backgroundColor:
+                                    Pallete.green, // Choose your desired color.
+                                child: IconButton(
+                                  icon: const Icon(
+                                      Icons.phone), // This is the phone icon.
+                                  color: Colors
+                                      .white, // Choose the color of the icon.
+                                  onPressed: () async {
+                                    if (widget.trip != null) {
+                                      if (widget.trip?.passengerPhoneNumber !=
+                                          null) {
+                                        final call = Uri.parse(
+                                            'tel:${convertPhoneNumber(widget.trip!.passengerPhoneNumber!)}');
+                                        if (await canLaunchUrl(call)) {
+                                          if (mounted) {
+                                            if (context.canPop()) {
+                                              context.pop();
+                                            }
+                                          }
+                                          launchUrl(call);
+                                        } else {
+                                          if (mounted) {
+                                            showSnackBar(
+                                              context: context,
+                                              message: 'Không thể gọi',
+                                            );
+                                          }
+                                        }
                                       } else {
-                                        if (mounted) {
-                                          showSnackBar(
-                                            context: context,
-                                            message: 'Không thể gọi',
-                                          );
+                                        final call = Uri.parse(
+                                            'tel:${convertPhoneNumber(widget.trip!.passenger.phone)}');
+                                        if (await canLaunchUrl(call)) {
+                                          if (mounted) {
+                                            if (context.canPop()) {
+                                              context.pop();
+                                            }
+                                          }
+                                          launchUrl(call);
+                                        } else {
+                                          if (mounted) {
+                                            showSnackBar(
+                                              context: context,
+                                              message: 'Không thể gọi',
+                                            );
+                                          }
                                         }
                                       }
-                                    } else {
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Center(
+                          child: Row(
+                            children: [
+                              Text(
+                                '${widget.trip?.passenger.phone}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              CircleAvatar(
+                                radius: 20.0, // Adjust the size as needed.
+                                backgroundColor:
+                                    Pallete.green, // Choose your desired color.
+                                child: IconButton(
+                                  icon: const Icon(
+                                      Icons.phone), // This is the phone icon.
+                                  color: Colors
+                                      .white, // Choose the color of the icon.
+                                  onPressed: () async {
+                                    if (widget.trip != null) {
                                       final call = Uri.parse(
                                           'tel:${convertPhoneNumber(widget.trip!.passenger.phone)}');
                                       if (await canLaunchUrl(call)) {
+                                         if (mounted) {
+                                          if (context.canPop()) {
+                                            context.pop();
+                                          }
+                                        }
                                         launchUrl(call);
                                       } else {
                                         if (mounted) {
@@ -152,55 +215,11 @@ class _PassengerInformationScreenState
                                         }
                                       }
                                     }
-                                  }
-                                },
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
-                        )
-                      : Row(
-                          children: [
-                            Text(
-                              '${widget.trip?.passenger.phone}',
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                fontStyle: FontStyle.italic,
-                                color: Colors.white,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            CircleAvatar(
-                              radius: 20.0, // Adjust the size as needed.
-                              backgroundColor:
-                                  Pallete.green, // Choose your desired color.
-                              child: IconButton(
-                                icon: const Icon(
-                                    Icons.phone), // This is the phone icon.
-                                color: Colors
-                                    .white, // Choose the color of the icon.
-                                onPressed: () async {
-                                  if (widget.trip != null) {
-                                    final call = Uri.parse(
-                                        'tel:${convertPhoneNumber(widget.trip!.passenger.phone)}');
-                                    if (await canLaunchUrl(call)) {
-                                      launchUrl(call);
-                                    } else {
-                                      if (mounted) {
-                                        showSnackBar(
-                                          context: context,
-                                          message: 'Không thể gọi',
-                                        );
-                                      }
-                                    }
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                   const SizedBox(
                     height: 25,

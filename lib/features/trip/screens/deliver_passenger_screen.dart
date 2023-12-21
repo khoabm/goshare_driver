@@ -391,20 +391,20 @@ class _DeliverPassengerScreenState
                                 routeProgressEvent.currentModifierType,
                               );
                             },
-                            onArrival: () {
-                              _isRunning = false;
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Container(
-                                    height: 100,
-                                    color: Pallete.primaryColor,
-                                    child: const Text(
-                                      'Bạn đã đến điểm đón',
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                            // onArrival: () {
+                            //   _isRunning = false;
+                            //   ScaffoldMessenger.of(context).showSnackBar(
+                            //     SnackBar(
+                            //       content: Container(
+                            //         height: 100,
+                            //         color: Pallete.primaryColor,
+                            //         child: const Text(
+                            //           'Bạn đã đến điểm đón',
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   );
+                            // },
                           ),
                           !_isRunning
                               ? const SizedBox.shrink()
