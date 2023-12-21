@@ -287,13 +287,11 @@ class _DriverInformationRegisterState
             controller: _nameTextController,
             hintText: '62F3-XXXXX',
             formatters: [
-              LengthLimitingTextInputFormatter(8),
+              LengthLimitingTextInputFormatter(9),
             ],
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Biển số xe không được trống';
-              } else if (value.length < 8) {
-                return 'Biển số xe phải là 8 ký tự';
               }
               return null;
             },

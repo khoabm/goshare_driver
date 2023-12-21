@@ -197,6 +197,30 @@ class _TripRequestState extends ConsumerState<TripRequest> {
                         const SizedBox(
                           height: 25,
                         ),
+                        trip?.type == 2
+                            ? Text(
+                                '${trip?.passengerPhoneNumber ?? trip?.passenger.phone}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              )
+                            : Text(
+                                '${trip?.passenger.phone}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                        const SizedBox(
+                          height: 25,
+                        ),
                         Text(
                           '${oCcy.format(trip?.price)}đ',
                           style: TextStyle(

@@ -61,6 +61,8 @@ dependencies:
   dotted_border: ^2.1.0
   flutter_local_notifications: ^16.1.0
   webview_flutter: ^3.0.4
+  url_launcher: ^6.1.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
