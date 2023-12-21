@@ -492,17 +492,33 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                                   onTap: () {
                                                     showDialog(
                                                       context: context,
-                                                      builder: (BuildContext
-                                                          dialogContext) {
+                                                      builder: (
+                                                        BuildContext
+                                                            dialogContext,
+                                                      ) {
                                                         return AlertDialog(
-                                                          title: const Text(
-                                                            'Thông báo',
+                                                          title: const Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Thông báo',
+                                                              ),
+                                                            ],
                                                           ),
-                                                          content: Text(
-                                                            'Tài khoản của bạn đang âm tiền và cần thanh toán ${DateFormat('dd/MM/yyyy').format(
-                                                              informationModel
-                                                                  .dueDate!,
-                                                            )}. Nếu đã thanh toán vui lòng bỏ qua hệ thống sẽ cập nhật lại',
+                                                          content: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Tài khoản của bạn đang âm tiền và cần thanh toán ${DateFormat('dd/MM/yyyy').format(
+                                                                  informationModel
+                                                                      .dueDate!,
+                                                                )}. Nếu đã thanh toán vui lòng bỏ qua hệ thống sẽ cập nhật lại',
+                                                              ),
+                                                            ],
                                                           ),
                                                           actions: <Widget>[
                                                             TextButton(
@@ -552,11 +568,25 @@ class _DashBoardState extends ConsumerState<DashBoard> {
                                                       builder: (BuildContext
                                                           dialogContext) {
                                                         return AlertDialog(
-                                                          title: const Text(
-                                                            'Thông báo',
+                                                          title: const Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Thông báo',
+                                                              ),
+                                                            ],
                                                           ),
-                                                          content: const Text(
-                                                            'Tài khoản của bạn đang có đánh giá quá thấp.',
+                                                          content: const Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                               Text(
+                                                                'Tài khoản của bạn đang có đánh giá quá thấp.',
+                                                              ),
+                                                            ],
                                                           ),
                                                           actions: <Widget>[
                                                             TextButton(
